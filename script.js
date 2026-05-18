@@ -5,7 +5,7 @@ const memeRows = Array.from(document.querySelectorAll(".meme-row"));
 const memeStream = document.querySelector(".meme-stream");
 let liveMemePool = [];
 let fallbackIndex = 0;
-const TARGET_MEME_TILES = 240;
+const TARGET_MEME_TILES = 25;
 let masonryOffset = 0;
 let lastTick = 0;
 let memeCursor = 0;
@@ -38,7 +38,7 @@ function normalizeMemeUrl(url) {
 async function fetchLiveMemes() {
   try {
     const batchSize = 50;
-    const batches = 10; // 10 * 50 = 500 memes target
+    const batches = 4; // 4 * 50 = 200 memes target
     const requests = Array.from({ length: batches }, () =>
       fetch(`https://meme-api.com/gimme/${batchSize}`, { cache: "no-store" })
         .then((r) => (r.ok ? r.json() : null))
@@ -151,10 +151,7 @@ function buildMemeGrid(urls, targetCount = TARGET_MEME_TILES) {
 }
 
 function computeTileTarget() {
-  const approxTileArea = 110 * 110;
-  const viewportArea = window.innerWidth * window.innerHeight;
-  const denseFill = Math.ceil((viewportArea / approxTileArea) * 4.6);
-  return Math.max(TARGET_MEME_TILES, denseFill);
+  return TARGET_MEME_TILES;
 }
 
 function bindMemeFallbacks() {
@@ -202,7 +199,7 @@ function evolveMemeTiles(ratio = 0.08) {
 function startMasonryTicker() {
   if (!memeStream) return;
 
-  const speedPxPerSec = 28;
+  const speedPxPerSec = 18;
   const wrapStepPx = 72;
 
   function tick(now) {
