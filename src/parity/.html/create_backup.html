@@ -1,0 +1,1727 @@
+<!-- 1st -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Create Post</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Main Create Content */
+        .create-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header */
+        .create-header {
+            margin-bottom: 2rem;
+        }
+
+        .create-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .create-header p {
+            color: #9ca3af;
+            font-size: 0.85rem;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            background: #12121c;
+            border: 2px dashed #2d2d40;
+            border-radius: 1.5rem;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-area:hover {
+            border-color: #8b5cf6;
+            background: #161622;
+        }
+
+        .upload-area.drag-over {
+            border-color: #8b5cf6;
+            background: #1a1a2a;
+            transform: scale(0.99);
+        }
+
+        .upload-icon {
+            font-size: 3.5rem;
+            color: #a78bfa;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-area p {
+            color: #6b7280;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Preview Area */
+        .preview-area {
+            background: #12121c;
+            border-radius: 1.5rem;
+            border: 1px solid #2d2d40;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .preview-area.active {
+            display: block;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #2d2d40;
+        }
+
+        .preview-header span {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #a78bfa;
+        }
+
+        .remove-preview {
+            background: none;
+            border: none;
+            color: #f43f5e;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .preview-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 1rem;
+        }
+
+        .file-info {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        /* Form Fields */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #e5e7eb;
+        }
+
+        .form-label i {
+            color: #a78bfa;
+            margin-right: 0.3rem;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 1rem;
+            padding: 0.8rem 1rem;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            background: #12121c;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Type Toggle */
+        .type-toggle {
+            display: flex;
+            gap: 0.5rem;
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.25rem;
+            width: fit-content;
+        }
+
+        .type-option {
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #9ca3af;
+        }
+
+        .type-option.active {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+
+        /* Tags Input */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .tag-item {
+            background: #1a1a28;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .tag-item i {
+            cursor: pointer;
+            font-size: 0.6rem;
+            color: #f43f5e;
+        }
+
+        .tag-input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .tag-input {
+            flex: 1;
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .tag-input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .add-tag-btn {
+            background: #1a1a28;
+            border: 1px solid #2d2d40;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .add-tag-btn:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 1rem;
+            border-radius: 1rem;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: #12121c;
+            border-radius: 1.5rem;
+            border: 1px solid #2d2d40;
+            width: 90%;
+            max-width: 400px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .modal i {
+            font-size: 3rem;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .modal h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .modal p {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+            .create-container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
+            .create-header h1 {
+                font-size: 1.4rem;
+            }
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-bell" id="notificationBtn"></i>
+            <i class="fas fa-user-circle" id="profileBtn"></i>
+        </div>
+    </div>
+
+    <div class="create-container">
+        <div class="create-header">
+            <h1><i class="fas fa-plus-circle"></i> Create Post</h1>
+            <p>Share your meme or GIF with the Memotions community</p>
+        </div>
+
+        <!-- Upload Area -->
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <h3>Drag & drop your file here</h3>
+            <p>or click to browse</p>
+            <button class="upload-btn" id="browseBtn">Choose File</button>
+            <input type="file" id="fileInput" accept="image/*,image/gif" style="display: none;">
+        </div>
+
+        <!-- Preview Area -->
+        <div class="preview-area" id="previewArea">
+            <div class="preview-header">
+                <span><i class="fas fa-image"></i> Preview</span>
+                <button class="remove-preview" id="removePreviewBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <img id="previewImage" class="preview-image" alt="Preview">
+            <div class="file-info" id="fileInfo"></div>
+        </div>
+
+        <!-- Form -->
+        <div class="form-group">
+            <div class="form-label"><i class="fas fa-tag"></i> Post Type</div>
+            <div class="type-toggle" id="typeToggle">
+                <div class="type-option active" data-type="meme">📸 Meme</div>
+                <div class="type-option" data-type="gif">🎬 GIF</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-label"><i class="fas fa-comment"></i> Caption</div>
+            <textarea class="form-textarea" id="captionInput" placeholder="Write a caption for your post..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <div class="form-label"><i class="fas fa-hashtag"></i> Tags</div>
+            <div class="tag-input-wrapper">
+                <input type="text" class="tag-input" id="tagInput" placeholder="Add a tag (e.g., funny, relatable)">
+                <button class="add-tag-btn" id="addTagBtn"><i class="fas fa-plus"></i> Add</button>
+            </div>
+            <div class="tags-container" id="tagsContainer"></div>
+        </div>
+
+        <button class="submit-btn" id="submitBtn">🚀 Post to Memotions</button>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal-overlay" id="successModal">
+    <div class="modal">
+        <i class="fas fa-check-circle"></i>
+        <h3>Posted Successfully!</h3>
+        <p>Your meme is now live on Memotions</p>
+        <button class="modal-btn" id="closeModalBtn">View Profile</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const browseBtn = document.getElementById('browseBtn');
+    const previewArea = document.getElementById('previewArea');
+    const previewImage = document.getElementById('previewImage');
+    const fileInfo = document.getElementById('fileInfo');
+    const removePreviewBtn = document.getElementById('removePreviewBtn');
+    const captionInput = document.getElementById('captionInput');
+    const tagInput = document.getElementById('tagInput');
+    const addTagBtn = document.getElementById('addTagBtn');
+    const tagsContainer = document.getElementById('tagsContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    const successModal = document.getElementById('successModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const toast = document.getElementById('toast');
+
+    let selectedFile = null;
+    let postType = 'meme';
+    let tags = [];
+
+    function showToastMessage(msg, emoji = '✨') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Type toggle
+    document.querySelectorAll('.type-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+            document.querySelectorAll('.type-option').forEach(o => o.classList.remove('active'));
+            opt.classList.add('active');
+            postType = opt.dataset.type;
+            showToastMessage(`${postType === 'meme' ? 'Meme' : 'GIF'} mode selected`, '🎬');
+        });
+    });
+
+    // Browse file
+    browseBtn.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('click', () => fileInput.click());
+
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('drag-over');
+    });
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('drag-over');
+    });
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file && (file.type.startsWith('image/') || file.type === 'image/gif')) {
+            handleFile(file);
+        } else {
+            showToastMessage('Please upload an image or GIF', '⚠️');
+        }
+    });
+
+    // File input change
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) {
+            handleFile(e.target.files[0]);
+        }
+    });
+
+    function handleFile(file) {
+        if (!file.type.startsWith('image/')) {
+            showToastMessage('Please upload an image file', '⚠️');
+            return;
+        }
+        selectedFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImage.src = e.target.result;
+            previewArea.classList.add('active');
+            fileInfo.innerHTML = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+            showToastMessage('File ready! Add caption and tags', '✅');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    removePreviewBtn.addEventListener('click', () => {
+        selectedFile = null;
+        previewArea.classList.remove('active');
+        previewImage.src = '';
+        fileInput.value = '';
+        showToastMessage('Preview removed', '🗑️');
+    });
+
+    // Tags management
+    function renderTags() {
+        tagsContainer.innerHTML = tags.map((tag, index) => `
+            <div class="tag-item">
+                #${tag}
+                <i class="fas fa-times" data-index="${index}"></i>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('.tag-item i').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                const index = parseInt(e.target.dataset.index);
+                tags.splice(index, 1);
+                renderTags();
+            });
+        });
+    }
+
+    addTagBtn.addEventListener('click', () => {
+        const tag = tagInput.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (tag && !tags.includes(tag) && tags.length < 8) {
+            tags.push(tag);
+            renderTags();
+            tagInput.value = '';
+            showToastMessage(`Added #${tag}`, '🏷️');
+        } else if (tags.length >= 8) {
+            showToastMessage('Maximum 8 tags allowed', '⚠️');
+        } else if (!tag) {
+            showToastMessage('Enter a valid tag', '⚠️');
+        }
+    });
+
+    tagInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addTagBtn.click();
+        }
+    });
+
+    // Submit post
+    submitBtn.addEventListener('click', () => {
+        if (!selectedFile) {
+            showToastMessage('Please select a file first', '⚠️');
+            return;
+        }
+        if (!captionInput.value.trim()) {
+            showToastMessage('Please add a caption', '⚠️');
+            return;
+        }
+
+        // Simulate upload
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+        
+        setTimeout(() => {
+            // Mock post creation
+            const newPost = {
+                id: Date.now(),
+                type: postType,
+                image: previewImage.src,
+                caption: captionInput.value.trim(),
+                tags: tags,
+                likes: '0',
+                comments: '0',
+                creator: 'meme_curator',
+                timestamp: new Date().toISOString()
+            };
+            
+            // Save to localStorage for demo
+            let existingPosts = JSON.parse(localStorage.getItem('memotions_posts') || '[]');
+            existingPosts.unshift(newPost);
+            localStorage.setItem('memotions_posts', JSON.stringify(existingPosts));
+            
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '🚀 Post to Memotions';
+            
+            // Show success modal
+            successModal.classList.add('active');
+            showToastMessage('Posted successfully!', '🎉');
+            
+            // Reset form
+            selectedFile = null;
+            previewArea.classList.remove('active');
+            previewImage.src = '';
+            fileInput.value = '';
+            captionInput.value = '';
+            tags = [];
+            renderTags();
+        }, 1500);
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+        successModal.classList.remove('active');
+        // Redirect to profile or feed
+        window.location.href = 'profile.html';
+    });
+
+    successModal.addEventListener('click', (e) => {
+        if (e.target === successModal) {
+            successModal.classList.remove('active');
+            window.location.href = 'profile.html';
+        }
+    });
+
+    // Navigation
+    document.getElementById('notificationBtn').addEventListener('click', () => {
+        showToastMessage('No new notifications', '🔔');
+    });
+    
+    document.getElementById('profileBtn').addEventListener('click', () => {
+        window.location.href = 'profile.html';
+    });
+
+    // Suggested tags
+    const suggestedTags = ['funny', 'relatable', 'dank', 'cat', 'dog', 'memes', 'viral', 'trending'];
+    const suggestionsDiv = document.createElement('div');
+    suggestionsDiv.style.marginTop = '0.5rem';
+    suggestionsDiv.style.display = 'flex';
+    suggestionsDiv.style.flexWrap = 'wrap';
+    suggestionsDiv.style.gap = '0.4rem';
+    suggestionsDiv.innerHTML = '<span style="font-size:0.65rem; color:#6b7280;">Suggested:</span> ' + 
+        suggestedTags.map(t => `<span style="background:#1a1a28; padding:0.2rem 0.6rem; border-radius:1rem; font-size:0.6rem; cursor:pointer;" class="suggest-tag">#${t}</span>`).join('');
+    
+    document.querySelector('.form-group:last-of-type').appendChild(suggestionsDiv);
+    
+    document.querySelectorAll('.suggest-tag').forEach(tag => {
+        tag.addEventListener('click', () => {
+            const tagName = tag.innerText.substring(1);
+            if (!tags.includes(tagName) && tags.length < 8) {
+                tags.push(tagName);
+                renderTags();
+                showToastMessage(`Added ${tag.innerText}`, '🏷️');
+            }
+        });
+    });
+
+    // Auto-save draft to localStorage
+    function saveDraft() {
+        const draft = {
+            caption: captionInput.value,
+            tags: tags,
+            postType: postType,
+            hasFile: !!selectedFile
+        };
+        localStorage.setItem('memotions_draft', JSON.stringify(draft));
+    }
+    
+    captionInput.addEventListener('input', saveDraft);
+    setInterval(saveDraft, 5000);
+    
+    // Load draft on page load
+    const draft = JSON.parse(localStorage.getItem('memotions_draft') || '{}');
+    if (draft.caption) captionInput.value = draft.caption;
+    if (draft.tags) { tags = draft.tags; renderTags(); }
+    if (draft.postType) {
+        postType = draft.postType;
+        document.querySelectorAll('.type-option').forEach(opt => {
+            if (opt.dataset.type === postType) opt.classList.add('active');
+            else opt.classList.remove('active');
+        });
+    }
+
+    showToastMessage('Ready to create your meme!', '🎨');
+</script>
+</body>
+</html>
+
+<!-- 2nd -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Meme Creator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        .create-container {
+            max-width: 1300px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .creator-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+        }
+
+        /* Canvas Area */
+        .canvas-area {
+            background: #12121c;
+            border-radius: 1.5rem;
+            border: 1px solid #2d2d40;
+            padding: 1.5rem;
+        }
+
+        .canvas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .canvas-header h3 {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #e5e7eb;
+        }
+
+        .reset-canvas {
+            background: #1a1a28;
+            border: 1px solid #374151;
+            padding: 0.4rem 1rem;
+            border-radius: 0.6rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            color: #e5e7eb;
+            transition: all 0.2s;
+        }
+
+        .reset-canvas:hover {
+            background: #f43f5e;
+            border-color: #f43f5e;
+            color: white;
+        }
+
+        .meme-canvas-wrapper {
+            background: #0a0a12;
+            border-radius: 1rem;
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        #memeCanvas {
+            max-width: 100%;
+            max-height: 500px;
+            display: block;
+            cursor: pointer;
+        }
+
+        .upload-placeholder {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: #12121c;
+            border-radius: 1.5rem;
+            border: 1px solid #2d2d40;
+            padding: 1.2rem;
+        }
+
+        .control-section {
+            margin-bottom: 1.2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #1f1f2e;
+        }
+
+        .control-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #a78bfa;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .text-input-group {
+            margin-bottom: 0.8rem;
+        }
+
+        .text-input-group label {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .text-input {
+            width: 100%;
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 0.6rem;
+            padding: 0.6rem;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .row-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .font-select, .color-input {
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 0.6rem;
+            padding: 0.5rem;
+            color: white;
+            font-size: 0.7rem;
+            width: 100%;
+        }
+
+        .color-input {
+            height: 36px;
+            cursor: pointer;
+        }
+
+        .position-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .pos-btn {
+            flex: 1;
+            background: #1a1a28;
+            border: 1px solid #374151;
+            padding: 0.4rem;
+            border-radius: 0.5rem;
+            font-size: 0.65rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            color: #e5e7eb;
+        }
+
+        .pos-btn:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+            color: white;
+        }
+
+        .text-list {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 0.5rem;
+        }
+
+        .text-item {
+            background: #1a1a28;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            margin-bottom: 0.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .text-item:hover {
+            background: #22223a;
+        }
+
+        .text-item.active {
+            border-color: #8b5cf6;
+            background: #1e1e2e;
+        }
+
+        .text-preview {
+            flex: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .delete-text {
+            background: none;
+            border: none;
+            color: #f43f5e;
+            cursor: pointer;
+            padding: 0.2rem 0.4rem;
+            font-size: 0.7rem;
+        }
+
+        .delete-text:hover {
+            color: #ff6b6b;
+        }
+
+        .upload-mini {
+            background: #1a1a28;
+            border: 1px dashed #2d2d40;
+            border-radius: 1rem;
+            padding: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+            color: #e5e7eb;
+        }
+
+        .upload-mini:hover {
+            border-color: #8b5cf6;
+            background: #22223a;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .btn-primary {
+            flex: 1;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.7rem;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background: #1a1a28;
+            border: 1px solid #374151;
+            padding: 0.7rem;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: #e5e7eb;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: #2a2a3e;
+            border-color: #8b5cf6;
+        }
+
+        .btn-add {
+            width: 100%;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.6rem;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: white;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-1px);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: #12121c;
+            border-radius: 1.5rem;
+            border: 1px solid #2d2d40;
+            width: 90%;
+            max-width: 400px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .modal i {
+            font-size: 3rem;
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .modal h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .modal p {
+            color: #9ca3af;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+        }
+
+        @media (max-width: 900px) {
+            .creator-layout {
+                grid-template-columns: 1fr;
+            }
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-bell" id="notificationBtn"></i>
+            <i class="fas fa-user-circle" id="profileBtn"></i>
+        </div>
+    </div>
+
+    <div class="create-container">
+        <div class="creator-layout">
+            <!-- Canvas Area -->
+            <div class="canvas-area">
+                <div class="canvas-header">
+                    <h3><i class="fas fa-palette"></i> Meme Editor</h3>
+                    <button class="reset-canvas" id="resetCanvasBtn"><i class="fas fa-trash-alt"></i> Clear All Text</button>
+                </div>
+                <div class="meme-canvas-wrapper">
+                    <canvas id="memeCanvas" width="600" height="400" style="max-width: 100%; max-height: 500px; display: none;"></canvas>
+                    <div id="uploadPlaceholder" style="text-align: center; padding: 3rem;">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; margin-bottom: 1rem; display: block; color: #6b7280;"></i>
+                        <p style="color: #6b7280;">No image uploaded</p>
+                        <button class="btn-secondary" id="uploadImageBtn" style="margin-top: 1rem; padding: 0.5rem 1.5rem;">Upload Image</button>
+                    </div>
+                </div>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="controls-panel">
+                <div class="upload-mini" id="uploadMini">
+                    <i class="fas fa-image"></i> 📸 Change Image
+                </div>
+
+                <!-- Add Text Section -->
+                <div class="control-section">
+                    <div class="section-title"><i class="fas fa-font"></i> Add Text to Meme</div>
+                    <div class="text-input-group">
+                        <label>Your Meme Text</label>
+                        <input type="text" id="textInput" class="text-input" placeholder="Type your meme text here...">
+                    </div>
+                    <div class="row-2col">
+                        <div>
+                            <label>Font Style</label>
+                            <select id="fontSelect" class="font-select">
+                                <option value="Impact">Impact (Classic Meme)</option>
+                                <option value="Arial Black">Arial Black</option>
+                                <option value="Comic Sans MS">Comic Sans MS</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Montserrat">Montserrat</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Text Color</label>
+                            <input type="color" id="colorPicker" class="color-input" value="#ffffff">
+                        </div>
+                    </div>
+                    <div class="row-2col">
+                        <div>
+                            <label>Font Size</label>
+                            <select id="fontSizeSelect" class="font-select">
+                                <option value="24">24px</option>
+                                <option value="28">28px</option>
+                                <option value="32" selected>32px</option>
+                                <option value="36">36px</option>
+                                <option value="40">40px</option>
+                                <option value="48">48px</option>
+                                <option value="56">56px</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Text Position</label>
+                            <select id="positionSelect" class="font-select">
+                                <option value="top">⬆️ Top</option>
+                                <option value="middle" selected>⬜ Middle</option>
+                                <option value="bottom">⬇️ Bottom</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-add" id="addTextBtn"><i class="fas fa-plus-circle"></i> Add Text Layer</button>
+                </div>
+
+                <!-- Text Layers Section -->
+                <div class="control-section">
+                    <div class="section-title"><i class="fas fa-layer-group"></i> Your Text Layers</div>
+                    <div id="textLayersList" class="text-list">
+                        <div style="color: #6b7280; text-align: center; font-size: 0.7rem; padding: 0.5rem;">No text layers yet. Add some!</div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-secondary" id="previewBtn"><i class="fas fa-eye"></i> Preview</button>
+                    <button class="btn-primary" id="postBtn"><i class="fas fa-paper-plane"></i> Post Meme</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal-overlay" id="successModal">
+    <div class="modal">
+        <i class="fas fa-check-circle"></i>
+        <h3>Meme Posted!</h3>
+        <p>Your creation is now live on Memotions</p>
+        <button class="modal-btn" id="closeModalBtn">View Profile</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const canvas = document.getElementById('memeCanvas');
+    const ctx = canvas.getContext('2d');
+    const fileInput = document.getElementById('fileInput');
+    const uploadMini = document.getElementById('uploadMini');
+    const uploadImageBtn = document.getElementById('uploadImageBtn');
+    const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+    const textInput = document.getElementById('textInput');
+    const fontSelect = document.getElementById('fontSelect');
+    const colorPicker = document.getElementById('colorPicker');
+    const fontSizeSelect = document.getElementById('fontSizeSelect');
+    const positionSelect = document.getElementById('positionSelect');
+    const addTextBtn = document.getElementById('addTextBtn');
+    const resetCanvasBtn = document.getElementById('resetCanvasBtn');
+    const previewBtn = document.getElementById('previewBtn');
+    const postBtn = document.getElementById('postBtn');
+    const textLayersList = document.getElementById('textLayersList');
+    const toast = document.getElementById('toast');
+    const successModal = document.getElementById('successModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    let originalImage = null;
+    let imageLoaded = false;
+    let textLayers = [];
+    let selectedTextIndex = -1;
+
+    function showToastMessage(msg, emoji = '✨') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Draw everything on canvas
+    function drawCanvas() {
+        if (!imageLoaded || !originalImage) return;
+        
+        // Clear and draw image
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+        
+        // Draw all text layers
+        textLayers.forEach((layer) => {
+            ctx.save();
+            ctx.font = `${layer.fontSize}px ${layer.fontFamily}`;
+            ctx.fillStyle = layer.color;
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 3;
+            
+            const text = layer.text;
+            const metrics = ctx.measureText(text);
+            const textWidth = metrics.width;
+            const textHeight = layer.fontSize;
+            
+            let x, y;
+            switch(layer.position) {
+                case 'top':
+                    x = (canvas.width - textWidth) / 2;
+                    y = textHeight + 20;
+                    break;
+                case 'middle':
+                    x = (canvas.width - textWidth) / 2;
+                    y = canvas.height / 2 + textHeight / 3;
+                    break;
+                case 'bottom':
+                    x = (canvas.width - textWidth) / 2;
+                    y = canvas.height - 15;
+                    break;
+                default:
+                    x = (canvas.width - textWidth) / 2;
+                    y = canvas.height / 2;
+            }
+            
+            // Add black stroke for better readability
+            ctx.shadowBlur = 0;
+            ctx.strokeText(text, x, y);
+            ctx.fillText(text, x, y);
+            ctx.restore();
+        });
+    }
+
+    // Render text layers list
+    function renderTextLayersList() {
+        if (textLayers.length === 0) {
+            textLayersList.innerHTML = '<div style="color: #6b7280; text-align: center; font-size: 0.7rem; padding: 0.5rem;">No text layers yet. Add some!</div>';
+            return;
+        }
+        
+        textLayersList.innerHTML = textLayers.map((layer, idx) => `
+            <div class="text-item ${selectedTextIndex === idx ? 'active' : ''}" data-index="${idx}">
+                <div class="text-preview" style="font-family: ${layer.fontFamily}; color: ${layer.color};">
+                    ${layer.text.substring(0, 25)}${layer.text.length > 25 ? '...' : ''}
+                </div>
+                <button class="delete-text" data-index="${idx}"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        `).join('');
+        
+        // Add click handlers
+        document.querySelectorAll('.text-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (e.target.closest('.delete-text')) return;
+                const idx = parseInt(item.dataset.index);
+                selectedTextIndex = idx;
+                renderTextLayersList();
+                // Load selected text into inputs for editing
+                const layer = textLayers[idx];
+                textInput.value = layer.text;
+                fontSelect.value = layer.fontFamily;
+                colorPicker.value = layer.color;
+                fontSizeSelect.value = layer.fontSize;
+                positionSelect.value = layer.position;
+                showToastMessage(`Editing: "${layer.text.substring(0, 20)}"`, '✏️');
+            });
+        });
+        
+        // Add delete handlers
+        document.querySelectorAll('.delete-text').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const idx = parseInt(btn.dataset.index);
+                textLayers.splice(idx, 1);
+                if (selectedTextIndex === idx) selectedTextIndex = -1;
+                else if (selectedTextIndex > idx) selectedTextIndex--;
+                renderTextLayersList();
+                drawCanvas();
+                showToastMessage('Text layer removed', '🗑️');
+            });
+        });
+    }
+
+    // Update selected text properties
+    function updateSelectedText() {
+        if (selectedTextIndex !== -1 && textLayers[selectedTextIndex]) {
+            textLayers[selectedTextIndex].text = textInput.value;
+            textLayers[selectedTextIndex].fontFamily = fontSelect.value;
+            textLayers[selectedTextIndex].color = colorPicker.value;
+            textLayers[selectedTextIndex].fontSize = parseInt(fontSizeSelect.value);
+            textLayers[selectedTextIndex].position = positionSelect.value;
+            renderTextLayersList();
+            drawCanvas();
+            showToastMessage('Text updated!', '🔄');
+        }
+    }
+
+    // Add new text layer
+    function addTextLayer() {
+        if (!imageLoaded) {
+            showToastMessage('Please upload an image first', '⚠️');
+            return;
+        }
+        
+        const newText = textInput.value.trim();
+        if (!newText) {
+            showToastMessage('Please enter some text', '⚠️');
+            return;
+        }
+        
+        const newLayer = {
+            text: newText,
+            fontFamily: fontSelect.value,
+            color: colorPicker.value,
+            fontSize: parseInt(fontSizeSelect.value),
+            position: positionSelect.value
+        };
+        
+        textLayers.push(newLayer);
+        selectedTextIndex = textLayers.length - 1;
+        renderTextLayersList();
+        drawCanvas();
+        textInput.value = '';
+        showToastMessage('Text layer added!', '✅');
+    }
+
+    // Load image
+    function loadImage(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            showToastMessage('Please upload an image file', '⚠️');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const img = new Image();
+            img.onload = () => {
+                originalImage = img;
+                
+                // Set canvas dimensions (max 600px width, maintain aspect ratio)
+                const maxWidth = 600;
+                const maxHeight = 500;
+                let width = img.width;
+                let height = img.height;
+                
+                if (width > maxWidth) {
+                    height = (height * maxWidth) / width;
+                    width = maxWidth;
+                }
+                if (height > maxHeight) {
+                    width = (width * maxHeight) / height;
+                    height = maxHeight;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                imageLoaded = true;
+                
+                canvas.style.display = 'block';
+                uploadPlaceholder.style.display = 'none';
+                
+                drawCanvas();
+                showToastMessage('Image loaded! Now add text to create your meme', '📸');
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Trigger file upload
+    function triggerUpload() {
+        fileInput.click();
+    }
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) {
+            loadImage(e.target.files[0]);
+        }
+    });
+
+    uploadMini.addEventListener('click', triggerUpload);
+    uploadImageBtn.addEventListener('click', triggerUpload);
+
+    // Event listeners
+    addTextBtn.addEventListener('click', addTextLayer);
+    
+    textInput.addEventListener('input', () => {
+        if (selectedTextIndex !== -1) updateSelectedText();
+    });
+    fontSelect.addEventListener('change', () => {
+        if (selectedTextIndex !== -1) updateSelectedText();
+    });
+    colorPicker.addEventListener('input', () => {
+        if (selectedTextIndex !== -1) updateSelectedText();
+    });
+    fontSizeSelect.addEventListener('change', () => {
+        if (selectedTextIndex !== -1) updateSelectedText();
+    });
+    positionSelect.addEventListener('change', () => {
+        if (selectedTextIndex !== -1) updateSelectedText();
+    });
+    
+    // Reset/Clear all text
+    resetCanvasBtn.addEventListener('click', () => {
+        if (textLayers.length > 0) {
+            textLayers = [];
+            selectedTextIndex = -1;
+            renderTextLayersList();
+            drawCanvas();
+            showToastMessage('All text layers cleared', '🗑️');
+        } else {
+            showToastMessage('No text layers to clear', '✨');
+        }
+    });
+    
+    // Preview button - just redraws
+    previewBtn.addEventListener('click', () => {
+        if (imageLoaded) {
+            drawCanvas();
+            showToastMessage('Preview updated', '👁️');
+        } else {
+            showToastMessage('Please upload an image first', '⚠️');
+        }
+    });
+    
+    // Post meme
+    postBtn.addEventListener('click', () => {
+        if (!imageLoaded) {
+            showToastMessage('Please upload an image first', '⚠️');
+            return;
+        }
+        
+        if (textLayers.length === 0) {
+            showToastMessage('Add some text to your meme first', '⚠️');
+            return;
+        }
+        
+        drawCanvas();
+        
+        const dataURL = canvas.toDataURL('image/png');
+        
+        postBtn.disabled = true;
+        postBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+        
+        setTimeout(() => {
+            const newPost = {
+                id: Date.now(),
+                image: dataURL,
+                caption: 'Created with Memotions Meme Creator!',
+                tags: ['mememaker', 'original'],
+                likes: '0',
+                comments: '0',
+                creator: 'meme_curator',
+                timestamp: new Date().toISOString()
+            };
+            
+            let existingPosts = JSON.parse(localStorage.getItem('memotions_posts') || '[]');
+            existingPosts.unshift(newPost);
+            localStorage.setItem('memotions_posts', JSON.stringify(existingPosts));
+            
+            postBtn.disabled = false;
+            postBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Post Meme';
+            
+            successModal.classList.add('active');
+            showToastMessage('Meme posted successfully!', '🎉');
+        }, 1500);
+    });
+    
+    closeModalBtn.addEventListener('click', () => {
+        successModal.classList.remove('active');
+        window.location.href = 'profile.html';
+    });
+    
+    successModal.addEventListener('click', (e) => {
+        if (e.target === successModal) {
+            successModal.classList.remove('active');
+            window.location.href = 'profile.html';
+        }
+    });
+    
+    document.getElementById('notificationBtn').addEventListener('click', () => showToastMessage('No new notifications', '🔔'));
+    document.getElementById('profileBtn').addEventListener('click', () => window.location.href = 'profile.html');
+    
+    showToastMessage('Meme Creator ready! Upload image and add text', '🎨');
+</script>
+</body>
+</html>

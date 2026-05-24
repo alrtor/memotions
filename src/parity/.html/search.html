@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Search Bar */
+        .search-container {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #1a1a28;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #12121c;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.7rem 1.2rem;
+            transition: all 0.2s;
+        }
+
+        .search-box:focus-within {
+            border-color: #8b5cf6;
+            background: #1a1a28;
+        }
+
+        .search-box i {
+            color: #6b7280;
+            margin-right: 0.8rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .search-box input::placeholder {
+            color: #4b5563;
+        }
+
+        .clear-search {
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            display: none;
+        }
+
+        .search-box input:not(:placeholder-shown) ~ .clear-search {
+            display: block;
+        }
+
+        /* Search Tabs */
+        .search-tabs {
+            display: flex;
+            gap: 1rem;
+            padding: 0.5rem 2rem;
+            border-bottom: 1px solid #1a1a28;
+            overflow-x: auto;
+        }
+
+        .search-tab {
+            background: none;
+            border: none;
+            padding: 0.6rem 0;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .search-tab.active {
+            color: #a78bfa;
+        }
+
+        .search-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #a78bfa;
+        }
+
+        /* Results Area */
+        .results-area {
+            padding: 1.5rem 2rem;
+            min-height: 400px;
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Result Card */
+        .result-card {
+            background: #12121c;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid #222232;
+            transition: all 0.25s;
+            cursor: pointer;
+        }
+
+        .result-card:hover {
+            transform: translateY(-4px);
+            border-color: #8b5cf6;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-image {
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .result-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .card-info {
+            padding: 0.8rem;
+        }
+
+        .card-creator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .creator-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .creator-name {
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.65rem;
+            color: #9ca3af;
+        }
+
+        /* Creator Result */
+        .creator-result {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #12121c;
+            border-radius: 1rem;
+            border: 1px solid #222232;
+            transition: all 0.25s;
+            cursor: pointer;
+        }
+
+        .creator-result:hover {
+            transform: translateY(-2px);
+            border-color: #8b5cf6;
+        }
+
+        .creator-avatar-lg {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .creator-details {
+            flex: 1;
+        }
+
+        .creator-details h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .creator-username {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .creator-bio {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            margin-top: 0.2rem;
+        }
+
+        .follow-btn-small {
+            background: #1a1a28;
+            border: 1px solid #374151;
+            padding: 0.3rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .follow-btn-small:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+            color: white;
+        }
+
+        /* Tag Result */
+        .tag-result {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: #12121c;
+            border-radius: 1rem;
+            border: 1px solid #222232;
+            transition: all 0.25s;
+            cursor: pointer;
+        }
+
+        .tag-result:hover {
+            border-color: #8b5cf6;
+        }
+
+        .tag-info h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #a78bfa;
+        }
+
+        .tag-info p {
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        /* Recent Searches */
+        .recent-searches {
+            margin-bottom: 1.5rem;
+        }
+
+        .recent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .recent-header h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .clear-recent {
+            background: none;
+            border: none;
+            color: #8b5cf6;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .recent-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .recent-item {
+            background: #1a1a28;
+            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .recent-item:hover {
+            background: #2a2a3e;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+            .search-container {
+                padding: 0.75rem 1rem;
+            }
+            .search-tabs {
+                padding: 0.5rem 1rem;
+            }
+            .results-area {
+                padding: 1rem;
+            }
+            .results-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-bell" id="notificationBtn"></i>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search memes, GIFs, creators, or tags..." autocomplete="off">
+            <button class="clear-search" id="clearSearchBtn"><i class="fas fa-times-circle"></i></button>
+        </div>
+    </div>
+
+    <!-- Search Tabs -->
+    <div class="search-tabs">
+        <button class="search-tab active" data-tab="top">🔥 Top</button>
+        <button class="search-tab" data-tab="memes">😂 Memes</button>
+        <button class="search-tab" data-tab="gifs">🎬 GIFs</button>
+        <button class="search-tab" data-tab="creators">👤 Creators</button>
+        <button class="search-tab" data-tab="tags">#️⃣ Tags</button>
+    </div>
+
+    <!-- Results Area -->
+    <div class="results-area" id="resultsArea">
+        <!-- Recent Searches -->
+        <div class="recent-searches" id="recentSearches">
+            <div class="recent-header">
+                <h3><i class="fas fa-history"></i> Recent Searches</h3>
+                <button class="clear-recent" id="clearRecentBtn">Clear All</button>
+            </div>
+            <div class="recent-items" id="recentItems">
+                <!-- Recent items will be injected here -->
+            </div>
+        </div>
+
+        <!-- Results Container -->
+        <div id="resultsContainer"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const clearSearchBtn = document.getElementById('clearSearchBtn');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const recentSearchesDiv = document.getElementById('recentSearches');
+    const recentItemsDiv = document.getElementById('recentItems');
+    const clearRecentBtn = document.getElementById('clearRecentBtn');
+    const toast = document.getElementById('toast');
+    
+    let currentTab = 'top';
+    let currentQuery = '';
+
+    // Mock data
+    const allMemes = [
+        { id: 1, image: 'https://i.imgflip.com/9/265j.jpg', title: 'This is fine', creator: 'meme_curator', creatorAvatar: 'https://robohash.org/memecreator?set=set4&size=30x30', likes: '345K', comments: '8.2K', type: 'meme', verified: true },
+        { id: 2, image: 'https://i.imgflip.com/9/1bij.jpg', title: 'Distracted boyfriend', creator: 'danklabs', creatorAvatar: 'https://robohash.org/dankbrain?set=set3&size=30x30', likes: '289K', comments: '6.1K', type: 'meme', verified: false },
+        { id: 3, image: 'https://media.tenor.com/qDeRj_HS9vIAAAAM/joey-friends.gif', title: 'Joey - How you doin?', creator: 'gif_goddess', creatorAvatar: 'https://robohash.org/gifgoddess?set=set2&size=30x30', likes: '892K', comments: '23.1K', type: 'gif', verified: true },
+        { id: 4, image: 'https://i.imgflip.com/9/2kbn.jpg', title: 'Change my mind', creator: 'memelord42', creatorAvatar: 'https://robohash.org/memelord42?set=set4&size=30x30', likes: '567K', comments: '15.3K', type: 'meme', verified: false },
+        { id: 5, image: 'https://media.tenor.com/lPGfoTELe5QAAAAM/cat-toddler.gif', title: 'Cat vs Toddler', creator: 'gif_goddess', creatorAvatar: 'https://robohash.org/gifgoddess?set=set2&size=30x30', likes: '1.2M', comments: '34.2K', type: 'gif', verified: true },
+        { id: 6, image: 'https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600', title: 'I am the manager!', creator: 'danklabs', creatorAvatar: 'https://robohash.org/dankbrain?set=set3&size=30x30', likes: '189K', comments: '4.2K', type: 'meme', verified: false },
+        { id: 7, image: 'https://i.imgflip.com/9/43a2z.jpg', title: 'Confused math lady', creator: 'reactionking', creatorAvatar: 'https://robohash.org/reactiongod?set=set1&size=30x30', likes: '234K', comments: '5.2K', type: 'meme', verified: true }
+    ];
+
+    const creators = [
+        { id: 1, name: 'meme_curator', username: '@memotions_official', avatar: 'https://robohash.org/memecreator?set=set4&size=56x56', bio: 'Meme connoisseur | daily doses of laughter', followers: '842K', verified: true },
+        { id: 2, name: 'gif_goddess', username: '@gif_goddess', avatar: 'https://robohash.org/gifgoddess?set=set2&size=56x56', bio: 'Premium GIF creator | Daily doses of laughter', followers: '1.2M', verified: true },
+        { id: 3, name: 'danklabs', username: '@danklabs', avatar: 'https://robohash.org/dankbrain?set=set3&size=56x56', bio: 'Viral meme curator', followers: '567K', verified: false },
+        { id: 4, name: 'reactionking', username: '@reactionking', avatar: 'https://robohash.org/reactiongod?set=set1&size=56x56', bio: 'Reaction specialist', followers: '345K', verified: true },
+        { id: 5, name: 'memelord42', username: '@memelord42', avatar: 'https://robohash.org/memelord42?set=set4&size=56x56', bio: 'Just a meme lover', followers: '289K', verified: false }
+    ];
+
+    const tags = [
+        { name: '#NoReject', posts: '1.2M posts' },
+        { name: '#GIFgold', posts: '892K posts' },
+        { name: '#Memotions', posts: '756K posts' },
+        { name: '#dank', posts: '567K posts' },
+        { name: '#relatable', posts: '423K posts' },
+        { name: '#viral', posts: '398K posts' },
+        { name: '#memes', posts: '312K posts' },
+        { name: '#cats', posts: '245K posts' },
+        { name: '#funny', posts: '198K posts' }
+    ];
+
+    // Recent searches from localStorage
+    let recentSearches = JSON.parse(localStorage.getItem('memotions_recent_searches') || '[]');
+
+    function showToast(msg, emoji = '🔍') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function saveRecentSearch(query) {
+        if (!query.trim()) return;
+        recentSearches = [query, ...recentSearches.filter(s => s !== query)].slice(0, 5);
+        localStorage.setItem('memotions_recent_searches', JSON.stringify(recentSearches));
+        renderRecentSearches();
+    }
+
+    function clearRecentSearches() {
+        recentSearches = [];
+        localStorage.setItem('memotions_recent_searches', JSON.stringify(recentSearches));
+        renderRecentSearches();
+        showToast('Recent searches cleared', '🗑️');
+    }
+
+    function renderRecentSearches() {
+        if (recentSearches.length === 0) {
+            recentItemsDiv.innerHTML = '<span style="color: #6b7280; font-size: 0.7rem;">No recent searches</span>';
+            return;
+        }
+        recentItemsDiv.innerHTML = recentSearches.map(s => `
+            <span class="recent-item" data-query="${s}">${s}</span>
+        `).join('');
+        
+        document.querySelectorAll('.recent-item').forEach(item => {
+            item.addEventListener('click', () => {
+                searchInput.value = item.dataset.query;
+                performSearch(item.dataset.query);
+            });
+        });
+    }
+
+    function performSearch(query) {
+        currentQuery = query;
+        if (query.trim()) {
+            saveRecentSearch(query);
+        }
+        filterResults();
+    }
+
+    function filterResults() {
+        const query = currentQuery.toLowerCase();
+        
+        let filteredMemes = allMemes;
+        let filteredCreators = creators;
+        let filteredTags = tags;
+        
+        if (query) {
+            filteredMemes = allMemes.filter(m => 
+                m.title.toLowerCase().includes(query) || 
+                m.creator.toLowerCase().includes(query)
+            );
+            filteredCreators = creators.filter(c => 
+                c.name.toLowerCase().includes(query) || 
+                c.username.toLowerCase().includes(query)
+            );
+            filteredTags = tags.filter(t => 
+                t.name.toLowerCase().includes(query)
+            );
+        }
+        
+        renderResults(currentTab, filteredMemes, filteredCreators, filteredTags);
+    }
+
+    function renderResults(tab, memes, creatorsList, tagsList) {
+        if (tab === 'top') {
+            const topResults = [...memes.slice(0, 6)];
+            if (topResults.length === 0) {
+                resultsContainer.innerHTML = `<div class="empty-state"><i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>No results found for "${currentQuery}"</div>`;
+            } else {
+                resultsContainer.innerHTML = `
+                    <div class="results-grid">
+                        ${topResults.map(item => `
+                            <div class="result-card" data-id="${item.id}">
+                                <div class="card-image">
+                                    <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/300?text=Meme'">
+                                </div>
+                                <div class="card-info">
+                                    <div class="card-creator">
+                                        <img class="creator-avatar" src="${item.creatorAvatar}" alt="${item.creator}">
+                                        <span class="creator-name">${item.creator}</span>
+                                        ${item.verified ? '<i class="fas fa-check-circle" style="color: #8b5cf6; font-size: 0.6rem;"></i>' : ''}
+                                    </div>
+                                    <div class="card-stats">
+                                        <span><i class="fas fa-heart"></i> ${item.likes}</span>
+                                        <span><i class="fas fa-comment"></i> ${item.comments}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        } 
+        else if (tab === 'memes') {
+            const memeResults = memes.filter(m => m.type === 'meme');
+            if (memeResults.length === 0) {
+                resultsContainer.innerHTML = `<div class="empty-state"><i class="fas fa-image" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>No memes found for "${currentQuery}"</div>`;
+            } else {
+                resultsContainer.innerHTML = `
+                    <div class="results-grid">
+                        ${memeResults.map(item => `
+                            <div class="result-card" data-id="${item.id}">
+                                <div class="card-image">
+                                    <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/300?text=Meme'">
+                                </div>
+                                <div class="card-info">
+                                    <div class="card-creator">
+                                        <img class="creator-avatar" src="${item.creatorAvatar}" alt="${item.creator}">
+                                        <span class="creator-name">${item.creator}</span>
+                                        ${item.verified ? '<i class="fas fa-check-circle" style="color: #8b5cf6; font-size: 0.6rem;"></i>' : ''}
+                                    </div>
+                                    <div class="card-stats">
+                                        <span><i class="fas fa-heart"></i> ${item.likes}</span>
+                                        <span><i class="fas fa-comment"></i> ${item.comments}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+        else if (tab === 'gifs') {
+            const gifResults = memes.filter(m => m.type === 'gif');
+            if (gifResults.length === 0) {
+                resultsContainer.innerHTML = `<div class="empty-state"><i class="fas fa-gift" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>No GIFs found for "${currentQuery}"</div>`;
+            } else {
+                resultsContainer.innerHTML = `
+                    <div class="results-grid">
+                        ${gifResults.map(item => `
+                            <div class="result-card" data-id="${item.id}">
+                                <div class="card-image">
+                                    <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/300?text=GIF'">
+                                </div>
+                                <div class="card-info">
+                                    <div class="card-creator">
+                                        <img class="creator-avatar" src="${item.creatorAvatar}" alt="${item.creator}">
+                                        <span class="creator-name">${item.creator}</span>
+                                        ${item.verified ? '<i class="fas fa-check-circle" style="color: #8b5cf6; font-size: 0.6rem;"></i>' : ''}
+                                    </div>
+                                    <div class="card-stats">
+                                        <span><i class="fas fa-heart"></i> ${item.likes}</span>
+                                        <span><i class="fas fa-comment"></i> ${item.comments}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+        else if (tab === 'creators') {
+            if (creatorsList.length === 0) {
+                resultsContainer.innerHTML = `<div class="empty-state"><i class="fas fa-user" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>No creators found for "${currentQuery}"</div>`;
+            } else {
+                resultsContainer.innerHTML = creatorsList.map(creator => `
+                    <div class="creator-result" data-id="${creator.id}">
+                        <img class="creator-avatar-lg" src="${creator.avatar}" alt="${creator.name}">
+                        <div class="creator-details">
+                            <h4>${creator.name} ${creator.verified ? '<i class="fas fa-check-circle" style="color: #8b5cf6; font-size: 0.8rem;"></i>' : ''}</h4>
+                            <div class="creator-username">${creator.username}</div>
+                            <div class="creator-bio">${creator.bio}</div>
+                            <div class="creator-stats" style="font-size: 0.65rem; color: #6b7280; margin-top: 0.2rem;">${creator.followers} followers</div>
+                        </div>
+                        <button class="follow-btn-small">Follow</button>
+                    </div>
+                `).join('');
+                
+                document.querySelectorAll('.follow-btn-small').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (btn.textContent === 'Follow') {
+                            btn.textContent = 'Following';
+                            btn.style.background = '#8b5cf6';
+                            btn.style.borderColor = '#8b5cf6';
+                            btn.style.color = 'white';
+                            showToast('Followed!', '✅');
+                        } else {
+                            btn.textContent = 'Follow';
+                            btn.style.background = '#1a1a28';
+                            btn.style.borderColor = '#374151';
+                            btn.style.color = '#e5e7eb';
+                            showToast('Unfollowed', '👋');
+                        }
+                    });
+                });
+            }
+        }
+        else if (tab === 'tags') {
+            if (tagsList.length === 0) {
+                resultsContainer.innerHTML = `<div class="empty-state"><i class="fas fa-hashtag" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>No tags found for "${currentQuery}"</div>`;
+            } else {
+                resultsContainer.innerHTML = tagsList.map(tag => `
+                    <div class="tag-result" data-tag="${tag.name}">
+                        <div class="tag-info">
+                            <h4>${tag.name}</h4>
+                            <p>${tag.posts}</p>
+                        </div>
+                        <i class="fas fa-chevron-right" style="color: #6b7280;"></i>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // Add click handlers for cards
+        document.querySelectorAll('.result-card, .creator-result, .tag-result').forEach(el => {
+            el.addEventListener('click', () => showToast('Opening...', '📱'));
+        });
+    }
+
+    // Tab switching
+    const tabs = document.querySelectorAll('.search-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentTab = tab.dataset.tab;
+            filterResults();
+        });
+    });
+
+    // Search input handlers
+    searchInput.addEventListener('input', (e) => {
+        currentQuery = e.target.value;
+        if (currentQuery) {
+            recentSearchesDiv.style.display = 'none';
+            performSearch(currentQuery);
+        } else {
+            recentSearchesDiv.style.display = 'block';
+            resultsContainer.innerHTML = '';
+        }
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        currentQuery = '';
+        recentSearchesDiv.style.display = 'block';
+        resultsContainer.innerHTML = '';
+        renderRecentSearches();
+    });
+
+    clearRecentBtn.addEventListener('click', clearRecentSearches);
+
+    // Navigation
+    document.getElementById('createBtn').addEventListener('click', () => showToast('Create new post', '📸'));
+    document.getElementById('notificationBtn').addEventListener('click', () => showToast('No new notifications', '🔔'));
+
+    // Initialize
+    renderRecentSearches();
+    showToast('Search for memes, GIFs, and creators', '🔍');
+</script>
+</body>
+</html>

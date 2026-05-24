@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Memotions Creator - Pro Lite</title>
+<link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07070d;--panel:#0f1020;--line:#282b45;--text:#e2e8f0;--muted:#94a3b8;--brand:#7c3aed;--brand2:#8b5cf6;--danger:#ef4444}
+body{font-family:Inter,system-ui;background:radial-gradient(900px 500px at 10% -10%,#1a1640 0%,transparent 55%),radial-gradient(700px 500px at 110% -20%,#281542 0%,transparent 45%),var(--bg);color:var(--text)}
+.app{max-width:1250px;margin:16px auto;padding:12px}
+.top{border:1px solid var(--line);background:rgba(12,13,25,.85);border-radius:14px;padding:10px 14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-family:'Irish Grover',cursive;font-size:1.2rem}
+.layout{display:grid;grid-template-columns:1.6fr 1fr;gap:10px}
+.panel{background:linear-gradient(180deg,#111226,#0d0f1d);border:1px solid var(--line);border-radius:12px;padding:10px}
+.stage{min-height:620px;background:#090b17;border:1px solid #212644;border-radius:10px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.m{display:none;position:relative}.m img{max-width:100%;max-height:590px;display:block;border-radius:10px}
+.t{position:absolute;transform:translateX(-50%);cursor:move;font-weight:800;text-shadow:2px 2px 0 #000;white-space:pre}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.stack{display:flex;flex-direction:column;gap:8px}
+.btn,input,select,textarea{width:100%;border:1px solid #353d62;background:#0b1022;color:#fff;border-radius:9px;padding:9px}
+.btn{font-weight:700;cursor:pointer}.btn-primary{background:linear-gradient(135deg,var(--brand2),var(--brand));border-color:transparent}.btn-danger{background:#30151d;border-color:#6b1f2f}
+.mini{font-size:.72rem;color:#cbd5e1;margin-bottom:4px;display:flex;justify-content:space-between}
+.pal{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}.sw{aspect-ratio:1;border-radius:6px;border:2px solid transparent;cursor:pointer}.sw.a{border-color:#fff}
+.layers{max-height:170px;overflow:auto;display:flex;flex-direction:column;gap:6px}.li{border:1px solid #343b5f;background:#161a31;border-radius:8px;padding:8px;display:flex;justify-content:space-between;cursor:pointer}.li.a{border-color:#8b5cf6}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.stage{min-height:420px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top"><div class="brand">Memotions Creator Pro Lite</div><button id="reset" class="btn btn-danger" style="width:auto">Reset</button></div>
+  <div class="layout">
+    <section class="panel"><div class="stage"><div id="ph" style="color:var(--muted)">Upload image to begin</div><div id="m" class="m"><img id="img" alt="canvas"/></div></div></section>
+    <aside class="panel stack">
+      <div class="row2"><button id="up" class="btn btn-primary">Upload</button><button id="tpl" class="btn">Top+Bottom</button></div>
+      <textarea id="txt" placeholder="Live text"></textarea>
+      <div class="row2"><select id="font"><option>Impact</option><option>Inter</option><option>Arial Black</option></select><select id="pos"><option value="top">Top</option><option value="mid" selected>Middle</option><option value="bot">Bottom</option></select></div>
+      <label><div class="mini"><span>Size</span><span id="sizeV">48</span></div><input id="size" type="range" min="16" max="110" value="48"></label>
+      <div class="row2"><label><div class="mini"><span>Opacity</span><span id="opV">1</span></div><input id="op" type="range" min="0.2" max="1" step="0.01" value="1"></label><label><div class="mini"><span>Stroke</span><span id="stV">3</span></div><input id="stroke" type="range" min="0" max="10" value="3"></label></div>
+      <div id="pal" class="pal"></div>
+      <div class="row2"><button id="dup" class="btn">Duplicate</button><button id="del" class="btn btn-danger">Delete</button></div>
+      <div id="layers" class="layers"></div>
+      <div class="row2"><select id="fmt"><option>png</option><option>jpeg</option><option>webp</option></select><button id="save" class="btn btn-primary">Save</button></div>
+    </aside>
+  </div>
+</div>
+<input id="f" type="file" accept="image/*" hidden>
+<script>
+const C=['#fff','#000','#f43f5e','#f59e0b','#eab308','#22c55e','#14b8a6','#06b6d4','#3b82f6','#8b5cf6','#ec4899','#9ca3af'];const $=id=>document.getElementById(id);
+let S={src:'',layers:[],aid:null,color:'#fff'};const m=$('m'),img=$('img');const act=()=>S.layers.find(x=>x.id===S.aid)||null;
+function make(text=''){const r=img.getBoundingClientRect();return{id:Date.now()+Math.random(),text,x:(r.width||700)/2,y:(r.height||480)/2,size:+$('size').value,op:+$('op').value,stroke:+$('stroke').value,color:S.color,font:$('font').value};}
+function ensure(){let l=act();if(l)return l;if(!S.src)return null;l=make('');S.layers.push(l);S.aid=l.id;return l}
+function sync(){const l=act();if(!l)return;$('txt').value=l.text;$('font').value=l.font;$('size').value=l.size;$('op').value=l.op;$('stroke').value=l.stroke;S.color=l.color;paintPal();$('sizeV').textContent=l.size;$('opV').textContent=l.op.toFixed(2);$('stV').textContent=l.stroke;}
+function paintPal(){const p=$('pal');if(!p.childElementCount){C.forEach(c=>{const b=document.createElement('button');b.className='sw';b.style.background=c;b.onclick=()=>{S.color=c;const l=ensure();if(l)l.color=c;paintPal();render()};p.appendChild(b)})}[...p.children].forEach((x,i)=>x.classList.toggle('a',C[i]===S.color));}
+function place(v){const l=ensure();if(!l)return;const r=img.getBoundingClientRect();if(v==='top')l.y=Math.max(24,l.size*.9);if(v==='mid')l.y=(r.height||480)/2;if(v==='bot')l.y=(r.height||480)-22}
+function list(){const L=$('layers');if(!S.layers.length){L.innerHTML='';return}L.innerHTML='';[...S.layers].reverse().forEach(l=>{const d=document.createElement('div');d.className='li'+(l.id===S.aid?' a':'');d.innerHTML=`<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${(l.text||'(empty)').replace(/</g,'&lt;')}</span><small>${l.size}px</small>`;d.onclick=()=>{S.aid=l.id;sync();render()};L.appendChild(d)})}
+function render(){if(!S.src)return;$('ph').style.display='none';m.style.display='inline-block';img.src=S.src;m.querySelectorAll('.t').forEach(n=>n.remove());S.layers.forEach(l=>{const n=document.createElement('div');n.className='t';n.textContent=l.text;n.style.left=l.x+'px';n.style.top=l.y+'px';n.style.fontSize=l.size+'px';n.style.opacity=l.op;n.style.color=l.color;n.style.fontFamily=l.font;n.style.webkitTextStroke=l.stroke+'px #000';let d=0,sx=0,sy=0,ox=0,oy=0;n.onmousedown=e=>{d=1;sx=e.clientX;sy=e.clientY;ox=l.x;oy=l.y;S.aid=l.id;sync()};document.onmousemove=e=>{if(!d)return;const r=img.getBoundingClientRect();l.x=Math.max(8,Math.min(ox+e.clientX-sx,r.width-8));l.y=Math.max(18,Math.min(oy+e.clientY-sy,r.height-12));render()};document.onmouseup=()=>d=0;m.appendChild(n)});list()}
+$('up').onclick=()=>$('f').click();$('f').onchange=e=>{const file=e.target.files?.[0];if(!file)return;const fr=new FileReader();fr.onload=ev=>{S.src=ev.target.result;if(!S.layers.length){const l=make('');S.layers=[l];S.aid=l.id}render()};fr.readAsDataURL(file)};
+$('txt').oninput=e=>{const l=ensure();if(!l)return;l.text=e.target.value;render()};$('font').onchange=e=>{const l=ensure();if(!l)return;l.font=e.target.value;render()};$('size').oninput=e=>{const l=ensure();if(!l)return;l.size=+e.target.value;$('sizeV').textContent=l.size;render()};$('op').oninput=e=>{const l=ensure();if(!l)return;l.op=+e.target.value;$('opV').textContent=l.op.toFixed(2);render()};$('stroke').oninput=e=>{const l=ensure();if(!l)return;l.stroke=+e.target.value;$('stV').textContent=l.stroke;render()};$('pos').onchange=e=>{place(e.target.value);render()};
+$('tpl').onclick=()=>{if(!S.src)return;const r=img.getBoundingClientRect();S.layers.push({id:Date.now()+1,text:'TOP TEXT',x:r.width/2,y:50,size:58,op:1,stroke:4,color:'#fff',font:'Impact'},{id:Date.now()+2,text:'BOTTOM TEXT',x:r.width/2,y:r.height-24,size:58,op:1,stroke:4,color:'#fff',font:'Impact'});S.aid=S.layers.at(-1).id;sync();render()};
+$('dup').onclick=()=>{const l=act();if(!l)return;const d={...l,id:Date.now()+Math.random(),x:l.x+20,y:l.y+20};S.layers.push(d);S.aid=d.id;sync();render()};$('del').onclick=()=>{if(!S.aid)return;S.layers=S.layers.filter(x=>x.id!==S.aid);S.aid=S.layers[0]?.id||null;sync();render()};
+$('save').onclick=()=>{if(!S.src)return;const fmt=$('fmt').value;const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext('2d');x.drawImage(im,0,0);const r=img.getBoundingClientRect(),sx=c.width/r.width,sy=c.height/r.height;S.layers.forEach(l=>{x.globalAlpha=l.op;x.font=`800 ${Math.round(l.size*sy)}px ${l.font}`;x.textAlign='center';x.fillStyle=l.color;x.strokeStyle='#000';x.lineWidth=Math.max(1,Math.round(l.stroke*sy));x.strokeText(l.text,l.x*sx,(l.y+l.size*.35)*sy);x.fillText(l.text,l.x*sx,(l.y+l.size*.35)*sy)});const mime=fmt==='jpeg'?'image/jpeg':fmt==='webp'?'image/webp':'image/png';const a=document.createElement('a');a.href=c.toDataURL(mime,.92);a.download='pro-lite-meme.'+fmt;a.click()};im.src=S.src};
+$('reset').onclick=()=>location.reload();
+paintPal();
+</script>
+</body></html>

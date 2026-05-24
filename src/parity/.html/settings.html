@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Light Theme Variables */
+        body.light-theme {
+            background: #f5f5f5;
+            color: #1a1a2e;
+        }
+
+        body.light-theme .app {
+            background: #f5f5f5;
+        }
+
+        body.light-theme .top-nav {
+            background: #ffffff;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        body.light-theme .logo span {
+            color: #1a1a2e;
+        }
+
+        body.light-theme .nav-icons i {
+            color: #6b7280;
+        }
+
+        body.light-theme .nav-icons i:hover {
+            color: #8b5cf6;
+        }
+
+        body.light-theme .settings-nav {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+        }
+
+        body.light-theme .settings-nav-item {
+            color: #6b7280;
+        }
+
+        body.light-theme .settings-nav-item:hover {
+            background: #f0f0f0;
+            color: #1a1a2e;
+        }
+
+        body.light-theme .settings-nav-item.active {
+            background: #f0f0f0;
+            color: #8b5cf6;
+        }
+
+        body.light-theme .settings-content {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+        }
+
+        body.light-theme .section-header {
+            border-bottom-color: #e0e0e0;
+        }
+
+        body.light-theme .section-header h2 {
+            color: #1a1a2e;
+        }
+
+        body.light-theme .form-input, 
+        body.light-theme .form-select {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            color: #1a1a2e;
+        }
+
+        body.light-theme .form-input:focus, 
+        body.light-theme .form-select:focus {
+            border-color: #8b5cf6;
+        }
+
+        body.light-theme .form-label {
+            color: #1a1a2e;
+        }
+
+        body.light-theme .toggle-item {
+            border-bottom-color: #e0e0e0;
+        }
+
+        body.light-theme .toggle-info h4 {
+            color: #1a1a2e;
+        }
+
+        body.light-theme .toggle-info p {
+            color: #6b7280;
+        }
+
+        body.light-theme .toggle-switch {
+            background: #d1d5db;
+        }
+
+        body.light-theme .toggle-switch.active {
+            background: #8b5cf6;
+        }
+
+        body.light-theme .danger-zone {
+            background: rgba(244, 63, 94, 0.05);
+            border-color: rgba(244, 63, 94, 0.2);
+        }
+
+        body.light-theme .toast {
+            background: #ffffff;
+            color: #1a1a2e;
+            border-color: #8b5cf6;
+        }
+
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Settings Layout */
+        .settings-layout {
+            display: flex;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        /* Sidebar */
+        .settings-sidebar {
+            width: 260px;
+            flex-shrink: 0;
+        }
+
+        .settings-nav {
+            background: #12121c;
+            border-radius: 1rem;
+            border: 1px solid #1f1f2e;
+            overflow: hidden;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .settings-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 1.2rem;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .settings-nav-item i {
+            width: 1.2rem;
+            font-size: 1rem;
+        }
+
+        .settings-nav-item:hover {
+            background: #1a1a28;
+            color: #e5e7eb;
+        }
+
+        .settings-nav-item.active {
+            background: #1a1a2a;
+            color: #a78bfa;
+            border-left-color: #8b5cf6;
+        }
+
+        /* Main Content */
+        .settings-content {
+            flex: 1;
+            background: #12121c;
+            border-radius: 1rem;
+            border: 1px solid #1f1f2e;
+            padding: 1.5rem;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .settings-section {
+            display: none;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #1f1f2e;
+            transition: border-color 0.3s ease;
+        }
+
+        .section-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-header p {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.3rem;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #e5e7eb;
+            transition: color 0.3s ease;
+        }
+
+        .form-label i {
+            color: #a78bfa;
+            margin-right: 0.3rem;
+            width: 1.2rem;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 0.8rem;
+            padding: 0.7rem 1rem;
+            color: white;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        /* Toggle Switch */
+        .toggle-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #1f1f2e;
+            transition: border-color 0.3s ease;
+        }
+
+        .toggle-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-info {
+            flex: 1;
+        }
+
+        .toggle-info h4 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .toggle-info p {
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: #2d2d40;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch.active {
+            background: #8b5cf6;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.2s;
+        }
+
+        .toggle-switch.active::after {
+            left: 22px;
+        }
+
+        /* Radio Group */
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .radio-option input {
+            accent-color: #8b5cf6;
+        }
+
+        /* Select wrapper for better spacing */
+        .select-wrapper {
+            margin-top: 0.3rem;
+        }
+
+        /* Danger Zone */
+        .danger-zone {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(244, 63, 94, 0.1);
+            border-radius: 0.8rem;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .danger-zone h4 {
+            color: #f43f5e;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .danger-zone p {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            margin-bottom: 0.8rem;
+        }
+
+        .danger-btn {
+            background: transparent;
+            border: 1px solid #f43f5e;
+            padding: 0.4rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #f43f5e;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .danger-btn:hover {
+            background: #f43f5e;
+            color: white;
+        }
+
+        /* Save Button */
+        .save-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: white;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.2s;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .settings-layout {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            .settings-sidebar {
+                width: 100%;
+            }
+            .settings-nav {
+                display: flex;
+                overflow-x: auto;
+            }
+            .settings-nav-item {
+                white-space: nowrap;
+            }
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+            .radio-group {
+                gap: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-bell" id="notificationBtn"></i>
+        </div>
+    </div>
+
+    <div class="settings-layout">
+        <!-- Sidebar -->
+        <div class="settings-sidebar">
+            <div class="settings-nav">
+                <div class="settings-nav-item active" data-section="account">
+                    <i class="fas fa-user"></i> Account
+                </div>
+                <div class="settings-nav-item" data-section="privacy">
+                    <i class="fas fa-lock"></i> Privacy
+                </div>
+                <div class="settings-nav-item" data-section="notifications">
+                    <i class="fas fa-bell"></i> Notifications
+                </div>
+                <div class="settings-nav-item" data-section="appearance">
+                    <i class="fas fa-palette"></i> Appearance
+                </div>
+                <div class="settings-nav-item" data-section="content">
+                    <i class="fas fa-sliders-h"></i> Content
+                </div>
+                <div class="settings-nav-item" data-section="danger">
+                    <i class="fas fa-exclamation-triangle"></i> Danger Zone
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="settings-content">
+            <!-- Account Section -->
+            <div class="settings-section active" id="account-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-user-circle"></i> Account Settings</h2>
+                    <p>Manage your personal information and account preferences</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-user"></i> Display Name</label>
+                    <input type="text" class="form-input" id="displayName" value="meme_curator">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-at"></i> Username</label>
+                    <input type="text" class="form-input" id="username" value="@memotions_official">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" class="form-input" id="email" value="meme_curator@memotions.com">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" class="form-input" id="phone" value="+1 234 567 8900">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-calendar"></i> Date of Birth</label>
+                    <input type="date" class="form-input" id="dob" value="1995-06-15">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-globe"></i> Language</label>
+                    <select class="form-select" id="language">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="ja">日本語</option>
+                    </select>
+                </div>
+                
+                <button class="save-btn" id="saveAccountBtn"><i class="fas fa-save"></i> Save Changes</button>
+            </div>
+
+            <!-- Privacy Section -->
+            <div class="settings-section" id="privacy-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-shield-alt"></i> Privacy & Security</h2>
+                    <p>Control your privacy settings and security preferences</p>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Private Account</h4>
+                        <p>Only approved followers can see your posts</p>
+                    </div>
+                    <div class="toggle-switch" id="privateAccountToggle"></div>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Show Activity Status</h4>
+                        <p>Let others see when you're online</p>
+                    </div>
+                    <div class="toggle-switch active" id="activityStatusToggle"></div>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Allow Tagging</h4>
+                        <p>Allow others to tag you in posts</p>
+                    </div>
+                    <div class="toggle-switch active" id="taggingToggle"></div>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Show in Search</h4>
+                        <p>Allow your profile to appear in search results</p>
+                    </div>
+                    <div class="toggle-switch active" id="searchToggle"></div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label class="form-label"><i class="fas fa-key"></i> Change Password</label>
+                    <button class="save-btn" id="changePasswordBtn" style="background: #1a1a28; border: 1px solid #374151; margin-top: 0;"><i class="fas fa-lock"></i> Update Password</button>
+                </div>
+                
+                <button class="save-btn" id="savePrivacyBtn"><i class="fas fa-save"></i> Save Privacy Settings</button>
+            </div>
+
+            <!-- Notifications Section -->
+            <div class="settings-section" id="notifications-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-bell"></i> Notifications</h2>
+                    <p>Choose what notifications you want to receive</p>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Push Notifications</h4>
+                        <p>Receive push notifications on your device</p>
+                    </div>
+                    <div class="toggle-switch active" id="pushToggle"></div>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Email Notifications</h4>
+                        <p>Receive notifications via email</p>
+                    </div>
+                    <div class="toggle-switch active" id="emailNotifToggle"></div>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Likes & Reactions</h4>
+                        <p>Get notified when someone likes your post</p>
+                    </div>
+                    <div class="toggle-switch active" id="likesToggle"></div>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Comments & Replies</h4>
+                        <p>Get notified when someone comments or replies</p>
+                    </div>
+                    <div class="toggle-switch active" id="commentsToggle"></div>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>New Followers</h4>
+                        <p>Get notified when someone follows you</p>
+                    </div>
+                    <div class="toggle-switch active" id="followersToggle"></div>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Trending Updates</h4>
+                        <p>Get updates about trending memes and GIFs</p>
+                    </div>
+                    <div class="toggle-switch" id="trendingToggle"></div>
+                </div>
+                
+                <button class="save-btn" id="saveNotifBtn"><i class="fas fa-save"></i> Save Notification Settings</button>
+            </div>
+
+            <!-- Appearance Section -->
+            <div class="settings-section" id="appearance-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-palette"></i> Appearance</h2>
+                    <p>Customize how Memotions looks for you</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-moon"></i> Theme</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="theme" value="dark" checked> Dark
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="theme" value="light"> Light
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="theme" value="system"> System Default
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-font"></i> Font Size</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="fontSize" value="small"> Small
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="fontSize" value="medium" checked> Medium
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="fontSize" value="large"> Large
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Compact Mode</h4>
+                        <p>Show more content with tighter spacing</p>
+                    </div>
+                    <div class="toggle-switch" id="compactToggle"></div>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Autoplay GIFs</h4>
+                        <p>Automatically play GIFs when scrolling</p>
+                    </div>
+                    <div class="toggle-switch active" id="autoplayToggle"></div>
+                </div>
+                
+                <button class="save-btn" id="saveAppearanceBtn"><i class="fas fa-save"></i> Save Appearance Settings</button>
+            </div>
+
+            <!-- Content Section - FIXED LAYOUT -->
+            <div class="settings-section" id="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-sliders-h"></i> Content Preferences</h2>
+                    <p>Control what content you see in your feed</p>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Mature Content</h4>
+                        <p>Show mature content in your feed</p>
+                    </div>
+                    <div class="toggle-switch" id="matureToggle"></div>
+                </div>
+                
+                <div class="toggle-item">
+                    <div class="toggle-info">
+                        <h4>Sensitive Content Warning</h4>
+                        <p>Show warning before sensitive content</p>
+                    </div>
+                    <div class="toggle-switch active" id="sensitiveToggle"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-filter"></i> Content Filter</label>
+                    <select class="form-select" id="contentFilter">
+                        <option value="none">No Filter</option>
+                        <option value="low" selected>Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-language"></i> Preferred Language</label>
+                    <select class="form-select" id="preferredLang">
+                        <option value="all">All Languages</option>
+                        <option value="en" selected>English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="ja">Japanese</option>
+                    </select>
+                </div>
+                
+                <button class="save-btn" id="saveContentBtn"><i class="fas fa-save"></i> Save Content Settings</button>
+            </div>
+
+            <!-- Danger Zone Section -->
+            <div class="settings-section" id="danger-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-exclamation-triangle"></i> Danger Zone</h2>
+                    <p>Irreversible account actions</p>
+                </div>
+                
+                <div class="danger-zone">
+                    <h4><i class="fas fa-download"></i> Download Your Data</h4>
+                    <p>Get a copy of all your posts, comments, and activity</p>
+                    <button class="danger-btn" id="downloadDataBtn" style="border-color: #8b5cf6; color: #a78bfa;">Download Archive</button>
+                </div>
+                
+                <div class="danger-zone">
+                    <h4><i class="fas fa-sign-out-alt"></i> Deactivate Account</h4>
+                    <p>Temporarily disable your account. Your data will be hidden until you reactivate.</p>
+                    <button class="danger-btn" id="deactivateBtn">Deactivate Account</button>
+                </div>
+                
+                <div class="danger-zone">
+                    <h4><i class="fas fa-trash-alt"></i> Delete Account</h4>
+                    <p>Permanently delete your account and all data. This action cannot be undone.</p>
+                    <button class="danger-btn" id="deleteBtn">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const toast = document.getElementById('toast');
+
+    function showToast(msg, emoji = '⚙️') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Theme switching functionality
+    function setTheme(theme) {
+        if (theme === 'light') {
+            document.body.classList.add('light-theme');
+            localStorage.setItem('memotions_theme', 'light');
+        } else if (theme === 'dark') {
+            document.body.classList.remove('light-theme');
+            localStorage.setItem('memotions_theme', 'dark');
+        } else if (theme === 'system') {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (prefersDark) {
+                document.body.classList.remove('light-theme');
+            } else {
+                document.body.classList.add('light-theme');
+            }
+            localStorage.setItem('memotions_theme', 'system');
+        }
+    }
+
+    // Load saved theme on page load
+    const savedTheme = localStorage.getItem('memotions_theme') || 'dark';
+    setTheme(savedTheme);
+
+    // Update radio button to match saved theme
+    const themeRadios = document.querySelectorAll('input[name="theme"]');
+    if (savedTheme === 'dark') themeRadios[0].checked = true;
+    else if (savedTheme === 'light') themeRadios[1].checked = true;
+    else if (savedTheme === 'system') themeRadios[2].checked = true;
+
+    // Listen for theme changes
+    themeRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                setTheme(e.target.value);
+                showToast(`Theme changed to ${e.target.value} mode`, '🎨');
+            }
+        });
+    });
+
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        const currentTheme = localStorage.getItem('memotions_theme');
+        if (currentTheme === 'system') {
+            if (e.matches) {
+                document.body.classList.remove('light-theme');
+            } else {
+                document.body.classList.add('light-theme');
+            }
+        }
+    });
+
+    // Section switching
+    const navItems = document.querySelectorAll('.settings-nav-item');
+    const sections = document.querySelectorAll('.settings-section');
+
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const sectionId = item.dataset.section;
+            navItems.forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+            sections.forEach(section => section.classList.remove('active'));
+            document.getElementById(`${sectionId}-section`).classList.add('active');
+        });
+    });
+
+    // Toggle switches functionality
+    function initToggle(toggleId, isActive = false) {
+        const toggle = document.getElementById(toggleId);
+        if (toggle) {
+            if (isActive) toggle.classList.add('active');
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('active');
+            });
+        }
+    }
+
+    initToggle('privateAccountToggle', false);
+    initToggle('activityStatusToggle', true);
+    initToggle('taggingToggle', true);
+    initToggle('searchToggle', true);
+    initToggle('pushToggle', true);
+    initToggle('emailNotifToggle', true);
+    initToggle('likesToggle', true);
+    initToggle('commentsToggle', true);
+    initToggle('followersToggle', true);
+    initToggle('trendingToggle', false);
+    initToggle('compactToggle', false);
+    initToggle('autoplayToggle', true);
+    initToggle('matureToggle', false);
+    initToggle('sensitiveToggle', true);
+
+    // Save buttons
+    document.getElementById('saveAccountBtn').addEventListener('click', () => {
+        showToast('Account settings saved!', '✅');
+    });
+
+    document.getElementById('savePrivacyBtn').addEventListener('click', () => {
+        showToast('Privacy settings saved!', '✅');
+    });
+
+    document.getElementById('saveNotifBtn').addEventListener('click', () => {
+        showToast('Notification settings saved!', '✅');
+    });
+
+    document.getElementById('saveAppearanceBtn').addEventListener('click', () => {
+        showToast('Appearance settings saved!', '✅');
+    });
+
+    document.getElementById('saveContentBtn').addEventListener('click', () => {
+        showToast('Content preferences saved!', '✅');
+    });
+
+    // Change password
+    document.getElementById('changePasswordBtn').addEventListener('click', () => {
+        showToast('Password change email sent!', '📧');
+    });
+
+    // Danger zone actions
+    document.getElementById('downloadDataBtn').addEventListener('click', () => {
+        showToast('Your data archive is being prepared', '📥');
+    });
+
+    document.getElementById('deactivateBtn').addEventListener('click', () => {
+        if (confirm('Are you sure you want to deactivate your account? You can reactivate anytime by logging in.')) {
+            showToast('Account deactivated. We\'ll miss you!', '😢');
+        }
+    });
+
+    document.getElementById('deleteBtn').addEventListener('click', () => {
+        if (confirm('⚠️ WARNING: This action is PERMANENT. All your data will be lost. Type "DELETE" to confirm.')) {
+            const confirmText = prompt('Type "DELETE" to permanently delete your account:');
+            if (confirmText === 'DELETE') {
+                showToast('Account deleted permanently', '🗑️');
+            }
+        }
+    });
+
+    // Navigation
+    document.getElementById('createBtn').addEventListener('click', () => showToast('Create new post', '📸'));
+    document.getElementById('notificationBtn').addEventListener('click', () => showToast('No new notifications', '🔔'));
+
+    showToast('Settings ready', '⚙️');
+</script>
+</body>
+</html>

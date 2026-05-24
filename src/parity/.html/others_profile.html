@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Creator Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Main Layout - with right sidebar */
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Two column layout */
+        .main-layout {
+            display: flex;
+            gap: 2rem;
+            padding: 0 2rem 2rem 2rem;
+        }
+
+        /* Left/Profile Content */
+        .profile-content {
+            flex: 2;
+            min-width: 0;
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            flex: 1;
+            max-width: 320px;
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 1rem;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            padding: 1rem 0 1.5rem 0;
+            border-bottom: 1px solid #1a1a28;
+        }
+
+        .profile-top {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid #1a1a28;
+            flex-shrink: 0;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .username-row {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .username-row h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .edit-profile-btn {
+            background: #8b5cf6;
+            border: 1px solid #374151;
+            padding: 0.45rem 1.2rem;
+            border-radius: 0.6rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #f3f4f6;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .edit-profile-btn:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .stat:hover {
+            opacity: 0.8;
+        }
+
+        .stat-number {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .bio-section {
+            margin-top: 0.5rem;
+        }
+
+        .full-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .bio {
+            color: #d1d5db;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            margin-bottom: 0.3rem;
+        }
+
+        .link {
+            color: #8b5cf6;
+            font-size: 0.75rem;
+            text-decoration: none;
+        }
+
+        /* Quick Stats Chips */
+        .quick-stats {
+            display: flex;
+            gap: 0.6rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #1a1a28;
+            flex-wrap: wrap;
+        }
+
+        .quick-chip {
+            background: #12121c;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.35rem 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-chip:hover {
+            border-color: #8b5cf6;
+            background: #1a1a2a;
+        }
+
+        .quick-chip i {
+            font-size: 0.7rem;
+            color: #a78bfa;
+        }
+
+        .quick-chip span {
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: #e5e7eb;
+        }
+
+        /* Tabs */
+        .profile-tabs {
+            display: flex;
+            gap: 2rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #1a1a28;
+        }
+
+        .tab {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .tab i {
+            font-size: 0.9rem;
+        }
+
+        .tab.active {
+            color: #a78bfa;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.75rem;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #a78bfa;
+        }
+
+        /* Content Grid - TIGHTER like Instagram */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            background: #0a0a10;
+            margin-top: 0.5rem;
+        }
+
+        .grid-item {
+            aspect-ratio: 1;
+            background: #12121c;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .grid-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .grid-item:hover .grid-overlay {
+            opacity: 1;
+        }
+
+        .overlay-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* Reactions Container */
+        .reactions-container {
+            padding: 1rem 0;
+        }
+
+        .reactions-header {
+            margin-bottom: 0.75rem;
+        }
+
+        .reactions-header h3 {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .reactions-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .reaction-chip {
+            background: #1a1a28;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.45rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reaction-chip:hover {
+            border-color: #8b5cf6;
+            background: #22223a;
+        }
+
+        .chip-emoji {
+            font-size: 1rem;
+        }
+
+        .chip-name {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .chip-count {
+            font-size: 0.6rem;
+            color: #a78bfa;
+            background: rgba(139, 92, 246, 0.2);
+            padding: 0.15rem 0.4rem;
+            border-radius: 1rem;
+        }
+
+        .reaction-footer {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.65rem;
+            color: #6b7280;
+            padding: 0.75rem;
+            background: #12121c;
+            border-radius: 0.8rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        /* Right Sidebar Styles */
+        .sidebar-card {
+            background: #12121c;
+            border-radius: 1rem;
+            border: 1px solid #1f1f2e;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #e5e7eb;
+        }
+
+        .sidebar-title i {
+            color: #a78bfa;
+            font-size: 0.8rem;
+        }
+
+        /* Suggestions */
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            padding: 0.4rem;
+            border-radius: 0.8rem;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            background: #1a1a28;
+        }
+
+        .sugg-avatar {
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            object-fit: cover;
+        }
+
+        .sugg-info {
+            flex: 1;
+        }
+
+        .sugg-name {
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .sugg-sub {
+            font-size: 0.6rem;
+            color: #6b7280;
+        }
+
+        .follow-btn-sm {
+            background: #a78bfa;
+            border: 1px solid #374151;
+            padding: 0.2rem 0.7rem;
+            border-radius: 1rem;
+            font-size: 0.6rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .follow-btn-sm:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+            color: white;
+        }
+
+        /* Trending Items */
+        .trending-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            padding: 0.4rem;
+            border-radius: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .trending-item:hover {
+            background: #1a1a28;
+        }
+
+        .trending-img {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            background: #1a1a2a;
+            object-fit: cover;
+        }
+
+        .trending-info {
+            flex: 1;
+        }
+
+        .trending-title {
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-bottom: 0.15rem;
+        }
+
+        .trending-stats {
+            font-size: 0.55rem;
+            color: #6b7280;
+        }
+
+        .trending-stats i {
+            margin-right: 0.2rem;
+        }
+
+        .trending-badge {
+            background: rgba(139, 92, 246, 0.15);
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.55rem;
+            color: #a78bfa;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .right-sidebar {
+                display: none;
+            }
+            
+            .main-layout {
+                padding: 0 1rem 1rem 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            
+            .logo span {
+                display: none;
+            }
+            
+            .profile-header {
+                padding: 0.5rem 0 1rem 0;
+            }
+            
+            .profile-top {
+                gap: 1rem;
+            }
+            
+            .avatar {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .username-row h2 {
+                font-size: 1.1rem;
+            }
+            
+            .stats-row {
+                gap: 1rem;
+            }
+            
+            .profile-tabs {
+                gap: 1rem;
+            }
+            
+            .main-layout {
+                padding: 0 0.75rem 0.75rem 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-bell" id="notificationBtn"></i>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <!-- Left: Profile Content -->
+        <div class="profile-content">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-top">
+                    <div class="avatar" id="avatarBtn">
+                        <img src="https://robohash.org/gifgoddess?set=set2&size=150x150" alt="avatar">
+                    </div>
+                    <div class="profile-info">
+                        <div class="username-row">
+                            <h2>gif_goddess</h2>
+                            <button class="edit-profile-btn" id="followBtn">Follow</button>
+                            <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 0.8rem; cursor: pointer;"></i>
+                        </div>
+                        <div class="stats-row">
+                            <div class="stat" id="postsStat">
+                                <span class="stat-number" id="postCount">9</span>
+                                <span class="stat-label">posts</span>
+                            </div>
+                            <div class="stat" id="followersStat">
+                                <span class="stat-number">1.2M</span>
+                                <span class="stat-label">followers</span>
+                            </div>
+                            <div class="stat" id="followingStat">
+                                <span class="stat-number">845</span>
+                                <span class="stat-label">following</span>
+                            </div>
+                        </div>
+                        <div class="bio-section">
+                            <div class="full-name">GIF Goddess 🎬</div>
+                            <div class="bio" id="bioText">
+                                Premium GIF creator | Daily doses of laughter<br>
+                                Founder of #GIFGold movement | DM for collabs ✨
+                            </div>
+                            <a href="#" class="link">gifgoddess.memotions.com</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats Chips (removed highlights, kept quick chips) -->
+            <div class="quick-stats">
+                <div class="quick-chip"><i class="fas fa-crown"></i><span>Top GIFs</span></div>
+                <div class="quick-chip"><i class="fas fa-gift"></i><span>Premium</span></div>
+                <div class="quick-chip"><i class="fas fa-fire"></i><span>Trending</span></div>
+                <div class="quick-chip"><i class="fas fa-heart"></i><span>Viral</span></div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="profile-tabs">
+                <button class="tab active" data-tab="posts"><i class="fas fa-table-cells-large"></i> POSTS</button>
+                <button class="tab" data-tab="gifs"><i class="fas fa-gift"></i> GIFs</button>
+                <button class="tab" data-tab="reactions"><i class="fas fa-face-smile"></i> REACTIONS</button>
+            </div>
+
+            <!-- Dynamic Content -->
+            <div id="contentArea"></div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <!-- Suggestions -->
+            <div class="sidebar-card">
+                <div class="sidebar-title"><i class="fas fa-user-plus"></i> Suggested for you</div>
+                <div class="suggestion-item">
+                    <img class="sugg-avatar" src="https://robohash.org/memecreator?set=set4&size=50x50">
+                    <div class="sugg-info">
+                        <div class="sugg-name">meme_curator</div>
+                        <div class="sugg-sub">viral memes</div>
+                    </div>
+                    <button class="follow-btn-sm">Follow</button>
+                </div>
+                <div class="suggestion-item">
+                    <img class="sugg-avatar" src="https://robohash.org/dankbrain?set=set3&size=50x50">
+                    <div class="sugg-info">
+                        <div class="sugg-name">danklabs</div>
+                        <div class="sugg-sub">daily memes</div>
+                    </div>
+                    <button class="follow-btn-sm">Follow</button>
+                </div>
+                <div class="suggestion-item">
+                    <img class="sugg-avatar" src="https://robohash.org/reactiongod?set=set1&size=50x50">
+                    <div class="sugg-info">
+                        <div class="sugg-name">reactionking</div>
+                        <div class="sugg-sub">reaction specialist</div>
+                    </div>
+                    <button class="follow-btn-sm">Follow</button>
+                </div>
+            </div>
+
+            <!-- Trending Memes -->
+            <div class="sidebar-card">
+                <div class="sidebar-title"><i class="fas fa-fire"></i> Trending Memes</div>
+                <div class="trending-item">
+                    <img class="trending-img" src="https://i.redd.it/zpqa8rxrxmj31.jpg">
+                    <div class="trending-info">
+                        <div class="trending-title">This is fine 🔥</div>
+                        <div class="trending-stats"><i class="fas fa-heart"></i> 345K <i class="fas fa-comment" style="margin-left: 0.5rem;"></i> 8.2K</div>
+                    </div>
+                    <div class="trending-badge">🔥 HOT</div>
+                </div>
+                <div class="trending-item">
+                    <img class="trending-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX7zWpkqKztEyyOsufX6YvSxOGhU2X9e8HLA&s">
+                    <div class="trending-info">
+                        <div class="trending-title">Distracted boyfriend</div>
+                        <div class="trending-stats"><i class="fas fa-heart"></i> 289K <i class="fas fa-comment" style="margin-left: 0.5rem;"></i> 6.1K</div>
+                    </div>
+                    <div class="trending-badge">⭐ VIRAL</div>
+                </div>
+                <div class="trending-item">
+                    <img class="trending-img" src="https://i.chzbgr.com/full/10521586176/hB0E14CAD/omg-home-missed-see-have-returned-feed-now">
+                    <div class="trending-info">
+                        <div class="trending-title">OMG! Home missed see...</div>
+                        <div class="trending-stats"><i class="fas fa-heart"></i> 567K <i class="fas fa-comment" style="margin-left: 0.5rem;"></i> 15.3K</div>
+                    </div>
+                    <div class="trending-badge">🚀 TRENDING</div>
+                </div>
+            </div>
+
+            <!-- Trending GIFs -->
+            <div class="sidebar-card">
+                <div class="sidebar-title"><i class="fas fa-gift"></i> Trending GIFs</div>
+                <div class="trending-item">
+                    <div style="width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;"><i class="fas fa-play" style="font-size: 0.8rem;"></i></div>
+                    <div class="trending-info">
+                        <div class="trending-title">Dancing cat 🐱</div>
+                        <div class="trending-stats"><i class="fas fa-eye"></i> 1.2M views</div>
+                    </div>
+                    <div class="trending-badge">GIF</div>
+                </div>
+                <div class="trending-item">
+                    <div style="width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, #ec4899, #f43f5e); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;"><i class="fas fa-play" style="font-size: 0.8rem;"></i></div>
+                    <div class="trending-info">
+                        <div class="trending-title">Suspect reaction</div>
+                        <div class="trending-stats"><i class="fas fa-eye"></i> 892K views</div>
+                    </div>
+                    <div class="trending-badge">GIF</div>
+                </div>
+                <div class="trending-item">
+                    <div style="width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, #06b6d4, #3b82f6); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;"><i class="fas fa-play" style="font-size: 0.8rem;"></i></div>
+                    <div class="trending-info">
+                        <div class="trending-title">Celebration dance</div>
+                        <div class="trending-stats"><i class="fas fa-eye"></i> 654K views</div>
+                    </div>
+                    <div class="trending-badge">GIF</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const contentArea = document.getElementById('contentArea');
+    const toast = document.getElementById('toast');
+    const postCountSpan = document.getElementById('postCount');
+    const followBtn = document.getElementById('followBtn');
+
+    let isFollowing = false;
+
+    // Creator posts using the provided meme images
+    const creatorPosts = [
+        { id: 1, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSX7zWpkqKztEyyOsufX6YvSxOGhU2X9e8HLA&s', likes: '345K', comments: '8.2K', isGif: false },
+        { id: 2, image: 'https://i.chzbgr.com/full/10521586176/hB0E14CAD/omg-home-missed-see-have-returned-feed-now', likes: '567K', comments: '15.3K', isGif: false },
+        { id: 3, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDcnC-gEN5l5ICoK7vVjB4n7FTaHpmWfNqBQ&s', likes: '289K', comments: '6.1K', isGif: false },
+        { id: 4, image: 'https://i.pinimg.com/736x/30/83/15/308315833f6874af73cbe612222efee6.jpg', likes: '423K', comments: '11.4K', isGif: false },
+        { id: 5, image: 'https://i.redd.it/zpqa8rxrxmj31.jpg', likes: '198K', comments: '4.7K', isGif: false },
+        { id: 6, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWA-C6DnHBuc7igzZYcSg0ndISVZQCaISpkQ&s', likes: '756K', comments: '22.1K', isGif: false },
+        { id: 7, image: 'https://img.wattpad.com/0fb85a8bd1440717ba6241c3ab959a6395d85a64/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f776174747061642d6d656469612d736572766963652f53746f7279496d6167652f4e50354b774e59594938413468413d3d2d3236323233303730392e313435356633383338323462653433322e6a7067?s=fit&w=720&h=720', likes: '512K', comments: '14.8K', isGif: false }
+    ];
+
+    const gifPosts = [
+        { id: 101, image: 'https://media4.giphy.com/media/3o7abB06u9bNzA8LC8/giphy.gif', likes: '245K', comments: '5.6K', isGif: true },
+        { id: 102, image: 'https://media1.tenor.com/m/-h1WpSyJcGgAAAAC/cat-cat-stare.gif', likes: '467K', comments: '12.2K', isGif: true },
+        { id: 103, image: 'https://media.tenor.com/m/T6eWpOiQTU4AAAAC/dancing-cat.gif', likes: '312K', comments: '8.8K', isGif: true },
+        { id: 104, image: 'https://media.tenor.com/m/KhG2B2R3gCwAAAAC/suspect-reaction.gif', likes: '198K', comments: '4.2K', isGif: true },
+        { id: 105, image: 'https://media4.giphy.com/media/l0HlNQ3JY3l8C7VIs/giphy.gif', likes: '534K', comments: '15.2K', isGif: true }
+    ];
+
+    // Top reactions data
+    const topReactions = [
+        { emoji: '😂', name: 'Funny', count: 12400 },
+        { emoji: '🔥', name: 'Lit', count: 8200 },
+        { emoji: '💀', name: 'Dead', count: 5900 },
+        { emoji: '❤️', name: 'Love', count: 4700 },
+        { emoji: '😭', name: 'Cry', count: 3100 }
+    ];
+
+    function showToast(msg, emoji = '✨') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function renderPosts(posts, emptyMsg = "No posts yet") {
+        if (!posts.length) {
+            contentArea.innerHTML = `<div class="empty-state"><i class="fas fa-ghost" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>${emptyMsg}</div>`;
+            return;
+        }
+        contentArea.innerHTML = `<div class="content-grid">${posts.map(post => `
+            <div class="grid-item">
+                <img src="${post.image}" onerror="this.src='https://via.placeholder.com/300?text=Media'">
+                <div class="grid-overlay">
+                    <div class="overlay-stat"><i class="fas fa-heart"></i> ${post.likes}</div>
+                    <div class="overlay-stat"><i class="fas fa-comment"></i> ${post.comments}</div>
+                </div>
+            </div>
+        `).join('')}</div>`;
+        document.querySelectorAll('.grid-item').forEach(item => item.addEventListener('click', () => showToast('Opening post', '📱')));
+    }
+
+    function renderReactions() {
+        contentArea.innerHTML = `<div class="reactions-container"><div class="reactions-header"><h3><i class="fas fa-chart-simple" style="color:#a78bfa;"></i> gif_goddess's top reactions</h3></div><div class="reactions-chips">${topReactions.map(r => `<div class="reaction-chip"><span class="chip-emoji">${r.emoji}</span><span class="chip-name">${r.name}</span><span class="chip-count">${r.count.toLocaleString()}</span></div>`).join('')}</div><div class="reaction-footer"><i class="fas fa-smile-wink"></i> gif_goddess loves engaging with her community!</div></div>`;
+        document.querySelectorAll('.reaction-chip').forEach(chip => chip.addEventListener('click', () => showToast(`${chip.querySelector('.chip-name')?.innerText} reaction is popular!`, chip.querySelector('.chip-emoji')?.innerText)));
+    }
+
+    let currentTab = 'posts';
+    const tabs = document.querySelectorAll('.tab');
+    function switchTab(tabId) {
+        currentTab = tabId;
+        tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.tab === tabId));
+        if (tabId === 'posts') renderPosts(creatorPosts);
+        else if (tabId === 'gifs') renderPosts(gifPosts, "No GIFs posted yet");
+        else renderReactions();
+    }
+    tabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
+
+    // Follow button functionality
+    followBtn.addEventListener('click', () => {
+        isFollowing = !isFollowing;
+        if (isFollowing) {
+            followBtn.textContent = 'Following';
+            followBtn.style.background = '#1a1a28';
+            followBtn.style.border = '1px solid #374151';
+            showToast('You are now following gif_goddess', '✅');
+        } else {
+            followBtn.textContent = 'Follow';
+            followBtn.style.background = '#1a1a28';
+            followBtn.style.border = '1px solid #374151';
+            showToast('Unfollowed gif_goddess', '👋');
+        }
+    });
+
+    document.getElementById('avatarBtn').onclick = () => showToast('View profile picture', '📸');
+    document.getElementById('postsStat').onclick = () => switchTab('posts');
+    document.getElementById('followersStat').onclick = () => showToast('1.2M amazing followers', '❤️');
+    document.getElementById('followingStat').onclick = () => showToast('Following 845 creators', '👥');
+    document.getElementById('notificationBtn').onclick = () => showToast('No new notifications', '🔔');
+    document.getElementById('createBtn').onclick = () => showToast('Create new post', '📸');
+    document.querySelectorAll('.quick-chip').forEach(c => c.onclick = () => showToast(`Showing ${c.querySelector('span')?.innerText}`, '✨'));
+    document.querySelectorAll('.follow-btn-sm').forEach(btn => btn.onclick = (e) => { e.stopPropagation(); btn.innerText = btn.innerText === 'Follow' ? 'Following' : 'Follow'; btn.style.background = btn.innerText === 'Following' ? '#8b5cf6' : 'transparent'; showToast(btn.innerText === 'Following' ? 'Followed!' : 'Unfollowed'); });
+    document.querySelectorAll('.trending-item').forEach(item => item.onclick = () => showToast('Opening trending content', '🔥'));
+
+    renderPosts(creatorPosts);
+    postCountSpan.innerText = creatorPosts.length;
+    setTimeout(() => showToast('gif_goddess profile — premium GIF creator', '🎬'), 500);
+</script>
+</body>
+</html>

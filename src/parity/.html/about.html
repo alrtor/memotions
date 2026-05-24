@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · About & Help</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 1.5rem 2rem 0.5rem 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .page-header p {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Main Layout */
+        .help-layout {
+            display: flex;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        /* Sidebar */
+        .help-sidebar {
+            width: 260px;
+            flex-shrink: 0;
+        }
+
+        .help-nav {
+            background: #12121c;
+            border-radius: 1rem;
+            border: 1px solid #1f1f2e;
+            overflow: hidden;
+            position: sticky;
+            top: 80px;
+        }
+
+        .help-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 1.2rem;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .help-nav-item i {
+            width: 1.2rem;
+            font-size: 1rem;
+        }
+
+        .help-nav-item:hover {
+            background: #1a1a28;
+            color: #e5e7eb;
+        }
+
+        .help-nav-item.active {
+            background: #1a1a2a;
+            color: #a78bfa;
+            border-left-color: #8b5cf6;
+        }
+
+        /* Main Content */
+        .help-content {
+            flex: 1;
+            background: #12121c;
+            border-radius: 1rem;
+            border: 1px solid #1f1f2e;
+            padding: 1.5rem;
+        }
+
+        .help-section {
+            display: none;
+        }
+
+        .help-section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #1f1f2e;
+        }
+
+        .section-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* About Content */
+        .about-content {
+            line-height: 1.6;
+        }
+
+        .about-content p {
+            color: #d1d5db;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-box {
+            background: #1a1a28;
+            border-radius: 1rem;
+            padding: 1.2rem;
+            text-align: center;
+        }
+
+        .stat-box i {
+            font-size: 2rem;
+            color: #a78bfa;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-box .number {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stat-box .label {
+            font-size: 0.7rem;
+            color: #9ca3af;
+        }
+
+        /* FAQ Items */
+        .faq-item {
+            margin-bottom: 1rem;
+            border: 1px solid #2d2d40;
+            border-radius: 0.8rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1rem;
+            background: #1a1a28;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .faq-question:hover {
+            background: #22223a;
+        }
+
+        .faq-answer {
+            padding: 0 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: #9ca3af;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .faq-item.open .faq-answer {
+            padding: 1rem;
+            max-height: 300px;
+        }
+
+        .faq-item.open .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        /* Contact Cards */
+        .contact-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-card {
+            background: #1a1a28;
+            border-radius: 1rem;
+            padding: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-2px);
+            background: #22223a;
+        }
+
+        .contact-card i {
+            font-size: 2rem;
+            color: #a78bfa;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-card h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .contact-card p {
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+
+        .contact-form {
+            margin-top: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 0.8rem;
+            padding: 0.7rem 1rem;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Guidelines List */
+        .guidelines-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .guidelines-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #1f1f2e;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+
+        .guidelines-list li:last-child {
+            border-bottom: none;
+        }
+
+        .guidelines-list li i {
+            color: #a78bfa;
+            margin-top: 0.2rem;
+        }
+
+        .guidelines-list li strong {
+            color: #e5e7eb;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+            .page-header {
+                padding: 1rem;
+            }
+            .help-layout {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            .help-sidebar {
+                width: 100%;
+            }
+            .help-nav {
+                display: flex;
+                overflow-x: auto;
+                position: static;
+            }
+            .help-nav-item {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-bell" id="notificationBtn"></i>
+        </div>
+    </div>
+
+    <div class="page-header">
+        <h1><i class="fas fa-question-circle"></i> About & Help</h1>
+        <p>Learn about Memotions, get support, and find answers to your questions</p>
+    </div>
+
+    <div class="help-layout">
+        <!-- Sidebar -->
+        <div class="help-sidebar">
+            <div class="help-nav">
+                <div class="help-nav-item active" data-section="about">
+                    <i class="fas fa-info-circle"></i> About Memotions
+                </div>
+                <div class="help-nav-item" data-section="faq">
+                    <i class="fas fa-question-circle"></i> FAQ
+                </div>
+                <div class="help-nav-item" data-section="guidelines">
+                    <i class="fas fa-file-alt"></i> Community Guidelines
+                </div>
+                <div class="help-nav-item" data-section="contact">
+                    <i class="fas fa-envelope"></i> Contact Us
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="help-content">
+            <!-- About Section -->
+            <div class="help-section active" id="about-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-info-circle"></i> About Memotions</h2>
+                </div>
+                <div class="about-content">
+                    <p>Memotions is the ultimate platform for meme and GIF enthusiasts. We're building a community where creativity meets humor, and every scroll brings a smile to your face.</p>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <i class="fas fa-users"></i>
+                            <div class="number">2.5M+</div>
+                            <div class="label">Active Users</div>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fas fa-images"></i>
+                            <div class="number">10M+</div>
+                            <div class="label">Memes & GIFs</div>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fas fa-smile"></i>
+                            <div class="number">500M+</div>
+                            <div class="label">Daily Reactions</div>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fas fa-fire"></i>
+                            <div class="number">1M+</div>
+                            <div class="label">Daily Views</div>
+                        </div>
+                    </div>
+                    
+                    <p><strong>Our Mission:</strong> To spread joy and laughter through the world's best memes and GIFs, while empowering creators to share their unique humor with a global audience.</p>
+                    <p><strong>Founded:</strong> 2024 | <strong>Headquarters:</strong> Memeverse, Internet</p>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <div class="help-section" id="faq-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+                </div>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How do I create an account?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">Click on the "Sign Up" button, enter your email, create a username and password, and you're ready to start exploring Memotions!</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How do I upload a meme or GIF?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">Click the "+" icon in the top navigation, select your image or GIF file, add a caption and tags, then click "Post". Your content will be live immediately!</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Can I edit or delete my post?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">Yes! Go to your profile, find the post you want to edit or delete, click the three dots menu, and select the appropriate option.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How do reactions work?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">You can react to any post with various emojis like 😂, 🔥, 💀, and more. Your most-used reactions will appear on your profile. Reactions help content go viral!</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Is Memotions free?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">Yes! Memotions is completely free to use. We may introduce premium features in the future, but the core experience will always be free.</div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How do I report inappropriate content?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">Click the three dots menu on any post and select "Report". Our moderation team will review it within 24 hours.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guidelines Section -->
+            <div class="help-section" id="guidelines-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-file-alt"></i> Community Guidelines</h2>
+                </div>
+                <ul class="guidelines-list">
+                    <li><i class="fas fa-heart"></i> <div><strong>Be Respectful:</strong> Treat others with kindness and respect. Harassment, hate speech, and bullying are strictly prohibited.</div></li>
+                    <li><i class="fas fa-copyright"></i> <div><strong>Original Content:</strong> Share your own memes or properly credit creators. Don't post copyrighted material without permission.</div></li>
+                    <li><i class="fas fa-ban"></i> <div><strong>No NSFW Content:</strong> Keep it clean and appropriate for all ages. Explicit or violent content will be removed.</div></li>
+                    <li><i class="fas fa-spam"></i> <div><strong>No Spam:</strong> Don't post repetitive content, excessive promotions, or irrelevant links.</div></li>
+                    <li><i class="fas fa-flag"></i> <div><strong>Report Responsibly:</strong> Use the report feature for genuine violations, not for content you simply disagree with.</div></li>
+                    <li><i class="fas fa-globe"></i> <div><strong>Stay On Topic:</strong> Memotions is for memes and GIFs. Keep your content relevant to the platform's purpose.</div></li>
+                </ul>
+                <div class="danger-zone" style="margin-top: 1rem; padding: 1rem; background: rgba(244, 63, 94, 0.1); border-radius: 0.8rem;">
+                    <p style="color: #f43f5e; font-size: 0.8rem;"><i class="fas fa-exclamation-triangle"></i> Violations of these guidelines may result in content removal, account suspension, or permanent ban.</p>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="help-section" id="contact-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-envelope"></i> Contact Us</h2>
+                </div>
+                <div class="contact-cards">
+                    <div class="contact-card" data-contact="email">
+                        <i class="fas fa-envelope"></i>
+                        <h4>Email Support</h4>
+                        <p>support@memotions.com</p>
+                    </div>
+                    <div class="contact-card" data-contact="twitter">
+                        <i class="fab fa-twitter"></i>
+                        <h4>Twitter</h4>
+                        <p>@Memotions</p>
+                    </div>
+                    <div class="contact-card" data-contact="discord">
+                        <i class="fab fa-discord"></i>
+                        <h4>Discord</h4>
+                        <p>Join our community</p>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3 style="font-size: 0.9rem; margin-bottom: 1rem;"><i class="fas fa-paper-plane"></i> Send us a message</h3>
+                    <div class="form-group">
+                        <input type="text" class="form-input" id="contactName" placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-input" id="contactEmail" placeholder="Your email">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-textarea" id="contactMessage" placeholder="Your message..."></textarea>
+                    </div>
+                    <button class="submit-btn" id="sendMessageBtn"><i class="fas fa-paper-plane"></i> Send Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const toast = document.getElementById('toast');
+
+    function showToast(msg, emoji = 'ℹ️') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Section switching
+    const navItems = document.querySelectorAll('.help-nav-item');
+    const sections = document.querySelectorAll('.help-section');
+
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const sectionId = item.dataset.section;
+            navItems.forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+            sections.forEach(section => section.classList.remove('active'));
+            document.getElementById(`${sectionId}-section`).classList.add('active');
+        });
+    });
+
+    // FAQ accordion
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const question = item.querySelector('.faq-question');
+        question.addEventListener('click', () => {
+            item.classList.toggle('open');
+        });
+    });
+
+    // Contact cards
+    document.querySelectorAll('.contact-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const type = card.dataset.contact;
+            if (type === 'email') {
+                navigator.clipboard.writeText('support@memotions.com');
+                showToast('Email copied to clipboard!', '📧');
+            } else if (type === 'twitter') {
+                window.open('https://twitter.com/Memotions', '_blank');
+                showToast('Opening Twitter', '🐦');
+            } else if (type === 'discord') {
+                showToast('Discord invite: discord.gg/memotions', '💬');
+            }
+        });
+    });
+
+    // Send message
+    document.getElementById('sendMessageBtn').addEventListener('click', () => {
+        const name = document.getElementById('contactName').value;
+        const email = document.getElementById('contactEmail').value;
+        const message = document.getElementById('contactMessage').value;
+        
+        if (!name || !email || !message) {
+            showToast('Please fill all fields', '⚠️');
+            return;
+        }
+        
+        showToast('Message sent! We\'ll get back to you soon.', '✅');
+        document.getElementById('contactName').value = '';
+        document.getElementById('contactEmail').value = '';
+        document.getElementById('contactMessage').value = '';
+    });
+
+    // Navigation
+    document.getElementById('createBtn').addEventListener('click', () => showToast('Create new post', '📸'));
+    document.getElementById('notificationBtn').addEventListener('click', () => showToast('No new notifications', '🔔'));
+
+    showToast('Welcome to Memotions Help Center', '🆘');
+</script>
+</body>
+</html>

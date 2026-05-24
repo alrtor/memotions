@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Humor Weather</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 2rem 2rem 1rem 2rem;
+        }
+
+        .hero h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .hero p {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Today's Humor Weather Widget */
+        .weather-widget {
+            background: linear-gradient(135deg, #1a1a2a, #12121c);
+            border-radius: 1rem;
+            margin: 1rem 2rem;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border: 1px solid #2d2d40;
+        }
+
+        .weather-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .weather-icon {
+            font-size: 2.5rem;
+        }
+
+        .weather-text h3 {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .weather-text p {
+            font-size: 0.7rem;
+            color: #9ca3af;
+        }
+
+        .weather-stats {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .weather-stat {
+            text-align: center;
+        }
+
+        .weather-stat .value {
+            font-weight: 700;
+            color: #a78bfa;
+        }
+
+        .weather-stat .label {
+            font-size: 0.6rem;
+            color: #6b7280;
+        }
+
+        /* Mood Channels - Carousel */
+        .mood-section {
+            padding: 1rem 2rem;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #e5e7eb;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mood-carousel {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 0.5rem;
+        }
+
+        .mood-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mood-card {
+            min-width: 140px;
+            background: #12121c;
+            border-radius: 1rem;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #2d2d40;
+        }
+
+        .mood-card.active {
+            border-color: #8b5cf6;
+            background: #1a1a2a;
+            transform: scale(1.02);
+        }
+
+        .mood-card:hover {
+            transform: translateY(-3px);
+            border-color: #8b5cf6;
+        }
+
+        .mood-emoji {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mood-name {
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .mood-desc {
+            font-size: 0.6rem;
+            color: #6b7280;
+            margin-top: 0.2rem;
+        }
+
+        /* Feed Container */
+        .feed-container {
+            padding: 1rem 2rem 2rem 2rem;
+        }
+
+        .feed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.2rem;
+        }
+
+        /* Meme Card */
+        .meme-card {
+            background: #12121c;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid #2d2d40;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .meme-card:hover {
+            transform: translateY(-3px);
+            border-color: #8b5cf6;
+        }
+
+        .card-image {
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-info {
+            padding: 0.7rem;
+        }
+
+        .card-creator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .creator-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .creator-name {
+            font-weight: 600;
+            font-size: 0.75rem;
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 0.7rem;
+            color: #d1d5db;
+            margin-bottom: 0.3rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.6rem;
+            color: #9ca3af;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+        }
+        .toast.show { opacity: 1; }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+            .hero {
+                padding: 1rem;
+            }
+            .weather-widget {
+                margin: 1rem;
+                flex-direction: column;
+                text-align: center;
+            }
+            .mood-section {
+                padding: 0.5rem 1rem;
+            }
+            .feed-container {
+                padding: 1rem;
+            }
+            .feed-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-bell" id="notificationBtn"></i>
+        </div>
+    </div>
+
+    <div class="hero">
+        <h1><i class="fas fa-cloud-sun"></i> Humor Weather</h1>
+        <p>Set your mood and let the humor flow</p>
+    </div>
+
+    <!-- Today's Weather Widget -->
+    <div class="weather-widget">
+        <div class="weather-info">
+            <div class="weather-icon" id="weatherIcon">😂</div>
+            <div class="weather-text">
+                <h3 id="weatherTitle">Funny Day</h3>
+                <p id="weatherDesc">Perfect weather for laughter</p>
+            </div>
+        </div>
+        <div class="weather-stats">
+            <div class="weather-stat">
+                <div class="value" id="globalLaughs">2.5M</div>
+                <div class="label">Global Laughs</div>
+            </div>
+            <div class="weather-stat">
+                <div class="value" id="activeMood">62%</div>
+                <div class="label">Active Mood</div>
+            </div>
+            <div class="weather-stat">
+                <div class="value" id="trendingNow">#Funny</div>
+                <div class="label">Trending</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mood Channels -->
+    <div class="mood-section">
+        <div class="section-title"><i class="fas fa-chart-line"></i> Select Your Mood</div>
+        <div class="mood-carousel" id="moodCarousel">
+            <div class="mood-card active" data-mood="funny">
+                <div class="mood-emoji">😂</div>
+                <div class="mood-name">Funny</div>
+                <div class="mood-desc">Classic laughs</div>
+            </div>
+            <div class="mood-card" data-mood="chaos">
+                <div class="mood-emoji">🤪</div>
+                <div class="mood-name">Chaos</div>
+                <div class="mood-desc">Wild & absurd</div>
+            </div>
+            <div class="mood-card" data-mood="wholesome">
+                <div class="mood-emoji">🥰</div>
+                <div class="mood-name">Wholesome</div>
+                <div class="mood-desc">Heartwarming</div>
+            </div>
+            <div class="mood-card" data-mood="sarcastic">
+                <div class="mood-emoji">😏</div>
+                <div class="mood-name">Sarcastic</div>
+                <div class="mood-desc">Sharp & witty</div>
+            </div>
+            <div class="mood-card" data-mood="nostalgic">
+                <div class="mood-emoji">🥲</div>
+                <div class="mood-name">Nostalgic</div>
+                <div class="mood-desc">Throwback feels</div>
+            </div>
+            <div class="mood-card" data-mood="dark">
+                <div class="mood-emoji">💀</div>
+                <div class="mood-name">Dark</div>
+                <div class="mood-desc">Edgy humor</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feed Container -->
+    <div class="feed-container">
+        <div class="feed-grid" id="feedGrid"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const feedGrid = document.getElementById('feedGrid');
+    const toast = document.getElementById('toast');
+    const weatherIcon = document.getElementById('weatherIcon');
+    const weatherTitle = document.getElementById('weatherTitle');
+    const weatherDesc = document.getElementById('weatherDesc');
+
+    let currentMood = 'funny';
+
+    // Meme data categorized by mood
+    const memesByMood = {
+        funny: [
+            { id: 1, title: "When the code works first try", image: "https://i.imgflip.com/265j.jpg", creator: "meme_curator", avatar: "https://robohash.org/memecreator?set=set4&size=40x40", verified: true, likes: "245K", comments: "5.6K" },
+            { id: 2, title: "Distracted boyfriend", image: "https://i.imgflip.com/1bij.jpg", creator: "danklabs", avatar: "https://robohash.org/dankbrain?set=set3&size=40x40", verified: false, likes: "189K", comments: "4.2K" },
+            { id: 3, title: "Joey - How you doin?", image: "https://media.tenor.com/qDeRj_HS9vIAAAAM/joey-friends.gif", creator: "gif_goddess", avatar: "https://robohash.org/gifgoddess?set=set2&size=40x40", verified: true, likes: "892K", comments: "23.1K" },
+            { id: 4, title: "I am the manager!", image: "https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600", creator: "danklabs", avatar: "https://robohash.org/dankbrain?set=set3&size=40x40", verified: false, likes: "189K", comments: "4.2K" }
+        ],
+        chaos: [
+            { id: 5, title: "Dancing cat chaos", image: "https://media.tenor.com/T6eWpOiQTU4AAAAC/dancing-cat.gif", creator: "gif_goddess", avatar: "https://robohash.org/gifgoddess?set=set2&size=40x40", verified: true, likes: "467K", comments: "12.2K" },
+            { id: 6, title: "Brain melting edit", image: "https://i.imgflip.com/43a2z.jpg", creator: "reactionking", avatar: "https://robohash.org/reactiongod?set=set1&size=40x40", verified: true, likes: "234K", comments: "5.2K" }
+        ],
+        wholesome: [
+            { id: 7, title: "Dancing dog 🕺", image: "https://media.tenor.com/V0GbCgQ8Vp8AAAAC/dancing-dog.gif", creator: "gif_goddess", avatar: "https://robohash.org/gifgoddess?set=set2&size=40x40", verified: true, likes: "512K", comments: "14.8K" },
+            { id: 8, title: "Cat stare wholesome", image: "https://media.tenor.com/MH7T6f4vL6sAAAAC/cat-stare.gif", creator: "gif_goddess", avatar: "https://robohash.org/gifgoddess?set=set2&size=40x40", verified: true, likes: "398K", comments: "9.4K" }
+        ],
+        sarcastic: [
+            { id: 9, title: "Change my mind", image: "https://i.imgflip.com/2kbn.jpg", creator: "memelord42", avatar: "https://robohash.org/memelord42?set=set4&size=40x40", verified: false, likes: "467K", comments: "12.2K" },
+            { id: 10, title: "Confused math lady", image: "https://i.imgflip.com/43a2z.jpg", creator: "reactionking", avatar: "https://robohash.org/reactiongod?set=set1&size=40x40", verified: true, likes: "234K", comments: "5.2K" }
+        ],
+        nostalgic: [
+            { id: 11, title: "Old but gold", image: "https://i.imgflip.com/265j.jpg", creator: "memelord42", avatar: "https://robohash.org/memelord42?set=set4&size=40x40", verified: false, likes: "567K", comments: "15.3K" },
+            { id: 12, title: "Throwback meme", image: "https://i.imgflip.com/1bij.jpg", creator: "danklabs", avatar: "https://robohash.org/dankbrain?set=set3&size=40x40", verified: false, likes: "423K", comments: "11.4K" }
+        ],
+        dark: [
+            { id: 13, title: "Dark humor", image: "https://i.imgflip.com/2kbn.jpg", creator: "memelord42", avatar: "https://robohash.org/memelord42?set=set4&size=40x40", verified: false, likes: "312K", comments: "8.8K" },
+            { id: 14, title: "Edgy meme", image: "https://i.imgflip.com/43a2z.jpg", creator: "reactionking", avatar: "https://robohash.org/reactiongod?set=set1&size=40x40", verified: true, likes: "198K", comments: "3.4K" }
+        ]
+    };
+
+    const moodWeather = {
+        funny: { icon: "😂", title: "Funny Day", desc: "Perfect weather for laughter", global: "2.5M", active: "62%", trending: "#Funny" },
+        chaos: { icon: "🤪", title: "Chaos Storm", desc: "Wild energy everywhere", global: "1.8M", active: "45%", trending: "#Chaos" },
+        wholesome: { icon: "🥰", title: "Wholesome Sunshine", desc: "Warm and fuzzy vibes", global: "2.1M", active: "58%", trending: "#Wholesome" },
+        sarcastic: { icon: "😏", title: "Sarcasm Alert", desc: "Sharp wit incoming", global: "1.5M", active: "40%", trending: "#Sarcasm" },
+        nostalgic: { icon: "🥲", title: "Nostalgia Fog", desc: "Remember the good old days", global: "1.2M", active: "35%", trending: "#Throwback" },
+        dark: { icon: "💀", title: "Dark Horizon", desc: "Edgy and intense", global: "0.9M", active: "28%", trending: "#DarkHumor" }
+    };
+
+    function showToast(msg, emoji = '🌤️') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function updateWeatherWidget() {
+        const weather = moodWeather[currentMood];
+        weatherIcon.innerText = weather.icon;
+        weatherTitle.innerText = weather.title;
+        weatherDesc.innerText = weather.desc;
+        document.getElementById('globalLaughs').innerText = weather.global;
+        document.getElementById('activeMood').innerText = weather.active;
+        document.getElementById('trendingNow').innerText = weather.trending;
+    }
+
+    function renderFeed() {
+        const memes = memesByMood[currentMood] || memesByMood.funny;
+        
+        if (!memes || memes.length === 0) {
+            feedGrid.innerHTML = `<div class="empty-state"><i class="fas fa-cloud-rain" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>No memes for this mood yet<br><span style="font-size: 0.7rem;">Try a different mood</span></div>`;
+            return;
+        }
+        
+        feedGrid.innerHTML = memes.map(meme => `
+            <div class="meme-card" data-id="${meme.id}">
+                <div class="card-image">
+                    <img src="${meme.image}" alt="${meme.title}" onerror="this.src='https://i.imgflip.com/265j.jpg'">
+                </div>
+                <div class="card-info">
+                    <div class="card-creator">
+                        <img class="creator-avatar" src="${meme.avatar}" alt="${meme.creator}">
+                        <span class="creator-name">
+                            ${meme.creator}
+                            ${meme.verified ? '<i class="fas fa-check-circle" style="color: #8b5cf6; font-size: 0.65rem;"></i>' : ''}
+                        </span>
+                    </div>
+                    <div class="card-title">${meme.title}</div>
+                    <div class="card-stats">
+                        <span><i class="fas fa-heart"></i> ${meme.likes}</span>
+                        <span><i class="fas fa-comment"></i> ${meme.comments}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('.meme-card').forEach(card => {
+            card.addEventListener('click', () => showToast('Opening meme', '📱'));
+        });
+    }
+
+    // Mood selection
+    document.querySelectorAll('.mood-card').forEach(card => {
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.mood-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            currentMood = card.dataset.mood;
+            updateWeatherWidget();
+            renderFeed();
+            showToast(`${card.querySelector('.mood-name').innerText} mood selected`, card.querySelector('.mood-emoji').innerText);
+        });
+    });
+
+    // Navigation
+    document.getElementById('createBtn').addEventListener('click', () => showToast('Create new post', '📸'));
+    document.getElementById('notificationBtn').addEventListener('click', () => showToast('No new notifications', '🔔'));
+
+    // Initialize
+    renderFeed();
+    showToast('Select your mood to see matching memes', '🌤️');
+</script>
+</body>
+</html>

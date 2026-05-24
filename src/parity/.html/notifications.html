@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Notifications</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.4rem;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.2rem;
+            font-size: 1.2rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 1rem 1.5rem 0.5rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .mark-read {
+            background: none;
+            border: none;
+            color: #8b5cf6;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        /* Tabs */
+        .notif-tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem 1.5rem;
+            border-bottom: 1px solid #1a1a28;
+        }
+
+        .notif-tab {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .notif-tab.active {
+            background: #1a1a2a;
+            color: #a78bfa;
+        }
+
+        /* Notifications List */
+        .notifications-list {
+            padding: 0.5rem 0;
+        }
+
+        /* Notification Item */
+        .notif-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            transition: background 0.2s;
+            border-bottom: 1px solid #1a1a28;
+            cursor: pointer;
+        }
+
+        .notif-item:hover {
+            background: #0e0e16;
+        }
+
+        .notif-item.unread {
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .notif-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .notif-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .notif-content {
+            flex: 1;
+        }
+
+        .notif-text {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 0.2rem;
+        }
+
+        .notif-text strong {
+            font-weight: 700;
+        }
+
+        .notif-text .username {
+            color: #e5e7eb;
+        }
+
+        .notif-time {
+            font-size: 0.65rem;
+            color: #6b7280;
+        }
+
+        .notif-preview {
+            width: 44px;
+            height: 44px;
+            border-radius: 0.5rem;
+            background: #1a1a28;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+            background: #8b5cf6;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 0.5rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+            .page-header {
+                padding: 0.75rem 1rem;
+            }
+            .notif-tabs {
+                padding: 0.5rem 1rem;
+            }
+            .notif-item {
+                padding: 0.8rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-user-circle" id="profileBtn"></i>
+        </div>
+    </div>
+
+    <div class="page-header">
+        <h1><i class="fas fa-bell"></i> Notifications</h1>
+        <button class="mark-read" id="markAllRead">Mark all as read</button>
+    </div>
+
+    <div class="notif-tabs">
+        <button class="notif-tab active" data-tab="all">All</button>
+        <button class="notif-tab" data-tab="likes">Likes</button>
+        <button class="notif-tab" data-tab="comments">Comments</button>
+        <button class="notif-tab" data-tab="follows">Follows</button>
+    </div>
+
+    <div class="notifications-list" id="notificationsList">
+        <!-- Notifications will be injected here -->
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const notificationsList = document.getElementById('notificationsList');
+    const toast = document.getElementById('toast');
+
+    // Mock notifications data
+    let notifications = [
+        {
+            id: 1,
+            type: 'like',
+            user: {
+                name: 'gif_goddess',
+                username: '@gif_goddess',
+                avatar: 'https://robohash.org/gifgoddess?set=set2&size=50x50',
+                verified: true
+            },
+            content: 'liked your meme',
+            postPreview: 'https://media.tenor.com/qDeRj_HS9vIAAAAM/joey-friends.gif',
+            time: '2 minutes ago',
+            read: false,
+            postId: 123
+        },
+        {
+            id: 2,
+            type: 'comment',
+            user: {
+                name: 'danklabs',
+                username: '@danklabs',
+                avatar: 'https://robohash.org/dankbrain?set=set3&size=50x50',
+                verified: false
+            },
+            content: 'commented: "This is hilarious! 🔥"',
+            postPreview: 'https://i.imgflip.com/9/265j.jpg',
+            time: '15 minutes ago',
+            read: false,
+            postId: 456
+        },
+        {
+            id: 3,
+            type: 'follow',
+            user: {
+                name: 'reactionking',
+                username: '@reactionking',
+                avatar: 'https://robohash.org/reactiongod?set=set1&size=50x50',
+                verified: true
+            },
+            content: 'started following you',
+            postPreview: null,
+            time: '1 hour ago',
+            read: true,
+            postId: null
+        },
+        {
+            id: 4,
+            type: 'like',
+            user: {
+                name: 'memelord42',
+                username: '@memelord42',
+                avatar: 'https://robohash.org/memelord42?set=set4&size=50x50',
+                verified: false
+            },
+            content: 'liked your GIF',
+            postPreview: 'https://media.tenor.com/lPGfoTELe5QAAAAM/cat-toddler.gif',
+            time: '3 hours ago',
+            read: true,
+            postId: 789
+        },
+        {
+            id: 5,
+            type: 'comment',
+            user: {
+                name: 'wholesome_memes',
+                username: '@wholesome_memes',
+                avatar: 'https://robohash.org/wholesome?set=set4&size=50x50',
+                verified: true
+            },
+            content: 'commented: "Made my day! ❤️"',
+            postPreview: 'https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600',
+            time: '5 hours ago',
+            read: true,
+            postId: 101
+        },
+        {
+            id: 6,
+            type: 'follow',
+            user: {
+                name: 'programmer_humor',
+                username: '@programmer_humor',
+                avatar: 'https://robohash.org/programmer?set=set4&size=50x50',
+                verified: true
+            },
+            content: 'started following you',
+            postPreview: null,
+            time: '1 day ago',
+            read: true,
+            postId: null
+        },
+        {
+            id: 7,
+            type: 'like',
+            user: {
+                name: 'crypto_memes',
+                username: '@crypto_memes',
+                avatar: 'https://robohash.org/cryptomemes?set=set3&size=50x50',
+                verified: false
+            },
+            content: 'liked your meme',
+            postPreview: 'https://i.imgflip.com/9/1bij.jpg',
+            time: '2 days ago',
+            read: true,
+            postId: 202
+        },
+        {
+            id: 8,
+            type: 'comment',
+            user: {
+                name: 'anime_gifs',
+                username: '@anime_gifs',
+                avatar: 'https://robohash.org/animegifs?set=set4&size=50x50',
+                verified: true
+            },
+            content: 'commented: "Best GIF ever! 🎬"',
+            postPreview: 'https://media.tenor.com/m/V0GbCgQ8Vp8AAAAC/dancing-dog.gif',
+            time: '3 days ago',
+            read: true,
+            postId: 303
+        }
+    ];
+
+    let currentFilter = 'all';
+
+    function showToast(msg, emoji = '🔔') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function getNotificationIcon(type) {
+        switch(type) {
+            case 'like': return '❤️';
+            case 'comment': return '💬';
+            case 'follow': return '👤';
+            default: return '📢';
+        }
+    }
+
+    function formatTimeAgo(date) {
+        // For demo purposes, just return the time string
+        return date;
+    }
+
+    function markAsRead(notifId) {
+        const notif = notifications.find(n => n.id === notifId);
+        if (notif && !notif.read) {
+            notif.read = true;
+            renderNotifications();
+            showToast('Marked as read', '✓');
+        }
+    }
+
+    function markAllAsRead() {
+        let markedCount = 0;
+        notifications.forEach(n => {
+            if (!n.read) {
+                n.read = true;
+                markedCount++;
+            }
+        });
+        if (markedCount > 0) {
+            renderNotifications();
+            showToast(`Marked ${markedCount} notification${markedCount > 1 ? 's' : ''} as read`, '✓');
+        } else {
+            showToast('No unread notifications', '📭');
+        }
+    }
+
+    function renderNotifications() {
+        let filtered = notifications;
+        
+        if (currentFilter !== 'all') {
+            filtered = notifications.filter(n => n.type === currentFilter);
+        }
+        
+        if (filtered.length === 0) {
+            notificationsList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-bell-slash"></i>
+                    <p>No ${currentFilter !== 'all' ? currentFilter : ''} notifications yet</p>
+                    <span style="font-size: 0.7rem;">When someone interacts with you, you'll see it here</span>
+                </div>
+            `;
+            return;
+        }
+        
+        notificationsList.innerHTML = filtered.map(notif => `
+            <div class="notif-item ${!notif.read ? 'unread' : ''}" data-id="${notif.id}" data-type="${notif.type}">
+                <div class="notif-avatar">
+                    <img src="${notif.user.avatar}" alt="${notif.user.name}">
+                </div>
+                <div class="notif-content">
+                    <div class="notif-text">
+                        <strong class="username">${notif.user.name}</strong>
+                        ${notif.user.verified ? '<i class="fas fa-check-circle" style="color: #8b5cf6; font-size: 0.7rem;"></i>' : ''}
+                        <span> ${notif.content}</span>
+                        ${!notif.read ? '<span class="unread-dot"></span>' : ''}
+                    </div>
+                    <div class="notif-time">${notif.time}</div>
+                </div>
+                ${notif.postPreview ? `
+                    <img class="notif-preview" src="${notif.postPreview}" alt="preview">
+                ` : `
+                    <div class="notif-preview" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #8b5cf6, #ec4899);">
+                        <i class="fas fa-user-plus" style="color: white;"></i>
+                    </div>
+                `}
+            </div>
+        `).join('');
+        
+        // Add click handlers
+        document.querySelectorAll('.notif-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const notifId = parseInt(item.dataset.id);
+                const notifType = item.dataset.type;
+                const notif = notifications.find(n => n.id === notifId);
+                
+                if (!notif.read) {
+                    markAsRead(notifId);
+                }
+                
+                if (notifType === 'follow') {
+                    showToast(`View ${notif.user.name}'s profile`, '👤');
+                } else {
+                    showToast('Opening post', '📱');
+                }
+            });
+        });
+    }
+
+    // Tab switching
+    const tabs = document.querySelectorAll('.notif-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentFilter = tab.dataset.tab;
+            renderNotifications();
+        });
+    });
+
+    // Mark all as read
+    document.getElementById('markAllRead').addEventListener('click', markAllAsRead);
+
+    // Navigation
+    document.getElementById('createBtn').addEventListener('click', () => showToast('Create new post', '📸'));
+    document.getElementById('profileBtn').addEventListener('click', () => {
+        window.location.href = 'own_profile.html';
+    });
+
+    // Initialize
+    renderNotifications();
+    showToast('Your notifications', '🔔');
+</script>
+</body>
+</html>

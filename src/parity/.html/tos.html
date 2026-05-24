@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Terms of Service</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+
+            background: linear-gradient(135deg, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            }
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 1.5rem 2rem 0.5rem 2rem;
+            border-bottom: 1px solid #1a1a28;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .page-header p {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        .last-updated {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+
+        /* Content */
+        .content {
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #a78bfa;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section p {
+            color: #d1d5db;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .section ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .section li {
+            color: #d1d5db;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight {
+            background: #1a1a28;
+            padding: 1rem;
+            border-radius: 0.8rem;
+            border-left: 3px solid #8b5cf6;
+            margin: 1rem 0;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+            .page-header {
+                padding: 1rem;
+            }
+            .content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-bell" id="notificationBtn"></i>
+        </div>
+    </div>
+
+    <div class="page-header">
+        <h1><i class="fas fa-file-contract"></i> Terms of Service</h1>
+        <p>Please read these terms carefully before using Memotions</p>
+        <div class="last-updated">Last Updated: April 9, 2026</div>
+    </div>
+
+    <div class="content">
+        <div class="section">
+            <h2><i class="fas fa-handshake"></i> 1. Acceptance of Terms</h2>
+            <p>By accessing or using Memotions ("the Platform"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-user-plus"></i> 2. Eligibility</h2>
+            <p>You must be at least 13 years old to use Memotions. By using our platform, you represent and warrant that you meet this age requirement. Users between 13 and 18 must have parental consent.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-upload"></i> 3. User Content</h2>
+            <p>You retain ownership of all content you post on Memotions. However, by posting content, you grant Memotions a worldwide, non-exclusive, royalty-free license to use, display, and distribute your content on our platform.</p>
+            <div class="highlight">
+                <strong>⚠️ Important:</strong> You are solely responsible for the content you post. Do not post copyrighted material without permission.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-ban"></i> 4. Prohibited Content</h2>
+            <p>The following content is strictly prohibited on Memotions:</p>
+            <ul>
+                <li>Hate speech, harassment, or bullying</li>
+                <li>Explicit sexual content or nudity</li>
+                <li>Violence or gore</li>
+                <li>Copyrighted material without permission</li>
+                <li>Spam or misleading content</li>
+                <li>Impersonation of others</li>
+                <li>Illegal activities</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-shield-alt"></i> 5. Account Security</h2>
+            <p>You are responsible for maintaining the security of your account. Notify us immediately of any unauthorized access. Memotions is not liable for any losses due to compromised accounts.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-gavel"></i> 6. Termination</h2>
+            <p>We reserve the right to suspend or terminate accounts that violate these terms. You may delete your account at any time through settings.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-copyright"></i> 7. Intellectual Property</h2>
+            <p>Memotions name, logo, and design are our intellectual property. You may not use them without permission. All user-generated content remains the property of their respective owners.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-exclamation-triangle"></i> 8. Disclaimer of Warranties</h2>
+            <p>Memotions is provided "as is" without warranties of any kind. We do not guarantee uninterrupted or error-free service.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-balance-scale"></i> 9. Limitation of Liability</h2>
+            <p>To the maximum extent permitted by law, Memotions shall not be liable for any indirect, incidental, or consequential damages arising from your use of the platform.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-envelope"></i> 10. Changes to Terms</h2>
+            <p>We may update these terms from time to time. Continued use of Memotions after changes constitutes acceptance of the new terms.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-at"></i> 11. Contact Us</h2>
+            <p>If you have any questions about these Terms, please contact us at <strong style="color:#a78bfa;">legal@memotions.com</strong></p>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const toast = document.getElementById('toast');
+
+    function showToast(msg, emoji = '⚖️') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    document.getElementById('createBtn').addEventListener('click', () => showToast('Create new post', '📸'));
+    document.getElementById('notificationBtn').addEventListener('click', () => showToast('No new notifications', '🔔'));
+
+    showToast('Terms of Service', '📜');
+</script>
+</body>
+</html>

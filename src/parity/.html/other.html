@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Memotions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- GSAP Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow: hidden;
+        }
+
+        .app {
+            display: flex;
+            width: 100%;
+            max-width: 1920px;
+            height: 100vh;
+            background: #0a0a10;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.02);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .left-sidebar {
+            width: 280px;
+            background: #0c0c14;
+            border-right: 1px solid #1a1a28;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .logo-area { padding: 0 0.5rem 2.5rem 0.5rem; }
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            color: white;
+            padding: 0.625rem;
+            border-radius: 1rem;
+            font-size: 1.375rem;
+        }
+
+        .nav-menu { flex: 1; display: flex; flex-direction: column; gap: 0.25rem; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.875rem 1.125rem;
+            border-radius: 0.875rem;
+            font-weight: 500;
+            font-size: 1rem;
+            color: #9ca3af;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .nav-item i { width: 1.5rem; font-size: 1.375rem; color: #6b7280; }
+        .nav-item.active { background: #1a1a2a; color: #ffffff; font-weight: 600; }
+        .nav-item.active i { color: #a78bfa; }
+        .nav-item:hover:not(.active) { background: #14141e; color: #e5e7eb; }
+
+        .bottom-links {
+            margin-top: auto;
+            font-size: 0.8125rem;
+            color: #4b5563;
+            padding: 1.25rem 0.75rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .main-feed {
+            flex: 1;
+            background: #0e0e16;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-width: 0;
+            position: relative;
+        }
+
+        .top-bar {
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1a1a28;
+            background: #0e0e16;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: #14141e;
+            border-radius: 3rem;
+            padding: 0.75rem 1.5rem;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #262638;
+            transition: all 0.2s ease;
+        }
+        .search-wrapper:focus-within { border-color: #8b5cf6; background: #1a1a28; }
+        .search-wrapper i { color: #6b7280; margin-right: 0.75rem; }
+        .search-wrapper input {
+            background: transparent; border: none; outline: none;
+            font-size: 0.9375rem; width: 100%; color: #f3f4f6;
+        }
+        .search-wrapper input::placeholder { color: #4b5563; }
+
+        .top-actions { display: flex; gap: 1.25rem; color: #9ca3af; }
+        .top-actions i {
+            font-size: 1.375rem; cursor: pointer; padding: 0.5rem;
+            border-radius: 0.75rem; transition: all 0.15s ease;
+        }
+        .top-actions i:hover { background: #1a1a28; color: #e5e7eb; }
+
+        .feed-container {
+            flex: 1; overflow-y: scroll; scroll-snap-type: y mandatory;
+            scroll-behavior: smooth; position: relative;
+        }
+        .feed-container::-webkit-scrollbar { width: 0; }
+
+        .scroll-indicator {
+            position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+            display: flex; flex-direction: column; gap: 0.5rem; z-index: 20;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .feed-container:hover ~ .scroll-indicator,
+        .scroll-indicator:hover { opacity: 1; }
+
+        .indicator-dot {
+            width: 0.5rem; height: 0.5rem; border-radius: 50%;
+            background: #4b5563; transition: all 0.3s ease; cursor: pointer;
+        }
+        .indicator-dot.active { background: #8b5cf6; height: 2rem; border-radius: 1rem; }
+
+        .meme-card {
+            scroll-snap-align: start; scroll-snap-stop: always;
+            width: 100%; height: 100%; display: flex;
+            align-items: center; justify-content: center;
+            position: relative; background: #0e0e16;
+        }
+
+        .card-container {
+            display: flex; align-items: flex-end; gap: 1rem;
+            max-width: 620px; width: 100%; margin: 0 auto; padding: 0 1rem;
+        }
+
+        .card-wrapper {
+            flex: 1; background: #12121c; border-radius: 1.5rem;
+            overflow: hidden; border: 1px solid #222232;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .meme-media-area {
+            position: relative; width: 100%; aspect-ratio: 1 / 1;
+            display: flex; align-items: center; justify-content: center;
+            background: #0a0a12; border-radius: 1.5rem 1.5rem 0 0; overflow: hidden;
+        }
+
+        .meme-image {
+            width: 100%; height: 100%; object-fit: cover;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .meme-image img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        .gif-badge {
+            position: absolute; top: 1rem; left: 1rem;
+            background: #1a1a2a; color: #c4b5fd;
+            padding: 0.5rem 1rem; border-radius: 2rem;
+            font-weight: 600; font-size: 0.8125rem;
+            border: 1px solid #4c3b6e; backdrop-filter: blur(8px);
+            display: flex; align-items: center; gap: 0.375rem; z-index: 5;
+        }
+
+        .meme-footer {
+            padding: 1.25rem; background: #12121c;
+            border-radius: 0 0 1.5rem 1.5rem;
+        }
+
+        .creator-info { margin-bottom: 1rem; }
+        .username-row {
+            display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;
+        }
+        .username {
+            font-size: 1.125rem; font-weight: 700; color: #ffffff;
+        }
+        .verified-badge { color: #8b5cf6; font-size: 1rem; }
+        .meme-caption {
+            font-size: 0.9375rem; color: #d1d5db;
+            margin-bottom: 0.75rem; line-height: 1.5;
+        }
+        .meme-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .meme-tag {
+            background: #1a1a28; color: #cbd5e1;
+            padding: 0.375rem 0.875rem; border-radius: 2rem;
+            font-size: 0.75rem; font-weight: 500; border: 1px solid #2d2d40;
+        }
+
+        .action-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            padding-top: 1rem; border-top: 1px solid #1e1e2e;
+        }
+        .action-group { display: flex; align-items: center; gap: 1rem; }
+        .action-btn {
+            display: flex; align-items: center; gap: 0.375rem;
+            background: transparent; border: none; color: #9ca3af;
+            font-weight: 500; font-size: 0.875rem; cursor: pointer;
+            padding: 0.5rem 0.75rem; border-radius: 2rem; transition: all 0.15s ease;
+        }
+        .action-btn i { font-size: 1.375rem; color: #6b7280; transition: transform 0.2s; }
+        .action-btn:hover i { transform: scale(1.1); }
+        .action-btn.liked i { color: #f43f5e; }
+        .action-btn.saved i { color: #fbbf24; }
+
+        .reactions-panel {
+            display: flex; flex-direction: column; gap: 1rem;
+            padding: 0.75rem 0.5rem; background: #12121c;
+            border-radius: 3rem; border: 1px solid #222232;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3); margin-bottom: 0.5rem;
+        }
+        .reaction-item {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 0.25rem; background: transparent; border: none;
+            cursor: pointer; padding: 0.5rem 0.375rem; border-radius: 2rem;
+            transition: all 0.15s ease; color: #d1d5db; min-width: 3.5rem;
+        }
+        .reaction-item:hover { background: #1a1a28; }
+        .reaction-emoji {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            display: inline-block;
+        }
+        .reaction-emoji svg {
+            width: 100%;
+            height: 100%;
+        }
+        .reaction-count { font-size: 0.7rem; font-weight: 600; color: #9ca3af; transition: transform 0.2s; }
+        .add-reaction-btn {
+            background: transparent; border: 1px solid #2d2d40;
+            color: #6b7280; cursor: pointer; padding: 0.5rem;
+            border-radius: 50%; transition: all 0.15s ease;
+            font-size: 1rem; width: 2.5rem; height: 2.5rem;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto;
+        }
+        .add-reaction-btn:hover { background: #1a1a28; color: #a78bfa; border-color: #8b5cf6; }
+
+        .nav-hint {
+            position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+            color: #6b7280; font-size: 0.875rem; display: flex; align-items: center;
+            gap: 0.5rem; background: #1a1a28; padding: 0.5rem 1rem;
+            border-radius: 2rem; opacity: 0; transition: opacity 0.3s ease;
+            pointer-events: none; z-index: 15;
+        }
+        .feed-container:hover ~ .nav-hint,
+        .nav-hint:hover { opacity: 1; }
+
+        .right-sidebar {
+            width: 320px; background: #0c0c14; border-left: 1px solid #1a1a28;
+            padding: 2rem 1.5rem; overflow-y: auto; flex-shrink: 0;
+        }
+        .right-sidebar::-webkit-scrollbar { width: 4px; }
+        .right-sidebar::-webkit-scrollbar-thumb { background: #2a2a3c; border-radius: 10px; }
+
+        .profile-card {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 0.5rem 0 1.75rem 0; border-bottom: 1px solid #1e1e2e;
+        }
+        .profile-pic {
+            width: 3.5rem; height: 3.5rem; border-radius: 1.75rem;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 1.25rem;
+        }
+        .profile-info h4 { font-weight: 700; font-size: 1rem; color: #ffffff; }
+        .profile-info p { color: #6b7280; font-size: 0.8125rem; }
+
+        .suggestions-header {
+            display: flex; justify-content: space-between;
+            margin: 1.75rem 0 1rem 0; font-size: 0.875rem;
+            font-weight: 600; color: #9ca3af;
+        }
+        .suggestion-item {
+            display: flex; align-items: center; gap: 0.875rem; margin-bottom: 1.25rem;
+        }
+        .sugg-avatar {
+            width: 2.75rem; height: 2.75rem; border-radius: 1.375rem;
+            background: #1e1e2e; flex-shrink: 0;
+        }
+        .sugg-info { flex: 1; }
+        .sugg-name { font-weight: 600; color: #f3f4f6; font-size: 0.875rem; }
+        .sugg-sub { color: #6b7280; font-size: 0.75rem; }
+        .follow-btn {
+            background: transparent; border: 1px solid #374151;
+            padding: 0.375rem 1rem; border-radius: 2rem; font-size: 0.75rem;
+            font-weight: 600; color: #d1d5db; cursor: pointer; transition: all 0.15s ease;
+        }
+        .follow-btn:hover { background: #8b5cf6; border-color: #8b5cf6; color: white; }
+
+        .trending-tags { margin-top: 2rem; }
+        .trending-tags h5 { margin-bottom: 1rem; font-weight: 600; color: #e5e7eb; }
+        .tag {
+            display: inline-block; background: #14141e; padding: 0.5rem 1rem;
+            border-radius: 2rem; margin: 0 0.5rem 0.625rem 0; font-size: 0.75rem;
+            font-weight: 500; color: #cbd5e1; border: 1px solid #262638;
+        }
+
+        .toast-message {
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+            background: #1a1a2a; color: #f3f4f6; padding: 0.875rem 2rem;
+            border-radius: 3rem; font-weight: 500; font-size: 0.9375rem;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.8); z-index: 1000;
+            opacity: 0; transition: opacity 0.2s ease; pointer-events: none;
+        }
+        .toast-message.show { opacity: 1; }
+
+        @media (max-width: 1200px) { .left-sidebar { width: 260px; } .right-sidebar { width: 300px; } }
+        @media (max-width: 1024px) { .right-sidebar { display: none; } }
+        @media (max-width: 768px) {
+            .left-sidebar {
+                position: fixed; left: 0; top: 0; bottom: 0; z-index: 100;
+                transform: translateX(-100%); transition: transform 0.3s ease;
+            }
+            .left-sidebar.open { transform: translateX(0); }
+            .card-container { flex-direction: column; align-items: stretch; gap: 0.75rem; }
+            .reactions-panel { flex-direction: row; justify-content: center; gap: 0.5rem; }
+            .reaction-item { flex-direction: row; gap: 0.375rem; min-width: auto; }
+            .add-reaction-btn { margin: 0; }
+        }
+        @media (max-width: 480px) {
+            .action-group { gap: 0.5rem; }
+            .action-btn { padding: 0.375rem 0.5rem; }
+            .toast-message { white-space: normal; width: 90%; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="left-sidebar">
+        <div class="logo-area">
+            <div class="logo"><i class="fas fa-face-smile"></i> <span>Memotions</span></div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active"><i class="fas fa-compass"></i><span>For You</span></div>
+            <div class="nav-item"><i class="fas fa-gift"></i><span>GIF Feed</span></div>
+            <div class="nav-item"><i class="fas fa-chart-line"></i><span>Trending</span></div>
+            <div class="nav-item"><i class="fas fa-user-group"></i><span>Creators</span></div>
+            <div class="nav-item"><i class="fas fa-heart"></i><span>Activity</span></div>
+        </div>
+        <div class="bottom-links">About · Help · Terms<br>Privacy · Cookies<br>© 2026 Memotions</div>
+    </div>
+
+    <div class="main-feed">
+        <div class="top-bar">
+            <div class="search-wrapper"><i class="fas fa-search"></i><input type="text" placeholder="Search memes, GIFs, or creators"></div>
+            <div class="top-actions"><i class="far fa-bell"></i><i class="far fa-envelope"></i></div>
+        </div>
+        <div class="feed-container" id="feedContainer"></div>
+        <div class="scroll-indicator" id="scrollIndicator"></div>
+        <div class="nav-hint"><i class="fas fa-arrow-down"></i><span>Scroll or press ↓ for next meme</span><i class="fas fa-arrow-down"></i></div>
+    </div>
+
+<div class="right-sidebar">
+    <div class="profile-card">
+        <img class="profile-pic" src="https://robohash.org/memelord?set=set4" />
+        <div class="profile-info">
+            <h4>meme curator</h4>
+            <p>@Memotions · 842K followers</p>
+        </div>
+    </div>
+
+    <div class="suggestions-header">
+        <span>Suggested for you</span>
+        <span style="color:#8b5cf6; cursor:pointer;">See all</span>
+    </div>
+
+    <div class="suggestion-item">
+        <img class="sugg-avatar" src="https://robohash.org/gifqueen?set=set2" />
+        <div class="sugg-info">
+            <div class="sugg-name">gif_goddess</div>
+            <div class="sugg-sub">daily premium GIFs</div>
+        </div>
+        <button class="follow-btn">Follow</button>
+    </div>
+
+    <div class="suggestion-item">
+        <img class="sugg-avatar" src="https://robohash.org/dankbrain?set=set3" />
+        <div class="sugg-info">
+            <div class="sugg-name">danklabs</div>
+            <div class="sugg-sub">viral meme curator</div>
+        </div>
+        <button class="follow-btn">Follow</button>
+    </div>
+
+    <div class="suggestion-item">
+        <img class="sugg-avatar" src="https://robohash.org/reactiongod?set=set1" />
+        <div class="sugg-info">
+            <div class="sugg-name">reactionking</div>
+            <div class="sugg-sub">reaction specialist</div>
+        </div>
+        <button class="follow-btn">Follow</button>
+    </div>
+
+    <div class="trending-tags">
+        <h5>Trending tags</h5>
+        <span class="tag">#NoReject</span>
+        <span class="tag">#GIFgold</span>
+        <span class="tag">#Memotions</span>
+        <span class="tag">#premium</span>
+        <span class="tag">#dank</span>
+        <span class="tag">#relatable</span>
+        <span class="tag">#vibes</span>
+    </div>
+</div>
+<div id="toast" class="toast-message"></div>
+
+<script>
+    (function(){
+        const feed = document.getElementById('feedContainer');
+        const toast = document.getElementById('toast');
+        const scrollIndicator = document.getElementById('scrollIndicator');
+
+        // Map of reaction emoji codes to their animated SVG URLs from Google Noto Emoji Animation
+        const animatedEmojiUrls = {
+            '😂': 'https://fonts.gstatic.com/noto-emoji-animations/animations/1F602/lottie-light.json',  // Face with Tears of Joy
+            '💀': 'https://fonts.gstatic.com/noto-emoji-animations/animations/1F480/lottie-light.json',  // Skull
+            '🔥': 'https://fonts.gstatic.com/noto-emoji-animations/animations/1F525/lottie-light.json',  // Fire
+            '❤️': 'https://fonts.gstatic.com/noto-emoji-animations/animations/2764/lottie-light.json',   // Red Heart
+            '😭': 'https://fonts.gstatic.com/noto-emoji-animations/animations/1F62D/lottie-light.json',  // Loudly Crying Face
+            '👏': 'https://fonts.gstatic.com/noto-emoji-animations/animations/1F44F/lottie-light.json'   // Clapping Hands
+        };
+
+        // Fallback: For browsers that don't support Lottie, we'll use a simple SVG
+        function getAnimatedEmojiHTML(emoji) {
+            // For now, we'll use a div with the emoji text as a fallback,
+            // but we'll apply GSAP animations to it.
+            // In a production environment, you'd integrate a Lottie player.
+            return `<div class="reaction-emoji-text" style="font-size: 1.75rem; line-height: 1;">${emoji}</div>`;
+        }
+
+        const popularReactions = [
+            { emoji: '😂', count: '2.1K' },
+            { emoji: '💀', count: '1.8K' },
+            { emoji: '🔥', count: '1.5K' },
+            { emoji: '❤️', count: '1.2K' },
+            { emoji: '😭', count: '956' },
+            { emoji: '👏', count: '743' }
+        ];
+        
+        function showToast(text, emoji = '✨') {
+            toast.innerHTML = `${emoji} ${text}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // UNIQUE animations for each emoji using GSAP (1-2 seconds duration)
+        function animateReaction(emojiElement, reactionEmoji) {
+            gsap.killTweensOf(emojiElement);
+            
+            // Create particle burst effect (shared)
+            const rect = emojiElement.getBoundingClientRect();
+            const container = document.body;
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.textContent = reactionEmoji;
+                particle.style.position = 'fixed';
+                particle.style.left = rect.left + rect.width/2 + (Math.random() - 0.5) * 15 + 'px';
+                particle.style.top = rect.top + rect.height/2 + (Math.random() - 0.5) * 15 + 'px';
+                particle.style.fontSize = '0.9rem';
+                particle.style.pointerEvents = 'none';
+                particle.style.zIndex = '9999';
+                particle.style.opacity = '0.9';
+                container.appendChild(particle);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 35 + Math.random() * 35;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance - 25;
+                
+                gsap.to(particle, {
+                    x: tx,
+                    y: ty,
+                    rotation: (Math.random() - 0.5) * 180,
+                    opacity: 0,
+                    duration: 1,
+                    ease: "power2.out",
+                    onComplete: () => particle.remove()
+                });
+            }
+            
+            // Different GSAP animations per emoji (each lasting 1-2 seconds total)
+            switch(reactionEmoji) {
+                case '😂': // Laughing - Bounce and shake
+                    gsap.fromTo(emojiElement, 
+                        { scale: 0.5, y: 10, rotation: -15 },
+                        { scale: 1.3, y: -15, rotation: 10, duration: 0.35, ease: "back.out(2)" }
+                    );
+                    gsap.to(emojiElement, {
+                        scale: 1,
+                        y: 0,
+                        rotation: 0,
+                        duration: 0.5,
+                        delay: 0.25,
+                        ease: "elastic.out(1, 0.3)"
+                    });
+                    gsap.to(emojiElement, {
+                        x: "+=4",
+                        duration: 0.12,
+                        repeat: 5,
+                        yoyo: true,
+                        delay: 0.6,
+                        ease: "power1.inOut"
+                    });
+                    break;
+                    
+                case '💀': // Skull - Spooky wobble
+                    gsap.fromTo(emojiElement,
+                        { scale: 0, rotation: 0 },
+                        { scale: 1.4, duration: 0.35, ease: "back.out(2)" }
+                    );
+                    gsap.to(emojiElement, {
+                        rotation: "+=18",
+                        duration: 0.18,
+                        repeat: 4,
+                        yoyo: true,
+                        delay: 0.25,
+                        ease: "power1.inOut"
+                    });
+                    gsap.to(emojiElement, {
+                        scale: 1,
+                        rotation: 0,
+                        duration: 0.3,
+                        delay: 0.65,
+                        ease: "elastic.out(1, 0.5)"
+                    });
+                    break;
+                    
+                case '🔥': // Fire - Flame flicker
+                    gsap.fromTo(emojiElement,
+                        { scale: 0.8, y: 5 },
+                        { scale: 1.5, y: -12, duration: 0.3, ease: "power2.out" }
+                    );
+                    gsap.to(emojiElement, {
+                        scale: 1.1,
+                        y: 0,
+                        duration: 0.25,
+                        delay: 0.25,
+                        ease: "back.out(1)"
+                    });
+                    gsap.to(emojiElement, {
+                        scale: 1,
+                        duration: 0.2,
+                        delay: 0.5,
+                        ease: "power2.out"
+                    });
+                    gsap.to(emojiElement, {
+                        opacity: 0.7,
+                        duration: 0.12,
+                        repeat: 6,
+                        yoyo: true,
+                        delay: 0.65,
+                        ease: "power1.inOut"
+                    });
+                    break;
+                    
+                case '❤️': // Heart - Beat pulse
+                    gsap.fromTo(emojiElement,
+                        { scale: 0.6, opacity: 0.5 },
+                        { scale: 1.5, opacity: 1, duration: 0.25, ease: "back.out(2)" }
+                    );
+                    gsap.to(emojiElement, {
+                        scale: 0.9,
+                        duration: 0.12,
+                        delay: 0.25,
+                        ease: "power2.in"
+                    });
+                    gsap.to(emojiElement, {
+                        scale: 1.2,
+                        duration: 0.18,
+                        delay: 0.37,
+                        ease: "power2.out"
+                    });
+                    gsap.to(emojiElement, {
+                        scale: 1,
+                        duration: 0.2,
+                        delay: 0.55,
+                        ease: "elastic.out(1, 0.5)"
+                    });
+                    break;
+                    
+                case '😭': // Crying - Sad wobble
+                    gsap.fromTo(emojiElement,
+                        { scale: 0.7, y: 0, rotation: 0 },
+                        { scale: 1.3, y: -10, rotation: -6, duration: 0.35, ease: "back.out(1.5)" }
+                    );
+                    gsap.to(emojiElement, {
+                        y: 0,
+                        rotation: 6,
+                        duration: 0.25,
+                        delay: 0.3,
+                        ease: "power2.out"
+                    });
+                    gsap.to(emojiElement, {
+                        rotation: 0,
+                        scale: 1,
+                        duration: 0.25,
+                        delay: 0.55,
+                        ease: "elastic.out(1, 0.5)"
+                    });
+                    break;
+                    
+                case '👏': // Clap - Side shake
+                    gsap.fromTo(emojiElement,
+                        { scale: 0.5, x: -6 },
+                        { scale: 1.3, x: 6, duration: 0.25, ease: "power2.out" }
+                    );
+                    gsap.to(emojiElement, {
+                        x: -4,
+                        duration: 0.12,
+                        repeat: 5,
+                        yoyo: true,
+                        delay: 0.25,
+                        ease: "power1.inOut"
+                    });
+                    gsap.to(emojiElement, {
+                        scale: 1,
+                        x: 0,
+                        duration: 0.25,
+                        delay: 0.6,
+                        ease: "elastic.out(1, 0.5)"
+                    });
+                    break;
+                    
+                default:
+                    gsap.fromTo(emojiElement,
+                        { scale: 0.5, rotation: -20 },
+                        { scale: 1.3, rotation: 0, duration: 0.35, ease: "back.out(1.5)" }
+                    );
+                    gsap.to(emojiElement, {
+                        scale: 1,
+                        duration: 0.35,
+                        delay: 0.25,
+                        ease: "elastic.out(1, 0.5)"
+                    });
+            }
+        }
+        
+        function animateAddReaction(btn) {
+            gsap.killTweensOf(btn);
+            gsap.fromTo(btn, 
+                { scale: 1 },
+                { scale: 1.15, duration: 0.2, yoyo: true, repeat: 1, ease: "power1.inOut" }
+            );
+        }
+        
+        function animateLike(btnElement) {
+            const icon = btnElement.querySelector('i');
+            gsap.killTweensOf(icon);
+            gsap.fromTo(icon, 
+                { scale: 1 },
+                { scale: 1.4, duration: 0.2, yoyo: true, repeat: 1, ease: "back.out(1.5)" }
+            );
+        }
+        
+        function animateCount(countElement) {
+            gsap.killTweensOf(countElement);
+            gsap.fromTo(countElement,
+                { scale: 1.2, opacity: 0.6 },
+                { scale: 1, opacity: 1, duration: 0.3, ease: "elastic.out(1, 0.5)" }
+            );
+        }
+        
+        function animateSave(btnElement) {
+            const icon = btnElement.querySelector('i');
+            gsap.killTweensOf(icon);
+            gsap.fromTo(icon, 
+                { rotation: -15, scale: 0.8 },
+                { rotation: 0, scale: 1, duration: 0.35, ease: "back.out(1.2)" }
+            );
+        }
+
+        function generateReactionsPanel() {
+            return `
+                <div class="reactions-panel">
+                    ${popularReactions.map(r => `
+                        <button class="reaction-item" data-reaction="${r.emoji}">
+                            <div class="reaction-emoji">${getAnimatedEmojiHTML(r.emoji)}</div>
+                            <span class="reaction-count">${r.count}</span>
+                        </button>
+                    `).join('')}
+                    <button class="add-reaction-btn" data-action="add-reaction">
+                        <i class="far fa-smile"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        const memes = [
+            { id: 'm1', creator: 'कार्यक्रमर', verified: true, caption: 'When someone says they "what do u for living ? .. I do my best."', tags: ['#cat', '#dank', '#relatable'], likes: '245.2K', comments: '5.6K', shares: '34.1K', saved: false, liked: false, imageUrl: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', gif: false },
+            { id: 'm2', creator: 'sarkar_memer', verified: true, caption: 'Sir put me down. I am the manager!', tags: ['#cat', '#work', '#miscellaneous'], likes: '189.8K', comments: '4.2K', shares: '28.3K', saved: false, liked: false, imageUrl: 'https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600', gif: false },
+            { id: 'm3', creator: 'cat_memes_daily', verified: false, caption: 'He\'s mad at me because I did the scary quick-release on the pressure cooker😡', tags: ['#cats', '#mood', '#irritated'], likes: '467.5K', comments: '12.2K', shares: '89.8K', saved: false, liked: false, imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', gif: false },
+            { id: 'm4', creator: 'relatableposts', verified: true, caption: 'Monday morning hitting different 😫', tags: ['#monday', '#work', '#coffee'], likes: '523.3K', comments: '14.5K', shares: '102.7K', saved: false, liked: false, imageUrl: 'https://i.imgflip.com/2/265j.jpg', gif: false },
+            { id: 'm5', creator: 'gamingmemes', verified: true, caption: 'One more game... 2 hours later 🎮', tags: ['#gaming', '#relatable', '#addiction'], likes: '312.7K', comments: '8.8K', shares: '67.2K', saved: false, liked: false, imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7R0htDNiFjbNDisK1YOnqsy35mVid-q7Ryg&s', gif: false },
+            { id: 'm6', creator: 'sarcasm_only', verified: false, caption: 'Oh no... anyway 💅', tags: ['#sarcasm', '#mood', '#idc'], likes: '178.9K', comments: '3.4K', shares: '22.1K', saved: false, liked: false, imageUrl: 'https://images.ctfassets.net/h6goo9gw1hh6/2BqWsp1aWAIxoe1qJ296KE/c5f2d77f8e0cdfac69e1ed59c91089d3/Yoda_meme.jpeg?w=503&h=499&fl=progressive&q=70&fm=jpg', gif: false }
+        ];
+
+        memes.forEach((meme, index) => {
+            const dot = document.createElement('div');
+            dot.className = 'indicator-dot' + (index === 0 ? ' active' : '');
+            dot.dataset.index = index;
+            dot.addEventListener('click', () => {
+                const cards = document.querySelectorAll('.meme-card');
+                if (cards[index]) cards[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            scrollIndicator.appendChild(dot);
+        });
+
+        memes.forEach(meme => {
+            const card = document.createElement('div');
+            card.className = 'meme-card';
+            card.dataset.id = meme.id;
+            card.innerHTML = `
+                <div class="card-container">
+                    <div class="card-wrapper">
+                        <div class="meme-media-area">
+                            <div class="meme-image">
+                                <img src="${meme.imageUrl}" alt="${meme.caption}" onerror="this.parentElement.innerHTML='<div style=\\'display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:linear-gradient(145deg,#1e1a2e,#0d0a18);color:#a78bfa;font-size:2rem;\\'>🎭 MEME</div>'">
+                            </div>
+                            ${meme.gif ? '<span class="gif-badge"><i class="fas fa-gift"></i> PREMIUM GIF</span>' : ''}
+                        </div>
+                        <div class="meme-footer">
+                            <div class="creator-info">
+                                <div class="username-row"><span class="username">@${meme.creator}</span>${meme.verified ? '<span class="verified-badge"><i class="fas fa-check-circle"></i></span>' : ''}</div>
+                                <div class="meme-caption">${meme.caption}</div>
+                                <div class="meme-tags">${meme.tags.map(tag => `<span class="meme-tag">${tag}</span>`).join('')}</div>
+                            </div>
+                            <div class="action-bar" data-meme-id="${meme.id}">
+                                <div class="action-group">
+                                    <button class="action-btn like-btn ${meme.liked ? 'liked' : ''}" data-action="like"><i class="fas fa-heart"></i><span class="like-count">${meme.likes}</span></button>
+                                    <button class="action-btn comment-btn" data-action="comment"><i class="fas fa-comment"></i><span>${meme.comments}</span></button>
+                                    <button class="action-btn share-btn" data-action="share"><i class="fas fa-share"></i><span>${meme.shares}</span></button>
+                                    <button class="action-btn save-btn ${meme.saved ? 'saved' : ''}" data-action="save"><i class="fas fa-bookmark"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    ${generateReactionsPanel()}
+                </div>
+            `;
+            feed.appendChild(card);
+        });
+
+        // Animate add reaction button on load
+        const addBtns = document.querySelectorAll('.add-reaction-btn');
+        addBtns.forEach(btn => {
+            gsap.to(btn, {
+                scale: 1.05,
+                duration: 1.5,
+                repeat: -1,
+                yoyo: true,
+                ease: "power1.inOut"
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const card = entry.target;
+                    const cards = Array.from(document.querySelectorAll('.meme-card'));
+                    const index = cards.indexOf(card);
+                    document.querySelectorAll('.indicator-dot').forEach((dot, i) => dot.classList.toggle('active', i === index));
+                }
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('.meme-card').forEach(card => observer.observe(card));
+
+        let isScrolling = false;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (isScrolling) return;
+                isScrolling = true;
+                setTimeout(() => isScrolling = false, 500);
+                const cards = Array.from(document.querySelectorAll('.meme-card'));
+                const scrollTop = feed.scrollTop;
+                const cardHeight = cards[0]?.offsetHeight || feed.clientHeight;
+                let currentIndex = Math.round(scrollTop / cardHeight);
+                if (e.key === 'ArrowDown' && currentIndex < cards.length - 1) currentIndex++;
+                else if (e.key === 'ArrowUp' && currentIndex > 0) currentIndex--;
+                cards[currentIndex]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+
+        feed.addEventListener('click', (e) => {
+            const reactionBtn = e.target.closest('.reaction-item');
+            if (reactionBtn) {
+                const reaction = reactionBtn.dataset.reaction;
+                const card = reactionBtn.closest('.meme-card');
+                const creator = card?.querySelector('.username')?.innerText.replace('@', '') || 'creator';
+                const countSpan = reactionBtn.querySelector('.reaction-count');
+                const emojiSpan = reactionBtn.querySelector('.reaction-emoji');
+                const emojiTextDiv = emojiSpan.querySelector('.reaction-emoji-text');
+                if (emojiTextDiv) {
+                    animateReaction(emojiTextDiv, reaction);
+                }
+                reactionBtn.classList.add('active');
+                setTimeout(() => reactionBtn.classList.remove('active'), 300);
+                if (countSpan) {
+                    let count = countSpan.innerText;
+                    const newCount = count.includes('K') ? (parseFloat(count) + 0.1).toFixed(1) + 'K' : (parseInt(count) + 1).toLocaleString();
+                    countSpan.innerText = newCount;
+                    animateCount(countSpan);
+                }
+                showToast(`${reaction} reaction · @${creator}`, reaction);
+                return;
+            }
+            const addBtn = e.target.closest('.add-reaction-btn');
+            if (addBtn) {
+                animateAddReaction(addBtn);
+                const creator = addBtn.closest('.meme-card')?.querySelector('.username')?.innerText.replace('@', '') || 'creator';
+                showToast(`Open reaction picker · @${creator}`, '😊');
+                return;
+            }
+            const btn = e.target.closest('.action-btn');
+            if (!btn) return;
+            const actionBar = btn.closest('.action-bar');
+            if (!actionBar) return;
+            const memeId = actionBar.dataset.memeId;
+            const card = document.querySelector(`.meme-card[data-id="${memeId}"]`);
+            const creator = card?.querySelector('.username')?.innerText.replace('@', '') || 'creator';
+            const action = btn.dataset.action;
+            if (action === 'like') {
+                const span = btn.querySelector('span');
+                const isLiked = btn.classList.contains('liked');
+                animateLike(btn);
+                if (!isLiked) {
+                    btn.classList.add('liked');
+                    let cur = span.innerText;
+                    const newVal = cur.includes('K') ? (parseFloat(cur) + 0.1).toFixed(1) + 'K' : (parseInt(cur.replace(/,/g, '')) + 1).toLocaleString();
+                    span.innerText = newVal;
+                    animateCount(span);
+                    showToast(`❤️ Liked · @${creator}`, '❤️');
+                } else {
+                    btn.classList.remove('liked');
+                    let cur = span.innerText;
+                    const newVal = cur.includes('K') ? Math.max(parseFloat(cur) - 0.1, 0).toFixed(1) + 'K' : Math.max(parseInt(cur.replace(/,/g, '')) - 1, 0).toLocaleString();
+                    span.innerText = newVal;
+                    animateCount(span);
+                    showToast(`Like removed`, '💔');
+                }
+            }
+            if (action === 'comment') showToast(`💬 Viewing comments · @${creator}`, '💬');
+            if (action === 'share') {
+                const span = btn.querySelector('span');
+                if (span) {
+                    let cur = span.innerText;
+                    const newVal = cur.includes('K') ? (parseFloat(cur) + 0.1).toFixed(1) + 'K' : (parseInt(cur.replace(/,/g, '')) + 1).toLocaleString();
+                    span.innerText = newVal;
+                    animateCount(span);
+                }
+                showToast(`📤 Meme shared`, '📤');
+            }
+            if (action === 'save') {
+                animateSave(btn);
+                btn.classList.toggle('saved');
+                showToast(btn.classList.contains('saved') ? `🔖 Saved` : `Removed`, btn.classList.contains('saved') ? '🔖' : '📭');
+            }
+        });
+
+        document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', function() {
+            document.querySelector('.nav-item.active')?.classList.remove('active');
+            this.classList.add('active');
+            showToast(`Switched to ${this.innerText.trim()}`, '📍');
+        }));
+        document.querySelector('.fa-bell')?.addEventListener('click', () => showToast('No new notifications', '🔔'));
+        document.querySelector('.fa-envelope')?.addEventListener('click', () => showToast('No new messages', '📧'));
+        document.querySelectorAll('.follow-btn').forEach(btn => btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const name = this.closest('.suggestion-item')?.querySelector('.sugg-name')?.innerText || 'creator';
+            if (this.innerText === 'Follow') {
+                this.innerText = 'Following';
+                this.style.background = '#8b5cf6';
+                this.style.color = 'white';
+                showToast(`Following @${name}`, '✅');
+            } else {
+                this.innerText = 'Follow';
+                this.style.background = 'transparent';
+                this.style.color = '#d1d5db';
+            }
+        }));
+        document.querySelector('.search-wrapper input')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.target.value.trim()) showToast(`Searching: "${e.target.value}"`, '🔍');
+        });
+        setTimeout(() => {
+            const firstCard = document.querySelector('.meme-card');
+            if (firstCard) {
+                gsap.fromTo(firstCard, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" });
+            }
+            showToast('Scroll or press ↓ for next meme', '🎭');
+        }, 500);
+    })();
+</script>
+</body>
+</html>

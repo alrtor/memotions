@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Create Meme</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        /* Top Navigation Compact */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.4rem;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1rem;
+            font-size: 1.1rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Compact Creator Container */
+        .creator-card {
+            background: #12121c;
+            border-radius: 1.5rem;
+            border: 1px solid #2d2d40;
+            overflow: hidden;
+        }
+
+        .creator-header {
+            padding: 1rem 1.5rem;
+            background: #0e0e16;
+            border-bottom: 1px solid #1f1f2e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .creator-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #a78bfa;
+        }
+
+        .clear-btn {
+            background: #1a1a28;
+            border: 1px solid #374151;
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            color: #e5e7eb;
+            transition: all 0.2s;
+        }
+
+        .clear-btn:hover {
+            background: #f43f5e;
+            border-color: #f43f5e;
+            color: white;
+        }
+
+        /* Two Column Layout - Compact */
+        .compact-layout {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        /* Left Side - Canvas (Smaller) */
+        .canvas-side {
+            flex: 1.5;
+            background: #0a0a12;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+            position: relative;
+        }
+
+        .meme-wrapper {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        #memeImage {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            display: block;
+            border-radius: 0.5rem;
+        }
+
+        .upload-placeholder {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .upload-placeholder i {
+            font-size: 2.5rem;
+            color: #6b7280;
+            margin-bottom: 0.8rem;
+        }
+
+        .upload-placeholder p {
+            color: #6b7280;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 1.5rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Text Overlay - No Background */
+        .text-overlay {
+            position: absolute;
+            cursor: move;
+            padding: 0;
+            user-select: none;
+            white-space: nowrap;
+            z-index: 10;
+            font-weight: 800;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+        }
+
+        .text-overlay.selected {
+            outline: 2px solid #8b5cf6;
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        .delete-text-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #f43f5e;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.1s;
+            color: white;
+        }
+
+        .text-overlay:hover .delete-text-btn {
+            opacity: 1;
+        }
+
+        /* Right Side - Controls (Compact) */
+        .controls-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .control-group {
+            background: #0e0e16;
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+
+        .group-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #a78bfa;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .text-input {
+            width: 100%;
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 0.8rem;
+            padding: 0.6rem 0.8rem;
+            color: white;
+            font-size: 0.8rem;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .row-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-top: 0.6rem;
+        }
+
+        .style-select {
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 0.6rem;
+            padding: 0.5rem;
+            color: white;
+            font-size: 0.7rem;
+            width: 100%;
+        }
+
+        .color-input {
+            width: 100%;
+            height: 34px;
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 0.6rem;
+            cursor: pointer;
+        }
+
+        .add-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.6rem;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: white;
+            cursor: pointer;
+            margin-top: 0.6rem;
+            transition: all 0.2s;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .layers-list {
+            max-height: 130px;
+            overflow-y: auto;
+        }
+
+        .layer-item {
+            background: #1a1a28;
+            border-radius: 0.5rem;
+            padding: 0.4rem 0.6rem;
+            margin-bottom: 0.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.65rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .layer-item.active {
+            border-color: #8b5cf6;
+            background: #22223a;
+        }
+
+        .layer-preview {
+            flex: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .delete-layer {
+            background: none;
+            border: none;
+            color: #f43f5e;
+            cursor: pointer;
+            font-size: 0.6rem;
+        }
+
+        .post-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.7rem;
+            border-radius: 0.8rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .post-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: #12121c;
+            border-radius: 1.5rem;
+            border: 1px solid #2d2d40;
+            width: 90%;
+            max-width: 320px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .modal i {
+            font-size: 2.5rem;
+            color: #10b981;
+            margin-bottom: 0.8rem;
+        }
+
+        .modal h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .modal p {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-btn {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+        }
+
+        @media (max-width: 800px) {
+            .compact-layout {
+                flex-direction: column;
+            }
+            .app {
+                padding: 0.5rem;
+            }
+            .top-nav {
+                margin-bottom: 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-bell" id="notificationBtn"></i>
+            <i class="fas fa-user-circle" id="profileBtn"></i>
+        </div>
+    </div>
+
+    <div class="creator-card">
+        <div class="creator-header">
+            <h2><i class="fas fa-plus-circle"></i> Create New Meme</h2>
+            <button class="clear-btn" id="clearAllBtn"><i class="fas fa-trash-alt"></i> Clear All</button>
+        </div>
+
+        <div class="compact-layout">
+            <!-- Left: Canvas -->
+            <div class="canvas-side">
+                <div id="uploadPlaceholder" style="text-align: center;">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Upload an image</p>
+                    <button class="upload-btn" id="uploadImageBtn"><i class="fas fa-plus"></i> Browse</button>
+                </div>
+                <div class="meme-wrapper" id="memeWrapper" style="display: none;">
+                    <img id="memeImage" alt="Your meme">
+                </div>
+            </div>
+
+            <!-- Right: Controls -->
+            <div class="controls-side">
+                <div class="control-group">
+                    <div class="group-title"><i class="fas fa-font"></i> Add Text</div>
+                    <input type="text" id="textInput" class="text-input" placeholder="Type your meme text...">
+                    
+                    <div class="row-2col">
+                        <select id="fontSelect" class="style-select">
+                            <option value="Impact">Impact</option>
+                            <option value="Arial Black">Arial Black</option>
+                            <option value="Comic Sans MS">Comic Sans</option>
+                            <option value="Montserrat">Montserrat</option>
+                        </select>
+                        <select id="fontSizeSelect" class="style-select">
+                            <option value="24">24px</option>
+                            <option value="28">28px</option>
+                            <option value="32" selected>32px</option>
+                            <option value="36">36px</option>
+                            <option value="40">40px</option>
+                        </select>
+                    </div>
+                    
+                    <div class="row-2col">
+                        <input type="color" id="colorPicker" class="color-input" value="#ffffff">
+                        <select id="positionSelect" class="style-select">
+                            <option value="top">⬆️ Top</option>
+                            <option value="middle" selected>⬜ Middle</option>
+                            <option value="bottom">⬇️ Bottom</option>
+                        </select>
+                    </div>
+                    
+                    <button class="add-btn" id="addTextBtn"><i class="fas fa-plus-circle"></i> Add Text Layer</button>
+                </div>
+
+                <div class="control-group">
+                    <div class="group-title"><i class="fas fa-layer-group"></i> Text Layers</div>
+                    <div id="textLayersList" class="layers-list">
+                        <div style="color: #6b7280; text-align: center; padding: 0.5rem; font-size: 0.7rem;">No text layers</div>
+                    </div>
+                </div>
+
+                <button class="post-btn" id="postBtn"><i class="fas fa-paper-plane"></i> Post Meme</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="successModal">
+    <div class="modal">
+        <i class="fas fa-check-circle"></i>
+        <h3>Meme Posted!</h3>
+        <p>Your creation is now live</p>
+        <button class="modal-btn" id="closeModalBtn">View Profile</button>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const uploadImageBtn = document.getElementById('uploadImageBtn');
+    const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+    const memeWrapper = document.getElementById('memeWrapper');
+    const memeImage = document.getElementById('memeImage');
+    const textInput = document.getElementById('textInput');
+    const fontSelect = document.getElementById('fontSelect');
+    const fontSizeSelect = document.getElementById('fontSizeSelect');
+    const colorPicker = document.getElementById('colorPicker');
+    const positionSelect = document.getElementById('positionSelect');
+    const addTextBtn = document.getElementById('addTextBtn');
+    const clearAllBtn = document.getElementById('clearAllBtn');
+    const postBtn = document.getElementById('postBtn');
+    const textLayersList = document.getElementById('textLayersList');
+    const toast = document.getElementById('toast');
+    const successModal = document.getElementById('successModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    let currentImageSrc = null;
+    let textLayers = [];
+    let selectedLayerId = null;
+    let nextId = 1;
+
+    function showToast(msg, emoji = '✨') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    uploadImageBtn.addEventListener('click', () => fileInput.click());
+    
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                currentImageSrc = ev.target.result;
+                memeImage.src = currentImageSrc;
+                uploadPlaceholder.style.display = 'none';
+                memeWrapper.style.display = 'block';
+                showToast('Image uploaded! Add text to create meme', '📸');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function createTextElement(layer) {
+        const imgRect = memeImage.getBoundingClientRect();
+        
+        let x, y;
+        if (layer.x && layer.y) {
+            x = layer.x;
+            y = layer.y;
+        } else {
+            switch(layer.position) {
+                case 'top':
+                    x = imgRect.width / 2;
+                    y = 25;
+                    break;
+                case 'bottom':
+                    x = imgRect.width / 2;
+                    y = imgRect.height - 35;
+                    break;
+                default:
+                    x = imgRect.width / 2;
+                    y = imgRect.height / 2;
+            }
+            layer.x = x;
+            layer.y = y;
+        }
+        
+        const div = document.createElement('div');
+        div.className = 'text-overlay';
+        div.textContent = layer.text;
+        div.style.fontFamily = layer.font;
+        div.style.fontSize = layer.fontSize + 'px';
+        div.style.color = layer.color;
+        div.style.fontWeight = '800';
+        div.style.textShadow = '2px 2px 0 rgba(0,0,0,0.5)';
+        div.style.left = x + 'px';
+        div.style.top = y + 'px';
+        div.style.transform = 'translateX(-50%)';
+        div.dataset.id = layer.id;
+        
+        const deleteBtn = document.createElement('div');
+        deleteBtn.className = 'delete-text-btn';
+        deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+        deleteBtn.onclick = (e) => {
+            e.stopPropagation();
+            div.remove();
+            textLayers = textLayers.filter(l => l.id !== layer.id);
+            if (selectedLayerId === layer.id) selectedLayerId = null;
+            renderLayersList();
+            showToast('Text removed', '🗑️');
+        };
+        div.appendChild(deleteBtn);
+        
+        let isDragging = false;
+        let startX, startY, startLeft, startTop;
+        
+        div.addEventListener('mousedown', (e) => {
+            if (e.target === deleteBtn) return;
+            e.preventDefault();
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            startLeft = parseFloat(div.style.left);
+            startTop = parseFloat(div.style.top);
+            
+            const onMouseMove = (moveEvent) => {
+                if (!isDragging) return;
+                const dx = moveEvent.clientX - startX;
+                const dy = moveEvent.clientY - startY;
+                let newLeft = startLeft + dx;
+                let newTop = startTop + dy;
+                
+                const imgRect = memeImage.getBoundingClientRect();
+                newLeft = Math.max(5, Math.min(newLeft, imgRect.width - 5));
+                newTop = Math.max(5, Math.min(newTop, imgRect.height - 30));
+                
+                div.style.left = newLeft + 'px';
+                div.style.top = newTop + 'px';
+                
+                const layerData = textLayers.find(l => l.id === layer.id);
+                if (layerData) {
+                    layerData.x = newLeft;
+                    layerData.y = newTop;
+                }
+            };
+            
+            const onMouseUp = () => {
+                isDragging = false;
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+            
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+        
+        div.addEventListener('click', (e) => {
+            if (e.target === deleteBtn) return;
+            document.querySelectorAll('.text-overlay').forEach(el => el.classList.remove('selected'));
+            div.classList.add('selected');
+            selectedLayerId = layer.id;
+            renderLayersList();
+            textInput.value = layer.text;
+            fontSelect.value = layer.font;
+            fontSizeSelect.value = layer.fontSize;
+            colorPicker.value = layer.color;
+            positionSelect.value = layer.position;
+        });
+        
+        return div;
+    }
+    
+    function renderAllTexts() {
+        document.querySelectorAll('.text-overlay').forEach(el => el.remove());
+        textLayers.forEach(layer => {
+            const textEl = createTextElement(layer);
+            memeWrapper.appendChild(textEl);
+        });
+    }
+    
+    function renderLayersList() {
+        if (textLayers.length === 0) {
+            textLayersList.innerHTML = '<div style="color: #6b7280; text-align: center; padding: 0.5rem; font-size: 0.7rem;">No text layers</div>';
+            return;
+        }
+        
+        textLayersList.innerHTML = textLayers.map(layer => `
+            <div class="layer-item ${selectedLayerId === layer.id ? 'active' : ''}" data-id="${layer.id}">
+                <div class="layer-preview" style="font-family: ${layer.font}; color: ${layer.color};">${layer.text.substring(0, 25)}</div>
+                <button class="delete-layer" data-id="${layer.id}"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('.layer-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                if (e.target.closest('.delete-layer')) return;
+                const id = parseInt(item.dataset.id);
+                selectedLayerId = id;
+                renderLayersList();
+                const layer = textLayers.find(l => l.id === id);
+                if (layer) {
+                    textInput.value = layer.text;
+                    fontSelect.value = layer.font;
+                    fontSizeSelect.value = layer.fontSize;
+                    colorPicker.value = layer.color;
+                    positionSelect.value = layer.position;
+                    document.querySelectorAll('.text-overlay').forEach(el => el.classList.remove('selected'));
+                    const targetEl = Array.from(document.querySelectorAll('.text-overlay')).find(el => parseInt(el.dataset.id) === id);
+                    if (targetEl) targetEl.classList.add('selected');
+                }
+            });
+            
+            const deleteBtn = item.querySelector('.delete-layer');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = parseInt(deleteBtn.dataset.id);
+                    textLayers = textLayers.filter(l => l.id !== id);
+                    if (selectedLayerId === id) selectedLayerId = null;
+                    renderAllTexts();
+                    renderLayersList();
+                    showToast('Text layer removed', '🗑️');
+                });
+            }
+        });
+    }
+    
+    function addTextLayer() {
+        if (!currentImageSrc) {
+            showToast('Please upload an image first', '⚠️');
+            return;
+        }
+        
+        const newText = textInput.value.trim();
+        if (!newText) {
+            showToast('Please enter some text', '⚠️');
+            return;
+        }
+        
+        const newLayer = {
+            id: nextId++,
+            text: newText,
+            font: fontSelect.value,
+            fontSize: parseInt(fontSizeSelect.value),
+            color: colorPicker.value,
+            position: positionSelect.value,
+            x: null,
+            y: null
+        };
+        
+        textLayers.push(newLayer);
+        selectedLayerId = newLayer.id;
+        renderAllTexts();
+        renderLayersList();
+        textInput.value = '';
+        showToast('Text added! Drag to reposition', '✏️');
+    }
+    
+    function updateSelectedLayer() {
+        if (selectedLayerId !== null) {
+            const layer = textLayers.find(l => l.id === selectedLayerId);
+            if (layer) {
+                if (textInput.value.trim()) layer.text = textInput.value;
+                layer.font = fontSelect.value;
+                layer.fontSize = parseInt(fontSizeSelect.value);
+                layer.color = colorPicker.value;
+                layer.position = positionSelect.value;
+                renderAllTexts();
+                renderLayersList();
+            }
+        }
+    }
+    
+    textInput.addEventListener('input', updateSelectedLayer);
+    fontSelect.addEventListener('change', updateSelectedLayer);
+    fontSizeSelect.addEventListener('change', updateSelectedLayer);
+    colorPicker.addEventListener('input', updateSelectedLayer);
+    positionSelect.addEventListener('change', updateSelectedLayer);
+    
+    addTextBtn.addEventListener('click', addTextLayer);
+    
+    clearAllBtn.addEventListener('click', () => {
+        if (textLayers.length > 0) {
+            textLayers = [];
+            selectedLayerId = null;
+            renderAllTexts();
+            renderLayersList();
+            showToast('All text cleared', '🗑️');
+        }
+    });
+    
+    postBtn.addEventListener('click', () => {
+        if (!currentImageSrc) {
+            showToast('Please upload an image first', '⚠️');
+            return;
+        }
+        
+        if (textLayers.length === 0) {
+            showToast('Add some text to your meme', '⚠️');
+            return;
+        }
+        
+        const imgRect = memeImage.getBoundingClientRect();
+        const canvas = document.createElement('canvas');
+        canvas.width = imgRect.width;
+        canvas.height = imgRect.height;
+        const ctx = canvas.getContext('2d');
+        
+        const tempImg = new Image();
+        tempImg.onload = () => {
+            ctx.drawImage(tempImg, 0, 0, imgRect.width, imgRect.height);
+            
+            document.querySelectorAll('.text-overlay').forEach(textDiv => {
+                const style = window.getComputedStyle(textDiv);
+                const fontSize = parseInt(style.fontSize);
+                const fontFamily = style.fontFamily;
+                const color = style.color;
+                const text = textDiv.textContent.replace('×', '').trim();
+                const left = parseFloat(textDiv.style.left);
+                const top = parseFloat(textDiv.style.top);
+                
+                ctx.font = `${fontSize}px ${fontFamily}`;
+                ctx.fillStyle = color;
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 3;
+                
+                const x = left;
+                const y = top + fontSize * 0.7;
+                
+                ctx.strokeText(text, x, y);
+                ctx.fillText(text, x, y);
+            });
+            
+            const dataURL = canvas.toDataURL('image/png');
+            
+            postBtn.disabled = true;
+            postBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+            
+            setTimeout(() => {
+                const newPost = {
+                    id: Date.now(),
+                    image: dataURL,
+                    caption: 'Created with Memotions Creator!',
+                    tags: ['mememaker'],
+                    likes: '0',
+                    comments: '0',
+                    creator: 'meme_curator',
+                    timestamp: new Date().toISOString()
+                };
+                
+                let existingPosts = JSON.parse(localStorage.getItem('memotions_posts') || '[]');
+                existingPosts.unshift(newPost);
+                localStorage.setItem('memotions_posts', JSON.stringify(existingPosts));
+                
+                postBtn.disabled = false;
+                postBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Post Meme';
+                
+                successModal.classList.add('active');
+                showToast('Meme posted!', '🎉');
+            }, 1000);
+        };
+        tempImg.src = currentImageSrc;
+    });
+    
+    closeModalBtn.addEventListener('click', () => {
+        successModal.classList.remove('active');
+        window.location.href = 'profile.html';
+    });
+    
+    successModal.addEventListener('click', (e) => {
+        if (e.target === successModal) {
+            successModal.classList.remove('active');
+            window.location.href = 'profile.html';
+        }
+    });
+    
+    document.getElementById('notificationBtn').addEventListener('click', () => showToast('No new notifications', '🔔'));
+    document.getElementById('profileBtn').addEventListener('click', () => window.location.href = 'profile.html');
+    
+    showToast('Compact meme creator ready!', '🎨');
+</script>
+</body>
+</html>

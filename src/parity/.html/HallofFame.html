@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Hall of Fame</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem 2rem 2rem;
+            background: linear-gradient(135deg, #0f0f1a, #0a0a10);
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #fbbf24, #8b5cf6, transparent);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #fbbf24, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: #9ca3af;
+            margin-top: 0.5rem;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(251, 191, 36, 0.1);
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: #12121c;
+            padding: 1rem;
+            border-radius: 1rem;
+            border: 1px solid #2d2d40;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fbbf24;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            margin-top: 0.3rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            padding: 0.5rem 2rem;
+        }
+
+        .tab {
+            background: #12121c;
+            border: 1px solid #2d2d40;
+            padding: 0.6rem 1.8rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+            color: white;
+        }
+
+        /* Formula Banner */
+        .formula-banner {
+            background: linear-gradient(135deg, #1a1a2a, #12121c);
+            margin: 1rem 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
+            border-left: 4px solid #fbbf24;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .formula-text {
+            font-size: 0.75rem;
+            color: #d1d5db;
+        }
+
+        .formula-text strong {
+            color: #fbbf24;
+        }
+
+        .formula-code {
+            font-family: monospace;
+            background: #0a0a12;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            color: #a78bfa;
+        }
+
+        /* Hall of Fame List - Premium Design */
+        .hof-list {
+            padding: 1rem 2rem 2rem 2rem;
+        }
+
+        /* Immortal Legends Section */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #fbbf24;
+        }
+
+        .immortal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .immortal-card {
+            background: linear-gradient(135deg, #1a1a2a, #12121c);
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid #fbbf24;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .immortal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .crown-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #fbbf24;
+            padding: 0.2rem 0.6rem;
+            border-radius: 2rem;
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+
+        .card-img {
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 0.8rem;
+        }
+
+        .card-creator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .card-creator img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+
+        .card-creator span {
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .card-title {
+            font-size: 0.75rem;
+            color: #d1d5db;
+            margin-bottom: 0.4rem;
+        }
+
+        .card-metrics {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.6rem;
+            color: #9ca3af;
+        }
+
+        .score {
+            margin-top: 0.4rem;
+            font-size: 0.65rem;
+            color: #a78bfa;
+        }
+
+        /* Rising Stars Section */
+        .rising-stars {
+            margin-top: 1.5rem;
+        }
+
+        .rising-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #a78bfa;
+        }
+
+        .rising-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .rising-card {
+            background: #12121c;
+            border-radius: 0.8rem;
+            overflow: hidden;
+            border: 1px solid #2d2d40;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .rising-card:hover {
+            transform: translateY(-3px);
+            border-color: #8b5cf6;
+        }
+
+        .clock-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #8b5cf6;
+            padding: 0.2rem 0.5rem;
+            border-radius: 2rem;
+            font-size: 0.55rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .rising-img {
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+
+        .rising-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .rising-content {
+            padding: 0.7rem;
+        }
+
+        .expires {
+            margin-top: 0.3rem;
+            font-size: 0.55rem;
+            color: #f59e0b;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+        }
+        .toast.show { opacity: 1; }
+
+        @media (max-width: 768px) {
+            .top-nav { padding: 0.75rem 1rem; }
+            .logo span { display: none; }
+            .hero { padding: 1.5rem; }
+            .hero h1 { font-size: 1.8rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); padding: 1rem; }
+            .tabs { padding: 0.5rem 1rem; }
+            .formula-banner { margin: 1rem; flex-direction: column; text-align: center; }
+            .hof-list { padding: 1rem; }
+            .immortal-grid, .rising-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-bell" id="notificationBtn"></i>
+        </div>
+    </div>
+
+    <div class="hero">
+        <h1><i class="fas fa-crown"></i> Hall of Fame</h1>
+        <p>Where legends are born and immortality is earned</p>
+        <div class="hero-badge">
+            <i class="fas fa-gem"></i> Only 0.01% of posts qualify
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-item">
+            <div class="stat-value">24</div>
+            <div class="stat-label">Immortal Legends</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">156</div>
+            <div class="stat-label">Rising Stars</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">2.8M</div>
+            <div class="stat-label">Total Engagement</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">θ≥600</div>
+            <div class="stat-label">Qualification Score</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" data-type="all">🏆 All Legends</button>
+        <button class="tab" data-type="permanent">👑 Immortal</button>
+        <button class="tab" data-type="temporary">⭐ Rising Stars</button>
+    </div>
+
+    <!-- <div class="formula-banner">
+        <div class="formula-text">
+            <strong>📊 How to Enter:</strong> Posts must achieve Engagement Score ≥ 600
+        </div>
+        <div class="formula-code">
+            E = 0.25L + 0.15C + 0.20S + 0.25R + 0.15M
+        </div>
+    </div> -->
+
+    <div id="hofContainer" class="hof-list"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const hofContainer = document.getElementById('hofContainer');
+    const toast = document.getElementById('toast');
+
+    let currentType = 'all';
+
+    const immortalData = [
+        { id: 1, title: "When the code works first try", image: "https://i.imgflip.com/265j.jpg", creator: "meme_curator", creatorAvatar: "https://robohash.org/memecreator?set=set4&size=50x50", verified: true, likes: "245K", comments: "5.6K", shares: "34.1K", score: 892 },
+        { id: 2, title: "worst youtube", image: "https://mycodelesswebsite.com/wp-content/uploads/2022/10/Youtube-Ads-Meme-2.jpg", creator: "danklabs", creatorAvatar: "https://robohash.org/dankbrain?set=set3&size=50x50", verified: false, likes: "189K", comments: "4.2K", shares: "28.3K", score: 756 },
+        { id: 3, title: "Joey doesn't share food... 😡", image: "https://media.tenor.com/qDeRj_HS9vIAAAAM/joey-friends.gif", creator: "gif_goddess", creatorAvatar: "https://robohash.org/gifgoddess?set=set2&size=50x50", verified: true, likes: "892K", comments: "23.1K", shares: "125K", score: 1245 },
+        { id: 4, title: "Change my mind", image: "https://static.boredpanda.com/blog/wp-content/uploads/2022/09/relatable-funny-memes-94-6328207667e3f__censored__700.jpg", creator: "memelord42", creatorAvatar: "https://robohash.org/memelord42?set=set4&size=50x50", verified: false, likes: "467K", comments: "12.2K", shares: "89.8K", score: 987 }
+    ];
+
+    const risingData = [
+        { id: 5, title: "Dancing cat 🐱", image: "https://c.tenor.com/51ihjs2ELfAAAAAC/tenor.gif", creator: "gif_goddess", creatorAvatar: "https://robohash.org/gifgoddess?set=set2&size=50x50", verified: true, likes: "467K", comments: "12.2K", shares: "56.7K", score: 678, expires: "5 days" },
+        { id: 6, title: "OMG! Home missed see...", image: "https://i.imgflip.com/43a2z.jpg", creator: "memelord42", creatorAvatar: "https://robohash.org/memelord42?set=set4&size=50x50", verified: false, likes: "567K", comments: "15.3K", shares: "78.9K", score: 734, expires: "12 days" },
+        { id: 7, title: "Thats what I was thinking too👀", image: "https://media1.tenor.com/m/LLEtVG2MxS8AAAAC/theodoros.gif", creator: "gif_goddess", creatorAvatar: "https://robohash.org/gifgoddess?set=set2&size=50x50", verified: true, likes: "398K", comments: "9.4K", shares: "45.6K", score: 612, expires: "8 days" },
+        { id: 8, title: "Joey and Chandler", image: "https://media1.tenor.com/m/AGXYVmv3_F8AAAAd/friends-friends-gifs.gif", creator: "reactionking", creatorAvatar: "https://robohash.org/reactiongod?set=set1&size=50x50", verified: true, likes: "234K", comments: "5.2K", shares: "34.5K", score: 645, expires: "15 days" },
+        { id: 9, title: "Monica irritated 🕺", image: "https://media1.tenor.com/m/k_e4eDbc1pcAAAAd/friends-friendstv.gif", creator: "gif_goddess", creatorAvatar: "https://robohash.org/gifgoddess?set=set2&size=50x50", verified: true, likes: "512K", comments: "14.8K", shares: "67.8K", score: 723, expires: "3 days" },
+        { id: 10, title: "This is fine 🔥", image: "https://media1.tenor.com/m/2LSren1lxJ0AAAAd/get-lost-pingu.gif", creator: "meme_curator", creatorAvatar: "https://robohash.org/memecreator?set=set4&size=50x50", verified: true, likes: "423K", comments: "11.4K", shares: "56.7K", score: 689, expires: "20 days" }
+    ];
+
+    function showToast(msg, emoji = '🏆') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function renderAll() {
+        hofContainer.innerHTML = `
+            <div class="section-title"><i class="fas fa-crown"></i> Immortal Legends</div>
+            <div class="immortal-grid">
+                ${immortalData.map(item => `
+                    <div class="immortal-card" data-id="${item.id}">
+                        <div class="crown-badge"><i class="fas fa-crown"></i> Immortal</div>
+                        <div class="card-img"><img src="${item.image}" alt="${item.title}" onerror="this.src='https://i.imgflip.com/265j.jpg'"></div>
+                        <div class="card-content">
+                            <div class="card-creator">
+                                <img src="${item.creatorAvatar}" alt="${item.creator}">
+                                <span>${item.creator} ${item.verified ? '<i class="fas fa-check-circle" style="color:#8b5cf6;"></i>' : ''}</span>
+                            </div>
+                            <div class="card-title">${item.title}</div>
+                            <div class="card-metrics">
+                                <span><i class="fas fa-heart"></i> ${item.likes}</span>
+                                <span><i class="fas fa-comment"></i> ${item.comments}</span>
+                                <span><i class="fas fa-share"></i> ${item.shares}</span>
+                            </div>
+                            <div class="score"><i class="fas fa-chart-line"></i> Score: ${item.score}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="rising-title"><i class="fas fa-clock"></i> Rising Stars</div>
+            <div class="rising-grid">
+                ${risingData.map(item => `
+                    <div class="rising-card" data-id="${item.id}">
+                        <div class="clock-badge"><i class="fas fa-hourglass-half"></i> Rising</div>
+                        <div class="rising-img"><img src="${item.image}" alt="${item.title}" onerror="this.src='https://i.imgflip.com/265j.jpg'"></div>
+                        <div class="rising-content">
+                            <div class="card-creator">
+                                <img src="${item.creatorAvatar}" alt="${item.creator}">
+                                <span>${item.creator} ${item.verified ? '<i class="fas fa-check-circle" style="color:#8b5cf6;"></i>' : ''}</span>
+                            </div>
+                            <div class="card-title">${item.title}</div>
+                            <div class="card-metrics">
+                                <span><i class="fas fa-heart"></i> ${item.likes}</span>
+                                <span><i class="fas fa-comment"></i> ${item.comments}</span>
+                                <span><i class="fas fa-share"></i> ${item.shares}</span>
+                            </div>
+                            <div class="score"><i class="fas fa-chart-line"></i> Score: ${item.score}</div>
+                            <div class="expires"><i class="fas fa-hourglass-half"></i> ${item.expires} remaining</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        attachClickHandlers();
+    }
+
+    function renderImmortal() {
+        hofContainer.innerHTML = `
+            <div class="section-title"><i class="fas fa-crown"></i> Immortal Legends</div>
+            <div class="immortal-grid">
+                ${immortalData.map(item => `
+                    <div class="immortal-card" data-id="${item.id}">
+                        <div class="crown-badge"><i class="fas fa-crown"></i> Immortal</div>
+                        <div class="card-img"><img src="${item.image}" alt="${item.title}" onerror="this.src='https://i.imgflip.com/265j.jpg'"></div>
+                        <div class="card-content">
+                            <div class="card-creator">
+                                <img src="${item.creatorAvatar}" alt="${item.creator}">
+                                <span>${item.creator} ${item.verified ? '<i class="fas fa-check-circle" style="color:#8b5cf6;"></i>' : ''}</span>
+                            </div>
+                            <div class="card-title">${item.title}</div>
+                            <div class="card-metrics">
+                                <span><i class="fas fa-heart"></i> ${item.likes}</span>
+                                <span><i class="fas fa-comment"></i> ${item.comments}</span>
+                                <span><i class="fas fa-share"></i> ${item.shares}</span>
+                            </div>
+                            <div class="score"><i class="fas fa-chart-line"></i> Score: ${item.score}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        attachClickHandlers();
+    }
+
+    function renderRising() {
+        hofContainer.innerHTML = `
+            <div class="rising-title"><i class="fas fa-clock"></i> Rising Stars</div>
+            <div class="rising-grid">
+                ${risingData.map(item => `
+                    <div class="rising-card" data-id="${item.id}">
+                        <div class="clock-badge"><i class="fas fa-hourglass-half"></i> Rising</div>
+                        <div class="rising-img"><img src="${item.image}" alt="${item.title}" onerror="this.src='https://i.imgflip.com/265j.jpg'"></div>
+                        <div class="rising-content">
+                            <div class="card-creator">
+                                <img src="${item.creatorAvatar}" alt="${item.creator}">
+                                <span>${item.creator} ${item.verified ? '<i class="fas fa-check-circle" style="color:#8b5cf6;"></i>' : ''}</span>
+                            </div>
+                            <div class="card-title">${item.title}</div>
+                            <div class="card-metrics">
+                                <span><i class="fas fa-heart"></i> ${item.likes}</span>
+                                <span><i class="fas fa-comment"></i> ${item.comments}</span>
+                                <span><i class="fas fa-share"></i> ${item.shares}</span>
+                            </div>
+                            <div class="score"><i class="fas fa-chart-line"></i> Score: ${item.score}</div>
+                            <div class="expires"><i class="fas fa-hourglass-half"></i> ${item.expires} remaining</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        attachClickHandlers();
+    }
+
+    function attachClickHandlers() {
+        document.querySelectorAll('.immortal-card, .rising-card').forEach(card => {
+            card.addEventListener('click', () => showToast('Opening legendary post', '🏆'));
+        });
+    }
+
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            const type = tab.dataset.type;
+            if (type === 'all') renderAll();
+            else if (type === 'permanent') renderImmortal();
+            else renderRising();
+        });
+    });
+
+    // Navigation
+    document.getElementById('createBtn').addEventListener('click', () => showToast('Create new post', '📸'));
+    document.getElementById('notificationBtn').addEventListener('click', () => showToast('No new notifications', '🔔'));
+
+    renderAll();
+    showToast('Hall of Fame — Where legends live forever', '🏆');
+</script>
+</body>
+</html>

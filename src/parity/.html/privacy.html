@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Privacy Policy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 1.5rem 2rem 0.5rem 2rem;
+            border-bottom: 1px solid #1a1a28;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .page-header p {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        .last-updated {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+
+        /* Content */
+        .content {
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #a78bfa;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section p {
+            color: #d1d5db;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .section ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .section li {
+            color: #d1d5db;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight {
+            background: #1a1a28;
+            padding: 1rem;
+            border-radius: 0.8rem;
+            border-left: 3px solid #8b5cf6;
+            margin: 1rem 0;
+        }
+
+        .data-table {
+            background: #12121c;
+            border-radius: 0.8rem;
+            overflow: hidden;
+            margin: 1rem 0;
+            border: 1px solid #2d2d40;
+        }
+
+        .data-table .row {
+            display: flex;
+            border-bottom: 1px solid #2d2d40;
+        }
+
+        .data-table .row:last-child {
+            border-bottom: none;
+        }
+
+        .data-table .header {
+            background: #1a1a28;
+            font-weight: 700;
+        }
+
+        .data-table .cell {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .data-table .cell:first-child {
+            border-right: 1px solid #2d2d40;
+            font-weight: 600;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+            .page-header {
+                padding: 1rem;
+            }
+            .content {
+                padding: 1rem;
+            }
+            .data-table .cell {
+                padding: 0.5rem;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-bell" id="notificationBtn"></i>
+        </div>
+    </div>
+
+    <div class="page-header">
+        <h1><i class="fas fa-shield-alt"></i> Privacy Policy</h1>
+        <p>How we collect, use, and protect your information</p>
+        <div class="last-updated">Last Updated: April 9, 2026</div>
+    </div>
+
+    <div class="content">
+        <div class="section">
+            <h2><i class="fas fa-info-circle"></i> 1. Information We Collect</h2>
+            <p>We collect information to provide better services to our users. The types of information we collect include:</p>
+            <div class="data-table">
+                <div class="row header">
+                    <div class="cell">Type of Data</div>
+                    <div class="cell">Description</div>
+                </div>
+                <div class="row">
+                    <div class="cell">Account Information</div>
+                    <div class="cell">Name, username, email address, profile picture, and bio</div>
+                </div>
+                <div class="row">
+                    <div class="cell">Content Data</div>
+                    <div class="cell">Memes, GIFs, captions, tags, comments, and reactions you post</div>
+                </div>
+                <div class="row">
+                    <div class="cell">Usage Data</div>
+                    <div class="cell">Posts you like, save, share, and your browsing activity</div>
+                </div>
+                <div class="row">
+                    <div class="cell">Device Information</div>
+                    <div class="cell">IP address, browser type, device type, and operating system</div>
+                </div>
+                <div class="row">
+                    <div class="cell">Interaction Data</div>
+                    <div class="cell">Followers, following, comments, and direct messages</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-chart-line"></i> 2. How We Use Your Information</h2>
+            <p>We use the information we collect to:</p>
+            <ul>
+                <li>Provide, maintain, and improve Memotions services</li>
+                <li>Personalize your feed and content recommendations</li>
+                <li>Process your interactions (likes, comments, shares)</li>
+                <li>Communicate with you about updates and policies</li>
+                <li>Analyze usage patterns to enhance user experience</li>
+                <li>Detect and prevent fraud, abuse, and security issues</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-share-alt"></i> 3. Information Sharing</h2>
+            <p>We do not sell your personal information. We may share information in the following circumstances:</p>
+            <ul>
+                <li><strong>Public Content:</strong> Your posts, comments, and reactions are visible to other users</li>
+                <li><strong>Service Providers:</strong> Third-party vendors who help us operate the platform</li>
+                <li><strong>Legal Requirements:</strong> When required by law or to protect rights and safety</li>
+                <li><strong>Consent:</strong> When you explicitly agree to share your information</li>
+            </ul>
+            <div class="highlight">
+                <strong>🔒 Your Privacy Matters:</strong> Your profile information is visible to other users, but your email and phone number remain private.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-cookie-bite"></i> 4. Cookies & Tracking</h2>
+            <p>We use cookies and similar technologies to:</p>
+            <ul>
+                <li>Keep you logged in to your account</li>
+                <li>Remember your preferences and settings</li>
+                <li>Analyze site traffic and usage patterns</li>
+                <li>Improve our services based on user behavior</li>
+            </ul>
+            <p>You can control cookie settings through your browser preferences.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-database"></i> 5. Data Storage & Security</h2>
+            <p>We take data security seriously and implement industry-standard measures to protect your information:</p>
+            <ul>
+                <li>Encryption of data in transit (SSL/TLS)</li>
+                <li>Secure data storage with access controls</li>
+                <li>Regular security audits and updates</li>
+                <li>Two-factor authentication options for accounts</li>
+            </ul>
+            <p>However, no method of transmission over the Internet is 100% secure. We cannot guarantee absolute security.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-user-shield"></i> 6. Your Rights & Choices</h2>
+            <p>Depending on your location, you may have the following rights regarding your data:</p>
+            <ul>
+                <li><strong>Access:</strong> Request a copy of your personal data</li>
+                <li><strong>Correction:</strong> Update or correct inaccurate information</li>
+                <li><strong>Deletion:</strong> Request deletion of your account and data</li>
+                <li><strong>Portability:</strong> Receive your data in a structured format</li>
+                <li><strong>Opt-out:</strong> Unsubscribe from marketing communications</li>
+            </ul>
+            <div class="highlight">
+                <strong>📧 To exercise your rights:</strong> Contact us at <strong style="color:#a78bfa;">privacy@memotions.com</strong>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-child"></i> 7. Children's Privacy</h2>
+            <p>Memotions is not intended for children under 13. We do not knowingly collect information from children under 13. If we learn we have collected information from a child under 13, we will delete it immediately.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-globe"></i> 8. International Data Transfers</h2>
+            <p>Your information may be transferred to and processed in countries other than your own. By using Memotions, you consent to such transfers.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-clock"></i> 9. Data Retention</h2>
+            <p>We retain your information as long as your account is active. When you delete your account, we remove your personal information within 30 days, though some anonymized data may be retained for analytics.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-bell"></i> 10. Changes to This Policy</h2>
+            <p>We may update this Privacy Policy periodically. We will notify you of significant changes via email or in-app notification. Continued use of Memotions after changes constitutes acceptance of the updated policy.</p>
+        </div>
+
+        <div class="section">
+            <h2><i class="fas fa-envelope"></i> 11. Contact Us</h2>
+            <p>If you have questions about this Privacy Policy or our data practices, please contact us:</p>
+            <ul>
+                <li>Email: <strong style="color:#a78bfa;">privacy@memotions.com</strong></li>
+                <li>Twitter: <strong style="color:#a78bfa;">@Memotions</strong></li>
+                <li>Address: Memotions HQ, Memeverse, Internet</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const toast = document.getElementById('toast');
+
+    function showToast(msg, emoji = '🔒') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    document.getElementById('createBtn').addEventListener('click', () => showToast('Create new post', '📸'));
+    document.getElementById('notificationBtn').addEventListener('click', () => showToast('No new notifications', '🔔'));
+
+    showToast('Privacy Policy', '🔒');
+</script>
+</body>
+</html>

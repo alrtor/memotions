@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Creators Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Page Header */
+        .page-header {
+            padding: 1.5rem 2rem 0.5rem 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .page-header p {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        /* Search Bar */
+        .search-container {
+            padding: 1rem 2rem;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #12121c;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.7rem 1.2rem;
+            max-width: 400px;
+            transition: all 0.2s;
+        }
+
+        .search-box:focus-within {
+            border-color: #8b5cf6;
+            background: #1a1a28;
+        }
+
+        .search-box i {
+            color: #6b7280;
+            margin-right: 0.8rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .search-box input::placeholder {
+            color: #4b5563;
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 0.8rem;
+            padding: 0.5rem 2rem;
+            border-bottom: 1px solid #1a1a28;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-tab {
+            background: none;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .category-tab.active {
+            background: #1a1a2a;
+            color: #a78bfa;
+        }
+
+        .category-tab:hover:not(.active) {
+            background: #14141e;
+            color: #e5e7eb;
+        }
+
+        /* Creators Grid */
+        .creators-container {
+            padding: 1.5rem 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title i {
+            color: #a78bfa;
+        }
+
+        .creators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Creator Card */
+        .creator-card {
+            background: #12121c;
+            border-radius: 1.25rem;
+            border: 1px solid #222232;
+            overflow: hidden;
+            transition: all 0.25s;
+            cursor: pointer;
+        }
+
+        .creator-card:hover {
+            transform: translateY(-4px);
+            border-color: #8b5cf6;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-cover {
+            height: 100px;
+            background: linear-gradient(135deg, #1e1a3a, #0f0f1a);
+            position: relative;
+        }
+
+        .card-avatar {
+            position: absolute;
+            bottom: -30px;
+            left: 1rem;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid #12121c;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            overflow: hidden;
+        }
+
+        .card-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 2rem 1rem 1rem 1rem;
+        }
+
+        .creator-name {
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .creator-username {
+            font-size: 0.7rem;
+            color: #6b7280;
+            margin: 0.2rem 0 0.5rem 0;
+        }
+
+        .creator-bio {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            line-height: 1.4;
+            margin-bottom: 0.8rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .creator-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.65rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .follow-btn {
+            width: 100%;
+            background: #1a1a28;
+            border: 1px solid #374151;
+            padding: 0.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #e5e7eb;
+        }
+
+        .follow-btn:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+            color: white;
+        }
+
+        .follow-btn.following {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+            color: white;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+            .page-header {
+                padding: 1rem;
+            }
+            .search-container {
+                padding: 0.75rem 1rem;
+            }
+            .category-tabs {
+                padding: 0.5rem 1rem;
+            }
+            .creators-container {
+                padding: 1rem;
+            }
+            .creators-grid {
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-bell" id="notificationBtn"></i>
+        </div>
+    </div>
+
+    <div class="page-header">
+        <h1><i class="fas fa-users"></i> Creators Hub</h1>
+        <p>Discover and connect with the best meme and GIF creators</p>
+    </div>
+
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Search creators by name..." autocomplete="off">
+        </div>
+    </div>
+
+    <div class="category-tabs" id="categoryTabs">
+        <button class="category-tab active" data-cat="all">🏆 All</button>
+        <button class="category-tab" data-cat="trending">🔥 Trending</button>
+        <button class="category-tab" data-cat="memes">😂 Meme Lords</button>
+        <button class="category-tab" data-cat="gifs">🎬 GIF Masters</button>
+        <button class="category-tab" data-cat="reactions">😱 Reaction Kings</button>
+        <button class="category-tab" data-cat="rising">⭐ Rising Stars</button>
+    </div>
+
+    <div class="creators-container" id="creatorsContainer">
+        <!-- Dynamic content will be injected here -->
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const creatorsContainer = document.getElementById('creatorsContainer');
+    const searchInput = document.getElementById('searchInput');
+    const toast = document.getElementById('toast');
+
+    // Extensive creators data
+    const allCreators = [
+        // Meme Lords
+        { id: 1, name: 'meme_curator', username: '@memotions_official', avatar: 'https://robohash.org/memecreator?set=set4&size=100x100', cover: null, bio: 'Meme connoisseur | daily doses of laughter & vibes. Founder of #Memotions movement.', followers: '842K', category: 'memes', verified: true, trending: true },
+        { id: 2, name: 'dank_memer', username: '@dank_memer', avatar: 'https://robohash.org/dankmemer?set=set3&size=100x100', cover: null, bio: 'Dank memes only | No normies allowed 🚫', followers: '567K', category: 'memes', verified: false, trending: true },
+        { id: 3, name: 'memelord42', username: '@memelord42', avatar: 'https://robohash.org/memelord42?set=set4&size=100x100', cover: null, bio: 'Just a guy who loves memes | 24/7 meme posting', followers: '289K', category: 'memes', verified: false, trending: false },
+        { id: 4, name: 'wholesome_memes', username: '@wholesome_memes', avatar: 'https://robohash.org/wholesome?set=set4&size=100x100', cover: null, bio: 'Spreading positivity one meme at a time ❤️', followers: '456K', category: 'memes', verified: true, trending: false },
+        { id: 5, name: 'programmer_humor', username: '@programmer_humor', avatar: 'https://robohash.org/programmer?set=set4&size=100x100', cover: null, bio: 'Coding memes for developers | 0xDEADBEEF', followers: '678K', category: 'memes', verified: true, trending: true },
+        
+        // GIF Masters
+        { id: 6, name: 'gif_goddess', username: '@gif_goddess', avatar: 'https://robohash.org/gifgoddess?set=set2&size=100x100', cover: null, bio: 'Premium GIF creator | Daily doses of laughter | GIFs for every mood', followers: '1.2M', category: 'gifs', verified: true, trending: true },
+        { id: 7, name: 'gif_wizard', username: '@gif_wizard', avatar: 'https://robohash.org/gifwizard?set=set1&size=100x100', cover: null, bio: 'Turning moments into GIFs since 2020 | 10K+ GIFs created', followers: '345K', category: 'gifs', verified: false, trending: true },
+        { id: 8, name: 'reaction_gifs', username: '@reaction_gifs', avatar: 'https://robohash.org/reactiongifs?set=set3&size=100x100', cover: null, bio: 'Your go-to for reaction GIFs | Express yourself!', followers: '523K', category: 'gifs', verified: false, trending: false },
+        { id: 9, name: 'cinematic_gifs', username: '@cinematic_gifs', avatar: 'https://robohash.org/cinematic?set=set4&size=100x100', cover: null, bio: 'Movie & TV show GIFs | HD quality | Daily uploads', followers: '234K', category: 'gifs', verified: true, trending: false },
+        
+        // Reaction Kings
+        { id: 10, name: 'reactionking', username: '@reactionking', avatar: 'https://robohash.org/reactiongod?set=set1&size=100x100', cover: null, bio: 'Reaction specialist | Making you laugh since 2019', followers: '345K', category: 'reactions', verified: true, trending: true },
+        { id: 11, name: 'facepalm_central', username: '@facepalm_central', avatar: 'https://robohash.org/facepalm?set=set2&size=100x100', cover: null, bio: 'Facepalm moments daily | SMH content', followers: '189K', category: 'reactions', verified: false, trending: false },
+        { id: 12, name: 'shocked_pikachu', username: '@shocked_pikachu', avatar: 'https://robohash.org/shocked?set=set3&size=100x100', cover: null, bio: 'Surprised? Shocked? I got you covered', followers: '278K', category: 'reactions', verified: false, trending: true },
+        
+        // Rising Stars
+        { id: 13, name: 'new_memer', username: '@new_memer', avatar: 'https://robohash.org/newmemer?set=set4&size=100x100', cover: null, bio: 'Fresh memes daily | Rising fast 🚀', followers: '45K', category: 'rising', verified: false, trending: true },
+        { id: 14, name: 'viral_hunter', username: '@viral_hunter', avatar: 'https://robohash.org/viralhunter?set=set1&size=100x100', cover: null, bio: 'Finding viral content before it blows up', followers: '67K', category: 'rising', verified: false, trending: true },
+        { id: 15, name: 'meme_apprentice', username: '@meme_apprentice', avatar: 'https://robohash.org/memeapprentice?set=set2&size=100x100', cover: null, bio: 'Learning the art of memes | Daily progress', followers: '23K', category: 'rising', verified: false, trending: false },
+        
+        // Additional creators
+        { id: 16, name: 'crypto_memes', username: '@crypto_memes', avatar: 'https://robohash.org/cryptomemes?set=set3&size=100x100', cover: null, bio: 'Crypto & Web3 memes | To the moon! 🚀', followers: '156K', category: 'memes', verified: false, trending: true },
+        { id: 17, name: 'anime_gifs', username: '@anime_gifs', avatar: 'https://robohash.org/animegifs?set=set4&size=100x100', cover: null, bio: 'Anime reaction GIFs | Weeb approved', followers: '432K', category: 'gifs', verified: true, trending: false },
+        { id: 18, name: 'sports_memes', username: '@sports_memes', avatar: 'https://robohash.org/sportsmemes?set=set1&size=100x100', cover: null, bio: 'Sports memes for the fans | GOAT content', followers: '298K', category: 'memes', verified: false, trending: true }
+    ];
+
+    function showToast(msg, emoji = '👤') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function renderCreators(creators) {
+        if (creators.length === 0) {
+            creatorsContainer.innerHTML = `<div class="empty-state" style="text-align: center; padding: 3rem; color: #6b7280;"><i class="fas fa-users-slash" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>No creators found</div>`;
+            return;
+        }
+
+        creatorsContainer.innerHTML = `
+            <div class="section-title">
+                <i class="fas fa-fire"></i> Featured Creators
+            </div>
+            <div class="creators-grid">
+                ${creators.map(creator => `
+                    <div class="creator-card" data-id="${creator.id}">
+                        <div class="card-cover">
+                            <div class="card-avatar">
+                                <img src="${creator.avatar}" alt="${creator.name}">
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="creator-name">
+                                ${creator.name}
+                                ${creator.verified ? '<i class="fas fa-check-circle" style="color: #8b5cf6; font-size: 0.8rem;"></i>' : ''}
+                            </div>
+                            <div class="creator-username">${creator.username}</div>
+                            <div class="creator-bio">${creator.bio}</div>
+                            <div class="creator-stats">
+                                <span><i class="fas fa-users"></i> ${creator.followers} followers</span>
+                            </div>
+                            <button class="follow-btn" data-id="${creator.id}">Follow</button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        // Add follow button handlers
+        document.querySelectorAll('.follow-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (btn.textContent === 'Follow') {
+                    btn.textContent = 'Following';
+                    btn.classList.add('following');
+                    showToast('Followed!', '✅');
+                } else {
+                    btn.textContent = 'Follow';
+                    btn.classList.remove('following');
+                    showToast('Unfollowed', '👋');
+                }
+            });
+        });
+
+        // Add card click handlers
+        document.querySelectorAll('.creator-card').forEach(card => {
+            card.addEventListener('click', () => {
+                showToast('Opening creator profile', '📱');
+            });
+        });
+    }
+
+    function filterCreators() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const activeCategory = document.querySelector('.category-tab.active').dataset.cat;
+        
+        let filtered = [...allCreators];
+        
+        // Filter by search
+        if (searchTerm) {
+            filtered = filtered.filter(c => 
+                c.name.toLowerCase().includes(searchTerm) || 
+                c.username.toLowerCase().includes(searchTerm) ||
+                c.bio.toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        // Filter by category
+        if (activeCategory === 'trending') {
+            filtered = filtered.filter(c => c.trending === true);
+        } else if (activeCategory !== 'all') {
+            filtered = filtered.filter(c => c.category === activeCategory);
+        }
+        
+        // Sort by followers (descending)
+        filtered.sort((a, b) => {
+            const followersA = parseInt(a.followers.replace(/[^0-9]/g, ''));
+            const followersB = parseInt(b.followers.replace(/[^0-9]/g, ''));
+            return followersB - followersA;
+        });
+        
+        renderCreators(filtered);
+    }
+
+    // Category switching
+    const categoryTabs = document.querySelectorAll('.category-tab');
+    categoryTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            categoryTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            filterCreators();
+        });
+    });
+
+    // Search input
+    searchInput.addEventListener('input', filterCreators);
+
+    // Navigation
+    document.getElementById('createBtn').addEventListener('click', () => showToast('Create new post', '📸'));
+    document.getElementById('notificationBtn').addEventListener('click', () => showToast('No new notifications', '🔔'));
+
+    // Initialize
+    renderCreators(allCreators);
+    showToast('Discover amazing creators!', '🌟');
+</script>
+</body>
+</html>

@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Share</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .app {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        /* Two Column Layout */
+        .share-layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Left Column - Meme Preview */
+        .preview-column {
+            flex: 1;
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .meme-container {
+            max-width: 100%;
+            max-height: 80vh;
+        }
+
+        .meme-card {
+            background: #12121c;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid #2d2d40;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .meme-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+        }
+
+        .meme-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .meme-info {
+            flex: 1;
+        }
+
+        .meme-creator {
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .meme-time {
+            font-size: 0.6rem;
+            color: #6b7280;
+        }
+
+        .meme-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        .meme-caption {
+            padding: 0.8rem 1rem;
+            font-size: 0.8rem;
+            color: #d1d5db;
+            border-top: 1px solid #1f1f2e;
+        }
+
+        /* Right Column - Share Options */
+        .share-column {
+            width: 380px;
+            background: #0c0c14;
+            border-left: 1px solid #1a1a28;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .share-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .share-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .share-header p {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 0.3rem;
+        }
+
+        /* Share Grid */
+        .share-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .share-option {
+            background: #12121c;
+            border: 1px solid #2d2d40;
+            border-radius: 0.8rem;
+            padding: 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .share-option:hover {
+            transform: translateY(-2px);
+            border-color: #8b5cf6;
+            background: #1a1a28;
+        }
+
+        .share-option i {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .share-option span {
+            font-size: 0.65rem;
+            font-weight: 500;
+        }
+
+        /* Platform hover colors */
+        .share-option[data-platform="whatsapp"]:hover i { color: #25D366; }
+        .share-option[data-platform="instagram"]:hover i { color: #E4405F; }
+        .share-option[data-platform="twitter"]:hover i { color: #1DA1F2; }
+        .share-option[data-platform="facebook"]:hover i { color: #1877F2; }
+        .share-option[data-platform="reddit"]:hover i { color: #FF4500; }
+        .share-option[data-platform="telegram"]:hover i { color: #0088cc; }
+        .share-option[data-platform="discord"]:hover i { color: #5865F2; }
+        .share-option[data-platform="copy"]:hover i { color: #a78bfa; }
+
+        /* Link Section */
+        .link-section {
+            background: #12121c;
+            border-radius: 0.8rem;
+            border: 1px solid #2d2d40;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .link-section i {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .link-section input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 0.7rem;
+        }
+
+        .copy-btn {
+            background: #1a1a28;
+            border: 1px solid #374151;
+            padding: 0.3rem 0.8rem;
+            border-radius: 0.5rem;
+            font-size: 0.65rem;
+            cursor: pointer;
+            color: #e5e7eb;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+            color: white;
+        }
+
+        /* QR Code */
+        .qr-section {
+            background: #12121c;
+            border-radius: 0.8rem;
+            border: 1px solid #2d2d40;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .qr-placeholder {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1a1a2a, #12121c);
+            border-radius: 0.5rem;
+            margin: 0 auto 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #2d2d40;
+        }
+
+        .qr-placeholder i {
+            font-size: 2rem;
+            color: #a78bfa;
+        }
+
+        .qr-section p {
+            font-size: 0.6rem;
+            color: #6b7280;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            padding: 0.8rem 0;
+            border-top: 1px solid #1f1f2e;
+            border-bottom: 1px solid #1f1f2e;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #a78bfa;
+        }
+
+        .stat-label {
+            font-size: 0.55rem;
+            color: #6b7280;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: auto;
+        }
+
+        .btn-done {
+            flex: 1;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.7rem;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            background: #1a1a28;
+            border: 1px solid #374151;
+            padding: 0.7rem;
+            border-radius: 0.8rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: #e5e7eb;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1; }
+
+        @media (max-width: 900px) {
+            .share-layout {
+                flex-direction: column;
+            }
+            .preview-column {
+                padding: 1rem;
+                min-height: auto;
+            }
+            .share-column {
+                width: 100%;
+                border-left: none;
+                border-top: 1px solid #1a1a28;
+            }
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            .logo span {
+                display: none;
+            }
+            .share-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .share-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-bell" id="notificationBtn"></i>
+        </div>
+    </div>
+
+    <div class="share-layout">
+        <!-- Left Column - Meme Preview -->
+        <div class="preview-column">
+            <div class="meme-container">
+                <div class="meme-card">
+                    <div class="meme-header">
+                        <img class="meme-avatar" id="memeAvatar" src="https://robohash.org/memecreator?set=set4&size=50x50" alt="avatar">
+                        <div class="meme-info">
+                            <div class="meme-creator" id="memeCreator">
+                                meme_curator
+                                <i class="fas fa-check-circle" style="color: #8b5cf6; font-size: 0.7rem;"></i>
+                            </div>
+                            <div class="meme-time">Just now</div>
+                        </div>
+                        <i class="fas fa-ellipsis-h" style="color: #6b7280;"></i>
+                    </div>
+                    <img class="meme-image" id="memeImage" src="https://i.imgflip.com/265j.jpg" alt="meme">
+                    <div class="meme-caption" id="memeCaption">
+                        When the code works on the first try 🎉 #programmerhumor
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Share Options -->
+        <div class="share-column">
+            <div class="share-header">
+                <h2><i class="fas fa-share-alt"></i> Share this meme</h2>
+                <p>Share with friends and across platforms</p>
+            </div>
+
+            <!-- Share Grid -->
+            <div class="share-grid" id="shareGrid">
+                <div class="share-option" data-platform="whatsapp">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </div>
+                <div class="share-option" data-platform="instagram">
+                    <i class="fab fa-instagram"></i>
+                    <span>Instagram</span>
+                </div>
+                <div class="share-option" data-platform="twitter">
+                    <i class="fab fa-twitter"></i>
+                    <span>Twitter</span>
+                </div>
+                <div class="share-option" data-platform="facebook">
+                    <i class="fab fa-facebook"></i>
+                    <span>Facebook</span>
+                </div>
+                <div class="share-option" data-platform="reddit">
+                    <i class="fab fa-reddit-alien"></i>
+                    <span>Reddit</span>
+                </div>
+                <div class="share-option" data-platform="telegram">
+                    <i class="fab fa-telegram"></i>
+                    <span>Telegram</span>
+                </div>
+                <div class="share-option" data-platform="discord">
+                    <i class="fab fa-discord"></i>
+                    <span>Discord</span>
+                </div>
+                <div class="share-option" data-platform="copy">
+                    <i class="fas fa-link"></i>
+                    <span>Copy Link</span>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-value" id="shareCount">1.2K</div>
+                    <div class="stat-label">Shares</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="viewCount">24.5K</div>
+                    <div class="stat-label">Views</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="remixCount">128</div>
+                    <div class="stat-label">Remixes</div>
+                </div>
+            </div>
+
+            <!-- Link Section -->
+            <div class="link-section">
+                <i class="fas fa-link"></i>
+                <input type="text" id="shareLink" value="https://memotions.com/p/123456789" readonly>
+                <button class="copy-btn" id="copyLinkBtn">Copy</button>
+            </div>
+
+            <!-- QR Code -->
+            <div class="qr-section">
+                <div class="qr-placeholder">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <p>Scan QR code to open on mobile</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-cancel" id="cancelBtn">Cancel</button>
+                <button class="btn-done" id="doneBtn">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const toast = document.getElementById('toast');
+    const shareLink = document.getElementById('shareLink');
+    const copyLinkBtn = document.getElementById('copyLinkBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const doneBtn = document.getElementById('doneBtn');
+
+    // Meme data
+    let currentMeme = {
+        image: 'https://i.imgflip.com/265j.jpg',
+        title: 'When the code works on the first try',
+        caption: 'When the code works on the first try 🎉 #programmerhumor',
+        creator: 'meme_curator',
+        creatorAvatar: 'https://robohash.org/memecreator?set=set4&size=50x50',
+        verified: true,
+        shares: '1.2K',
+        views: '24.5K',
+        remixes: 128
+    };
+
+    // Try to load from localStorage
+    const savedMeme = localStorage.getItem('memotions_share_meme');
+    if (savedMeme) {
+        try {
+            const meme = JSON.parse(savedMeme);
+            currentMeme = { ...currentMeme, ...meme };
+        } catch(e) {}
+    }
+
+    // Update preview
+    document.getElementById('memeImage').src = currentMeme.image;
+    document.getElementById('memeCreator').innerHTML = currentMeme.creator + (currentMeme.verified ? '<i class="fas fa-check-circle" style="color: #8b5cf6; font-size: 0.7rem;"></i>' : '');
+    document.getElementById('memeCaption').innerText = currentMeme.caption;
+    document.getElementById('memeAvatar').src = currentMeme.creatorAvatar;
+    document.getElementById('shareCount').innerText = currentMeme.shares;
+    document.getElementById('viewCount').innerText = currentMeme.views;
+    document.getElementById('remixCount').innerText = currentMeme.remixes;
+
+    // Generate unique share link
+    const postId = Math.random().toString(36).substring(2, 10);
+    const shareUrl = `https://memotions.com/p/${postId}`;
+    shareLink.value = shareUrl;
+
+    function showToast(msg, emoji = '📤') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function copyToClipboard() {
+        shareLink.select();
+        document.execCommand('copy');
+        showToast('Link copied to clipboard!', '📋');
+    }
+
+    function shareToPlatform(platform) {
+        const text = encodeURIComponent(`${currentMeme.caption}\n\nShared from Memotions`);
+        const url = encodeURIComponent(shareUrl);
+        
+        const shareUrls = {
+            whatsapp: `https://wa.me/?text=${text}%20${url}`,
+            twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+            facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+            reddit: `https://reddit.com/submit?url=${url}&title=${encodeURIComponent(currentMeme.title)}`,
+            telegram: `https://t.me/share/url?url=${url}&text=${text}`,
+            discord: `https://discord.com/channels/@me`
+        };
+        
+        if (shareUrls[platform]) {
+            window.open(shareUrls[platform], '_blank', 'width=600,height=400');
+            showToast(`Sharing to ${platform.charAt(0).toUpperCase() + platform.slice(1)}`, '📤');
+        } else if (platform === 'instagram') {
+            showToast('Instagram sharing requires the app. Link copied!', '📋');
+            copyToClipboard();
+        } else if (platform === 'copy') {
+            copyToClipboard();
+        }
+    }
+
+    copyLinkBtn.addEventListener('click', copyToClipboard);
+
+    // Share options
+    document.querySelectorAll('.share-option').forEach(option => {
+        option.addEventListener('click', () => {
+            const platform = option.dataset.platform;
+            shareToPlatform(platform);
+        });
+    });
+
+    // Navigation
+    cancelBtn.addEventListener('click', () => {
+        window.history.back();
+    });
+
+    doneBtn.addEventListener('click', () => {
+        showToast('Shared successfully!', '✅');
+        setTimeout(() => {
+            window.location.href = 'memotions.html';
+        }, 800);
+    });
+
+    document.getElementById('createBtn').addEventListener('click', () => showToast('Create new post', '📸'));
+    document.getElementById('notificationBtn').addEventListener('click', () => showToast('No new notifications', '🔔'));
+
+    showToast('Share this meme with the world', '📤');
+</script>
+</body>
+</html>

@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions • Pro Meme Creator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 10% 20%, #0b0b12, #050508);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: #f0f0f0;
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+
+        .meme-studio {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: rgba(18, 18, 28, 0.8);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            overflow: hidden;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.5);
+        }
+
+        .studio-header {
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(8, 8, 14, 0.7);
+            border-bottom: 1px solid #2a2a3a;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .logo-icon {
+            background: linear-gradient(145deg, #a855f7, #ec4899);
+            width: 42px;
+            height: 42px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+        }
+
+        .logo-text {
+            font-family: 'Irish Grover', cursive;
+            font-weight: 400;
+            font-size: 1.6rem;
+            letter-spacing: -0.2px;
+            background: linear-gradient(135deg, #fff, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .badge {
+            background: #1e1e2c;
+            padding: 0.3rem 0.9rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #c084fc;
+            border: 1px solid #3a2a5a;
+        }
+
+        .creator-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            padding: 1.8rem;
+        }
+
+        .canvas-area {
+            flex: 2;
+            min-width: 280px;
+            background: #0c0c14;
+            border-radius: 1.6rem;
+            border: 1px solid #262636;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .meme-frame {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            background: #0a0a12;
+            min-height: 320px;
+            min-width: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #baseImage {
+            max-width: 100%;
+            max-height: 480px;
+            object-fit: contain;
+            display: block;
+            border-radius: 0.8rem;
+            background: #0a0a12;
+            width: 100%;
+        }
+
+        .frame-upload-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.9rem 1.8rem;
+            border-radius: 2.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            z-index: 10;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.5);
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+        .frame-upload-btn:hover {
+            transform: translate(-50%, -50%) scale(1.02);
+            box-shadow: 0 6px 22px rgba(139, 92, 246, 0.7);
+        }
+        .meme-frame.has-image .frame-upload-btn { display: none; }
+        
+        /* Placeholder style when no image */
+        .empty-canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.9rem;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .dynamic-text {
+            position: absolute;
+            font-weight: 800;
+            text-shadow: 2px 2px 0 #000, 1px 1px 4px rgba(0,0,0,0.7);
+            white-space: nowrap;
+            cursor: grab;
+            user-select: none;
+            pointer-events: auto;
+            transform: translateX(-50%);
+            z-index: 20;
+        }
+        .dynamic-text:active { cursor: grabbing; }
+        .dynamic-text.active-layer {
+            outline: 3px solid #f97316;
+            outline-offset: 4px;
+            border-radius: 8px;
+            background: rgba(249, 115, 22, 0.08);
+        }
+
+        .live-preview-text {
+            position: absolute;
+            font-weight: 800;
+            text-shadow: 2px 2px 0 #000;
+            white-space: nowrap;
+            pointer-events: none;
+            transform: translateX(-50%);
+            z-index: 15;
+            opacity: 0.85;
+            border: 1px dashed #8b5cf6;
+            border-radius: 6px;
+            padding: 0 3px;
+        }
+
+        .tools-panel {
+            flex: 1.3;
+            min-width: 280px;
+            background: #0f0f18;
+            border-radius: 1.6rem;
+            border: 1px solid #25253a;
+            padding: 1.3rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .control-divider {
+            margin: 0.5rem 0 0.2rem 0;
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #3a3a5a, #8b5cf6, #3a3a5a, transparent);
+        }
+
+        .section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #a78bfa;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .palette-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+        .palette-swatch {
+            width: 36px;
+            height: 36px;
+            border-radius: 0.8rem;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.15s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .palette-swatch.active-palette { border-color: white; transform: scale(1.05); box-shadow: 0 0 0 2px #8b5cf6; }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 0.3rem;
+        }
+        input[type="range"] {
+            flex: 1;
+            height: 4px;
+            background: #2d2d44;
+            border-radius: 10px;
+            -webkit-appearance: none;
+        }
+        input[type="range"]:focus { outline: none; }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px; height: 16px; background: #c084fc; border-radius: 50%; cursor: pointer;
+        }
+        .size-value { background: #1e1e2c; padding: 0.2rem 0.6rem; border-radius: 2rem; font-size: 0.7rem; }
+
+        .font-selector {
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.5rem;
+            color: white;
+            width: 100%;
+            font-size: 0.75rem;
+        }
+
+        .quick-positions { display: flex; gap: 0.6rem; margin: 0.4rem 0; }
+        .pos-btn {
+            background: #181826;
+            border: 1px solid #33334a;
+            padding: 0.4rem 0;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-align: center;
+            flex: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+        }
+        .pos-btn:hover { background: #2a2a3e; border-color: #a78bfa; }
+
+        .text-field-group {
+            display: flex;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+            position: relative;
+        }
+        .text-field-group input {
+            flex: 1;
+            background: #0b0b14;
+            border: 1px solid #33334e;
+            border-radius: 2rem;
+            padding: 0.6rem 1rem;
+            color: white;
+            font-size: 0.8rem;
+        }
+        .emoji-picker-btn {
+            background: #2d2d44;
+            border: none;
+            border-radius: 2rem;
+            width: 40px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+        .emoji-picker-btn:hover { background: #8b5cf6; transform: scale(1.05); }
+        
+        .emoji-popup {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 8px;
+            background: #1e1e2e;
+            border-radius: 1rem;
+            padding: 0.6rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border: 1px solid #3a3a50;
+            z-index: 1000;
+            width: 300px;
+            display: none;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            backdrop-filter: blur(8px);
+        }
+        .emoji-popup::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 15px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: #1e1e2e transparent transparent transparent;
+        }
+        .emoji-popup span {
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.2rem;
+            transition: transform 0.1s;
+            width: 36px;
+            text-align: center;
+            border-radius: 0.5rem;
+        }
+        .emoji-popup span:hover { transform: scale(1.2); background: #2d2d44; }
+
+        .add-layer-btn { background: #8b5cf6; border: none; border-radius: 2rem; width: 42px; cursor: pointer; color: white; transition: 0.2s; }
+        .add-layer-btn:hover { background: #7c3aed; transform: scale(1.02); }
+
+        .layers-container {
+            background: #090911;
+            border-radius: 1rem;
+            padding: 0.6rem;
+            max-height: 160px;
+            overflow-y: auto;
+        }
+        .layer-item-card {
+            background: #14141f;
+            border-radius: 0.8rem;
+            padding: 0.4rem 0.6rem;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .layer-item-card.active-layer-card { border-color: #f97316; background: #1e1a2c; }
+        .layer-preview-text { font-weight: 600; font-size: 0.7rem; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+        .layer-actions button { background: none; border: none; color: #f87171; cursor: pointer; }
+
+        .action-buttons { display: flex; gap: 0.8rem; margin-top: 0.3rem; }
+        .post-meme-btn, .export-btn {
+            flex: 1;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border: none;
+            padding: 0.7rem;
+            border-radius: 0.8rem;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .export-btn { background: linear-gradient(135deg, #10b981, #059669); }
+        .post-meme-btn:hover, .export-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+
+        .templates-section {
+            background: #0c0c14;
+            border-radius: 1rem;
+            padding: 0.8rem;
+            margin: 0 1.8rem 1.8rem 1.8rem;
+        }
+        .template-grid {
+            display: flex;
+            gap: 0.6rem;
+            overflow-x: auto;
+            padding-bottom: 0.3rem;
+        }
+        .template-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 0.8rem;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.1s;
+            background: #2d2d44;
+        }
+        .template-thumb:hover { border-color: #8b5cf6; transform: scale(1.02); }
+
+        .toast-msg {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #1f1f2e; backdrop-filter: blur(12px); padding: 0.5rem 1.2rem;
+            border-radius: 3rem; font-size: 0.75rem; border-left: 4px solid #f97316;
+            z-index: 1000; opacity: 0; transition: opacity 0.2s; pointer-events: none;
+        }
+        @media (max-width: 750px) { body { padding: 0.8rem; } .dynamic-text, .live-preview-text { white-space: normal; } }
+    </style>
+</head>
+<body>
+<div class="meme-studio">
+    <div class="studio-header">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fas fa-smile-wink"></i></div>
+            <span class="logo-text">Memotions</span>
+            <div class="badge"><i class="fas fa-magic"></i> pro editor</div>
+        </div>
+        <div><i class="fas fa-palette"></i> drag text • watermark protected</div>
+    </div>
+    <div class="creator-grid">
+        <div class="canvas-area">
+            <div class="meme-frame" id="memeFrame">
+                <img id="baseImage" alt="meme canvas" style="display: none;">
+                <div class="empty-canvas" id="emptyCanvasMsg">📸 No image loaded<br>Click below to upload</div>
+                <button id="frameUploadBtn" class="frame-upload-btn"><i class="fas fa-cloud-upload-alt"></i> Upload Image</button>
+            </div>
+        </div>
+        <div class="tools-panel">
+            <div>
+                <div class="section-title"><i class="fas fa-palette"></i> PRESET COLORS</div>
+                <div class="palette-grid" id="paletteGrid"></div>
+            </div>
+            <hr class="control-divider">
+            <div>
+                <div class="section-title"><i class="fas fa-text-height"></i> FONT & SIZE</div>
+                <select id="fontFamilySelect" class="font-selector">
+                    <option value="Impact">🔥 Impact</option><option value="Arial Black">⚡ Arial Black</option>
+                    <option value="Comic Sans MS">😂 Comic Sans</option><option value="Montserrat">✨ Montserrat</option>
+                    <option value="Bebas Neue">🎯 Bebas Neue</option>
+                </select>
+                <div class="slider-container"><i class="fas fa-font"></i><input type="range" id="fontSizeSlider" min="18" max="80" value="42" step="2"><span class="size-value" id="sizeLabel">42px</span></div>
+            </div>
+            <hr class="control-divider">
+            <div>
+                <div class="section-title"><i class="fas fa-arrows-alt"></i> one-click position</div>
+                <div class="quick-positions">
+                    <div class="pos-btn" data-pos="top"><i class="fas fa-arrow-up"></i> Top</div>
+                    <div class="pos-btn" data-pos="middle"><i class="fas fa-align-center"></i> Middle</div>
+                    <div class="pos-btn" data-pos="bottom"><i class="fas fa-arrow-down"></i> Bottom</div>
+                </div>
+            </div>
+            <hr class="control-divider">
+            <div>
+                <div class="section-title"><i class="fas fa-plus-circle"></i> new text + emoji</div>
+                <div class="text-field-group" style="position: relative;">
+                    <input type="text" id="newTextInput" placeholder="funny text here... 🔥" autocomplete="off">
+                    <button id="emojiBtn" class="emoji-picker-btn">😊</button>
+                    <button id="addTextQuickBtn" class="add-layer-btn"><i class="fas fa-plus"></i></button>
+                    <div id="emojiPopup" class="emoji-popup"></div>
+                </div>
+            </div>
+            <hr class="control-divider">
+            <div>
+                <div class="section-title"><i class="fas fa-layer-group"></i> text layers (click to re-edit)</div>
+                <div class="layers-container" id="layersListContainer"><div style="text-align:center; color:#6b7280; padding: 0.5rem;">✨ no layers yet</div></div>
+            </div>
+            <hr class="control-divider">
+            <div class="action-buttons">
+                <button id="exportJpegBtn" class="export-btn"><i class="fas fa-download"></i> Export JPEG</button>
+                <button id="publishMemeBtn" class="post-meme-btn"><i class="fas fa-paper-plane"></i> Post Meme</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="templates-section">
+        <div class="section-title"><i class="fas fa-images"></i> popular templates (click to load)</div>
+        <div class="template-grid" id="templateGrid"></div>
+    </div>
+</div>
+<div id="liveToast" class="toast-msg"></div>
+
+<script>
+    (function() {
+        let uploadedImageSrc = null;
+        let textItems = [];
+        let nextId = 100;
+        let selectedTextId = null;
+        let livePreviewDiv = null;
+
+        const baseImage = document.getElementById('baseImage');
+        const memeFrame = document.getElementById('memeFrame');
+        const emptyCanvasMsg = document.getElementById('emptyCanvasMsg');
+        const frameUploadBtn = document.getElementById('frameUploadBtn');
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+        document.body.appendChild(fileInput);
+        
+        const newTextInput = document.getElementById('newTextInput');
+        const addBtn = document.getElementById('addTextQuickBtn');
+        const fontSizeSlider = document.getElementById('fontSizeSlider');
+        const sizeLabel = document.getElementById('sizeLabel');
+        const layersContainer = document.getElementById('layersListContainer');
+        const publishBtn = document.getElementById('publishMemeBtn');
+        const exportBtn = document.getElementById('exportJpegBtn');
+        const paletteGrid = document.getElementById('paletteGrid');
+        const fontFamilySelect = document.getElementById('fontFamilySelect');
+        const emojiBtn = document.getElementById('emojiBtn');
+        const emojiPopup = document.getElementById('emojiPopup');
+
+        let currentColor = "#FFFFFF";
+        let currentFontFamily = "Impact";
+
+        const colorPalettes = [
+            { name: "Black", value: "#000000" }, { name: "White", value: "#FFFFFF" },
+            { name: "Red", value: "#FF0000" }, { name: "Neon Yellow", value: "#FFE347" },
+            { name: "Toxic Green", value: "#39FF14" }, { name: "Hot Pink", value: "#FF66C4" },
+            { name: "Electric Blue", value: "#3B82F6" }, { name: "Orange Rage", value: "#FF8C42" },
+            { name: "Crimson", value: "#DC2626" }, { name: "Purple Rain", value: "#C084FC" },
+            { name: "Cyan", value: "#06B6D4" }, { name: "Lime", value: "#A3E635" },
+            { name: "Rose", value: "#F43F5E" }, { name: "Indigo", value: "#6366F1" },
+            { name: "Amber", value: "#F59E0B" }, { name: "Teal", value: "#14B8A6" },
+            { name: "Grey", value: "#9CA3AF" }
+        ];
+
+        const emojiList = ["😂","🔥","💀","🤣","😭","🥶","😎","🫡","💯","✨","👑","🗿","🤡","🐐","🍿","🎉","😈","💪","👀","🙏","🤔","🥴","😍","😱","🤌","🫶","❤️","⚡","⭐"];
+
+        // Safe template URLs that work with file:// protocol (using imgflip direct)
+        const templates = [
+            { name: "Drake Hotline", url: "https://i.imgflip.com/30b1gx.jpg" },
+            { name: "Distracted Boyfriend", url: "https://i.imgflip.com/1ur9b0.jpg" },
+            { name: "Two Buttons", url: "https://i.imgflip.com/1g8my4.jpg" },
+            { name: "Change My Mind", url: "https://i.imgflip.com/24y43o.jpg" },
+            { name: "Crying Wojak", url: "https://i.imgflip.com/2kbnqp.jpg" }
+        ];
+
+        function showToast(msg, icon = "✨") { 
+            const t = document.getElementById('liveToast'); 
+            t.innerHTML = `${icon} ${msg}`; 
+            t.style.opacity = "1"; 
+            setTimeout(() => t.style.opacity = "0", 2000); 
+        }
+
+        function setImageLoaded(loaded) {
+            if (loaded && uploadedImageSrc) {
+                memeFrame.classList.add('has-image');
+                baseImage.style.display = 'block';
+                emptyCanvasMsg.style.display = 'none';
+            } else {
+                memeFrame.classList.remove('has-image');
+                baseImage.style.display = 'none';
+                emptyCanvasMsg.style.display = 'block';
+            }
+        }
+
+        function loadTemplateImage(url, templateName) {
+            showToast(`Loading ${templateName}...`, "🎬");
+            const tempImg = new Image();
+            tempImg.crossOrigin = "Anonymous";
+            tempImg.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = tempImg.width;
+                canvas.height = tempImg.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(tempImg, 0, 0);
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                uploadedImageSrc = dataUrl;
+                baseImage.src = dataUrl;
+                setImageLoaded(true);
+                showToast(`✅ ${templateName} loaded!`, "🎉");
+                baseImage.onload = () => {
+                    if (textItems.length) {
+                        const rect = baseImage.getBoundingClientRect();
+                        textItems.forEach(layer => {
+                            if (rect.width > 0) {
+                                layer.x = Math.min(layer.x, rect.width - 20);
+                                layer.y = Math.min(layer.y, rect.height - 40);
+                                if (layer.y < 20) layer.y = rect.height / 2;
+                            }
+                        });
+                        rerenderAllTextLayers();
+                    }
+                    if (newTextInput.value.trim()) updateLivePreview();
+                };
+            };
+            tempImg.onerror = () => {
+                showToast(`Could not load ${templateName}. Try uploading your own image.`, "⚠️");
+            };
+            tempImg.src = url;
+        }
+
+        function buildPalettes() {
+            paletteGrid.innerHTML = "";
+            colorPalettes.forEach(pal => {
+                const swatch = document.createElement('div');
+                swatch.className = 'palette-swatch';
+                swatch.style.backgroundColor = pal.value;
+                swatch.title = pal.name;
+                swatch.addEventListener('click', () => {
+                    currentColor = pal.value;
+                    document.querySelectorAll('.palette-swatch').forEach(s => s.classList.remove('active-palette'));
+                    swatch.classList.add('active-palette');
+                    showToast(`Color: ${pal.name}`, "🎨");
+                    if (selectedTextId !== null) {
+                        const found = textItems.find(t => t.id === selectedTextId);
+                        if (found) { found.color = currentColor; rerenderAllTextLayers(); renderLayersListUI(); }
+                    } else updateLivePreview();
+                });
+                paletteGrid.appendChild(swatch);
+            });
+            const whiteSwatch = Array.from(paletteGrid.children).find(c => c.style.backgroundColor === 'rgb(255, 255, 255)');
+            if(whiteSwatch) whiteSwatch.classList.add('active-palette');
+        }
+
+        function updateLivePreview() {
+            if (!uploadedImageSrc) return;
+            const previewText = newTextInput.value.trim();
+            const imgRect = baseImage.getBoundingClientRect();
+            if (imgRect.width === 0) return;
+            if (!previewText) { if (livePreviewDiv) { livePreviewDiv.remove(); livePreviewDiv = null; } return; }
+            if (!livePreviewDiv) { livePreviewDiv = document.createElement('div'); livePreviewDiv.className = 'live-preview-text'; memeFrame.appendChild(livePreviewDiv); }
+            let x = imgRect.width / 2, y = imgRect.height / 2;
+            livePreviewDiv.textContent = previewText;
+            livePreviewDiv.style.fontFamily = currentFontFamily;
+            livePreviewDiv.style.fontSize = fontSizeSlider.value + 'px';
+            livePreviewDiv.style.color = currentColor;
+            livePreviewDiv.style.left = x + 'px';
+            livePreviewDiv.style.top = y + 'px';
+            livePreviewDiv.style.transform = 'translateX(-50%)';
+        }
+        
+        function clearLivePreview() { if (livePreviewDiv) { livePreviewDiv.remove(); livePreviewDiv = null; } }
+
+        fontFamilySelect.addEventListener('change', () => { currentFontFamily = fontFamilySelect.value; if (selectedTextId !== null) { const l = textItems.find(t => t.id === selectedTextId); if (l) { l.fontFamily = currentFontFamily; rerenderAllTextLayers(); renderLayersListUI(); } } else updateLivePreview(); });
+        fontSizeSlider.addEventListener('input', (e) => { sizeLabel.innerText = e.target.value + "px"; if (selectedTextId !== null) { const l = textItems.find(t => t.id === selectedTextId); if (l) { l.fontSize = parseInt(e.target.value); rerenderAllTextLayers(); renderLayersListUI(); } } else updateLivePreview(); });
+
+        frameUploadBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file || !file.type.startsWith('image/')) {
+                showToast("Please select a valid image file", "⚠️");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (ev) => { 
+                uploadedImageSrc = ev.target.result; 
+                baseImage.src = uploadedImageSrc; 
+                setImageLoaded(true);
+                showToast("Image uploaded! Drag text anywhere", "📸"); 
+                baseImage.onload = () => { 
+                    if (textItems.length) rerenderAllTextLayers(); 
+                    if (newTextInput.value.trim()) updateLivePreview(); 
+                }; 
+            };
+            reader.onerror = () => { showToast("Error reading file", "❌"); };
+            reader.readAsDataURL(file);
+        });
+
+        function addTextLayer(content, presetPosition = 'middle') {
+            if (!uploadedImageSrc) { showToast("Upload image or pick template first", "⚠️"); return false; }
+            if (!content.trim()) { showToast("Enter text", "✏️"); return false; }
+            const imgRect = baseImage.getBoundingClientRect();
+            let x = imgRect.width / 2, y = imgRect.height / 2;
+            if (presetPosition === 'top') y = 40;
+            if (presetPosition === 'bottom') y = imgRect.height - 45;
+            const newLayer = { id: nextId++, text: content, x, y, fontSize: parseInt(fontSizeSlider.value), color: currentColor, fontFamily: currentFontFamily };
+            textItems.push(newLayer); selectedTextId = newLayer.id;
+            clearLivePreview(); rerenderAllTextLayers(); renderLayersListUI();
+            newTextInput.value = ''; showToast(`"${content.substring(0,20)}" added - drag to move`, "🎉");
+            return true;
+        }
+
+        function rerenderAllTextLayers() {
+            document.querySelectorAll('.dynamic-text').forEach(el => el.remove());
+            if (!uploadedImageSrc) return;
+            const imgRect = baseImage.getBoundingClientRect();
+            if (imgRect.width === 0) return;
+            textItems.forEach(layer => {
+                const div = document.createElement('div'); div.className = 'dynamic-text';
+                if (selectedTextId === layer.id) div.classList.add('active-layer');
+                div.textContent = layer.text;
+                div.style.fontFamily = layer.fontFamily;
+                div.style.fontSize = layer.fontSize + 'px';
+                div.style.color = layer.color;
+                div.style.left = layer.x + 'px';
+                div.style.top = layer.y + 'px';
+                div.style.transform = 'translateX(-50%)';
+                div.dataset.id = layer.id;
+                let drag = false, sx, sy, lx, ly;
+                div.addEventListener('mousedown', (e) => { e.preventDefault(); e.stopPropagation(); drag = true; sx = e.clientX; sy = e.clientY; lx = parseFloat(div.style.left); ly = parseFloat(div.style.top); div.style.cursor = 'grabbing'; });
+                const onMove = (e) => { if (!drag) return; let nl = lx + (e.clientX - sx), nt = ly + (e.clientY - sy); const rect = baseImage.getBoundingClientRect(); nl = Math.min(Math.max(5, nl), rect.width - 10); nt = Math.min(Math.max(10, nt), rect.height - 40); div.style.left = nl + 'px'; div.style.top = nt + 'px'; const ld = textItems.find(l => l.id === layer.id); if (ld) { ld.x = nl; ld.y = nt; } };
+                const onUp = () => { drag = false; div.style.cursor = 'grab'; };
+                window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onUp);
+                div.addEventListener('click', (e) => { e.stopPropagation(); selectedTextId = layer.id; const f = textItems.find(t => t.id === selectedTextId); if (f) { fontSizeSlider.value = f.fontSize; sizeLabel.innerText = f.fontSize+'px'; currentColor = f.color; currentFontFamily = f.fontFamily; fontFamilySelect.value = f.fontFamily; newTextInput.value = f.text; document.querySelectorAll('.palette-swatch').forEach(sw => { if (sw.style.backgroundColor === f.color) sw.classList.add('active-palette'); else sw.classList.remove('active-palette'); }); } clearLivePreview(); rerenderAllTextLayers(); renderLayersListUI(); });
+                memeFrame.appendChild(div);
+            });
+        }
+
+        function renderLayersListUI() {
+            if (!layersContainer) return;
+            if (!textItems.length) { layersContainer.innerHTML = '<div style="text-align:center; color:#6b7280; padding: 0.5rem;">✨ no text layers yet</div>'; return; }
+            layersContainer.innerHTML = '';
+            textItems.forEach(layer => {
+                const card = document.createElement('div'); card.className = `layer-item-card ${selectedTextId === layer.id ? 'active-layer-card' : ''}`;
+                card.innerHTML = `<div class="layer-preview-text" style="color:${layer.color}; font-family:${layer.fontFamily}">${layer.text.substring(0,22)}</div><div class="layer-actions"><button class="del-layer" data-id="${layer.id}"><i class="fas fa-trash-alt"></i></button></div>`;
+                card.querySelector('.del-layer')?.addEventListener('click', (e) => { e.stopPropagation(); textItems = textItems.filter(l => l.id !== layer.id); if (selectedTextId === layer.id) selectedTextId = null; rerenderAllTextLayers(); renderLayersListUI(); showToast("layer removed", "🗑️"); });
+                card.addEventListener('click', () => { selectedTextId = layer.id; const f = textItems.find(t => t.id === selectedTextId); if (f) { fontSizeSlider.value = f.fontSize; sizeLabel.innerText = f.fontSize+'px'; currentColor = f.color; currentFontFamily = f.fontFamily; fontFamilySelect.value = f.fontFamily; newTextInput.value = f.text; document.querySelectorAll('.palette-swatch').forEach(sw => { if (sw.style.backgroundColor === f.color) sw.classList.add('active-palette'); else sw.classList.remove('active-palette'); }); } clearLivePreview(); rerenderAllTextLayers(); renderLayersListUI(); });
+                layersContainer.appendChild(card);
+            });
+        }
+
+        function repositionLayer(pos) {
+            if (!selectedTextId) { showToast("Select a layer first (click on text)", "💡"); return; }
+            const layer = textItems.find(l => l.id === selectedTextId);
+            if (layer && uploadedImageSrc) {
+                const rect = baseImage.getBoundingClientRect();
+                let newY = pos === 'top' ? 40 : (pos === 'bottom' ? rect.height - 45 : rect.height/2);
+                layer.y = Math.min(Math.max(10, newY), rect.height - 40);
+                rerenderAllTextLayers(); renderLayersListUI(); showToast(`moved to ${pos}`, "📍");
+            }
+        }
+        document.querySelectorAll('.pos-btn').forEach(btn => btn.addEventListener('click', () => repositionLayer(btn.dataset.pos)));
+        
+        addBtn.addEventListener('click', () => addTextLayer(newTextInput.value, 'middle'));
+
+        function buildEmojiPopup() { 
+            emojiPopup.innerHTML = ''; 
+            emojiList.forEach(emoji => { 
+                let span = document.createElement('span'); 
+                span.textContent = emoji; 
+                span.onclick = () => { 
+                    if (selectedTextId !== null) {
+                        const layer = textItems.find(l => l.id === selectedTextId);
+                        if (layer) {
+                            const newText = layer.text + emoji;
+                            layer.text = newText;
+                            rerenderAllTextLayers();
+                            renderLayersListUI();
+                            newTextInput.value = newText;
+                            showToast(`Emoji added`, "😊");
+                        }
+                    } else {
+                        newTextInput.value += emoji;
+                        newTextInput.focus();
+                        updateLivePreview();
+                    }
+                    emojiPopup.style.display = 'none';
+                }; 
+                emojiPopup.appendChild(span); 
+            }); 
+        }
+        
+        emojiBtn.addEventListener('click', (e) => { e.stopPropagation(); emojiPopup.style.display = emojiPopup.style.display === 'flex' ? 'none' : 'flex'; });
+        document.addEventListener('click', (e) => { if (!emojiPopup.contains(e.target) && e.target !== emojiBtn) emojiPopup.style.display = 'none'; });
+        buildEmojiPopup();
+
+        function exportWithWatermark() {
+            if (!uploadedImageSrc) { showToast("No image loaded", "⚠️"); return; }
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.onload = () => {
+                const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                const rect = baseImage.getBoundingClientRect();
+                canvas.width = rect.width; canvas.height = rect.height;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                textItems.forEach(layer => {
+                    ctx.font = `${layer.fontSize}px ${layer.fontFamily}`;
+                    ctx.fillStyle = layer.color;
+                    ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.textAlign = 'center';
+                    ctx.strokeText(layer.text, layer.x, layer.y + layer.fontSize * 0.7);
+                    ctx.fillText(layer.text, layer.x, layer.y + layer.fontSize * 0.7);
+                });
+                ctx.font = "bold 14px 'Irish Grover', cursive";
+                ctx.fillStyle = "#ffffffcc";
+                ctx.textAlign = "right";
+                ctx.fillText("⚡ Memotions", canvas.width - 12, canvas.height - 8);
+                canvas.toBlob(blob => { const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `memotion_${Date.now()}.jpg`; a.click(); URL.revokeObjectURL(url); showToast("JPEG exported!", "🏷️"); }, 'image/jpeg', 0.92);
+            };
+            img.src = uploadedImageSrc;
+        }
+        exportBtn.addEventListener('click', exportWithWatermark);
+
+        publishBtn.addEventListener('click', () => {
+            if (!uploadedImageSrc) { showToast("Upload image first", "⚠️"); return; }
+            if (textItems.length === 0) { showToast("Add text first", "😅"); return; }
+            const img = new Image(); img.crossOrigin = "Anonymous";
+            img.onload = () => {
+                const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                const rect = baseImage.getBoundingClientRect();
+                canvas.width = rect.width; canvas.height = rect.height;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                textItems.forEach(layer => {
+                    ctx.font = `${layer.fontSize}px ${layer.fontFamily}`;
+                    ctx.fillStyle = layer.color; ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.textAlign = 'center';
+                    ctx.strokeText(layer.text, layer.x, layer.y + layer.fontSize * 0.7);
+                    ctx.fillText(layer.text, layer.x, layer.y + layer.fontSize * 0.7);
+                });
+                ctx.font = "bold 13px 'Irish Grover', cursive";
+                ctx.fillStyle = "#ffffffcc"; ctx.textAlign = "right";
+                ctx.fillText("⚡ Memotions", canvas.width - 12, canvas.height - 8);
+                const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+                let existing = JSON.parse(localStorage.getItem('memotions_posts') || '[]');
+                existing.unshift({ id: Date.now(), image: dataURL, caption: "Memotions creation", tags: ['memotions'], likes: '0', comments: '0', creator: 'user', timestamp: new Date().toISOString() });
+                localStorage.setItem('memotions_posts', JSON.stringify(existing));
+                showToast("Meme posted! 🎉", "✅");
+                setTimeout(() => { if (confirm("Posted! Go to profile?")) window.location.href = 'profile.html'; }, 500);
+            };
+            img.src = uploadedImageSrc;
+        });
+
+        function buildTemplateGrid() {
+            const grid = document.getElementById('templateGrid');
+            grid.innerHTML = '';
+            templates.forEach(t => { 
+                const img = document.createElement('img'); 
+                img.src = t.url; 
+                img.className = 'template-thumb'; 
+                img.title = t.name; 
+                img.onerror = () => { 
+                    img.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\' viewBox=\'0 0 80 80\'%3E%3Crect width=\'80\' height=\'80\' fill=\'%232d2d44\'/%3E%3Ctext x=\'40\' y=\'45\' font-size=\'10\' fill=\'%23a78bfa\' text-anchor=\'middle\'%3E' + t.name.substring(0,2) + '%3C/text%3E%3C/svg%3E';
+                };
+                img.onclick = () => loadTemplateImage(t.url, t.name); 
+                grid.appendChild(img); 
+            });
+        }
+        buildTemplateGrid();
+
+        baseImage.addEventListener('load', () => { if (textItems.length) rerenderAllTextLayers(); });
+        window.addEventListener('resize', () => { if (textItems.length) rerenderAllTextLayers(); if (livePreviewDiv) updateLivePreview(); });
+        newTextInput.addEventListener('input', () => { if (uploadedImageSrc) updateLivePreview(); });
+        buildPalettes();
+        setImageLoaded(false);
+        showToast("Click 'Upload Image' to start creating memes! ✨", "🚀");
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,4824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app {
+            display: flex;
+            width: 100%;
+            max-width: 1920px;
+            height: 100vh;
+            background: #0a0a10;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        /* Left Sidebar - Desktop */
+        .left-sidebar {
+            width: 280px;
+            background: #0c0c14;
+            border-right: 1px solid #1a1a28;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1.25rem;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        /* Mobile Bottom Navigation */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0c0c14;
+            border-top: 1px solid #1a1a28;
+            padding: 0.75rem 1rem;
+            justify-content: space-around;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            color: #9ca3af;
+            font-size: 0.7rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+        }
+        .mobile-nav-item i { font-size: 1.4rem; }
+        .mobile-nav-item.active { color: #a78bfa; background: #1a1a2a; }
+        .mobile-nav-item span { font-size: 0.65rem; }
+
+        .logo-area { padding: 0 0.5rem 2.5rem 0.5rem; }
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            color: white;
+            padding: 0.625rem;
+            border-radius: 1rem;
+            font-size: 1.375rem;
+        }
+
+        .nav-menu { flex: 1; display: flex; flex-direction: column; gap: 0.25rem; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.875rem;
+            padding: 0.875rem 1.125rem;
+            border-radius: 0.875rem;
+            font-weight: 500;
+            font-size: 1rem;
+            color: #9ca3af;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .nav-item i { width: 1.5rem; font-size: 1.375rem; color: #6b7280; }
+        .nav-item.active { background: #1a1a2a; color: #ffffff; font-weight: 600; }
+        .nav-item.active i { color: #a78bfa; }
+        .nav-item:hover:not(.active) { background: #14141e; color: #e5e7eb; }
+
+        .bottom-links {
+            margin-top: auto;
+            font-size: 0.8125rem;
+            color: #4b5563;
+            padding: 1.25rem 0.75rem;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        /* Main Profile Area */
+        .main-profile {
+            flex: 1;
+            background: #0e0e16;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            min-width: 0;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            background: #0e0e16;
+            padding: 1.5rem 1.5rem 1rem 1.5rem;
+            border-bottom: 1px solid #1a1a28;
+        }
+
+        .profile-info-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .avatar-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .avatar-large {
+            width: 80px;
+            height: 80px;
+            border-radius: 1.5rem;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+        .avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .display-names h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .display-names .username-handle {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 0.2rem;
+        }
+        .verified-badge { color: #8b5cf6; font-size: 1.1rem; }
+
+        .edit-profile-btn {
+            background: #1a1a28;
+            border: 1px solid #374151;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #f3f4f6;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+        .edit-profile-btn:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #1a1a28;
+            background: #0c0c14;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            text-align: center;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            flex: 1;
+        }
+        .stat-number {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #ffffff;
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            margin-top: 0.2rem;
+        }
+
+        .bio-section {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #1a1a28;
+        }
+        .bio-text {
+            font-size: 0.875rem;
+            line-height: 1.45;
+            color: #e5e7eb;
+            margin-bottom: 0.75rem;
+        }
+        .profile-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: #9ca3af;
+            font-size: 0.7rem;
+        }
+        .profile-meta i { margin-right: 0.35rem; width: 0.9rem; }
+
+        /* Tabs */
+        .profile-tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: #0e0e16;
+            border-bottom: 1px solid #1a1a28;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+        .profile-tabs::-webkit-scrollbar {
+            height: 2px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+        .tab-btn i { font-size: 0.9rem; }
+        .tab-btn.active {
+            background: #1a1a2a;
+            color: #a78bfa;
+        }
+
+        /* Posts Grid */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .post-card {
+            background: #12121c;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid #222232;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .post-card:hover {
+            transform: translateY(-3px);
+            border-color: #8b5cf6;
+        }
+        .post-media {
+            aspect-ratio: 1 / 1;
+            background: #0a0a12;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .post-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .post-info {
+            padding: 0.65rem;
+        }
+        .post-stats {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.65rem;
+            color: #9ca3af;
+        }
+        .post-stats i { margin-right: 0.2rem; }
+        .post-caption {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            margin-top: 0.4rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: #6b7280;
+            background: #12121c;
+            border-radius: 1rem;
+            border: 1px dashed #2d2d40;
+            grid-column: 1 / -1;
+        }
+
+        /* ========== TOP REACTIONS - FIXED HORIZONTAL LAYOUT ========== */
+        .reactions-container {
+            padding: 1rem 1.5rem;
+            background: #0e0e16;
+        }
+        
+        .reactions-header {
+            margin-bottom: 1.25rem;
+        }
+        
+        .reactions-header h3 {
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #f3f4f6;
+            margin-bottom: 0.25rem;
+        }
+        
+        .reactions-header p {
+            color: #9ca3af;
+            font-size: 0.7rem;
+        }
+        
+        /* HORIZONTAL SCROLL CONTAINER */
+        .reactions-scroll-wrapper {
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+        }
+        
+        .reactions-scroll-wrapper::-webkit-scrollbar {
+            height: 3px;
+        }
+        
+        .reactions-scroll-wrapper::-webkit-scrollbar-track {
+            background: #1a1a28;
+            border-radius: 10px;
+        }
+        
+        .reactions-scroll-wrapper::-webkit-scrollbar-thumb {
+            background: #8b5cf6;
+            border-radius: 10px;
+        }
+        
+        .reactions-horizontal-list {
+            display: inline-flex;
+            gap: 1rem;
+            white-space: normal;
+        }
+        
+        /* Reaction Card - Horizontal style */
+        .reaction-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: #12121c;
+            border: 1px solid #222232;
+            border-radius: 1.25rem;
+            padding: 1rem 1.25rem;
+            min-width: 170px;
+            transition: all 0.2s ease;
+        }
+        
+        .reaction-card:hover {
+            transform: translateY(-2px);
+            border-color: #8b5cf6;
+            background: #161622;
+        }
+        
+        .reaction-emoji {
+            font-size: 2.2rem;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+        }
+        
+        .reaction-details {
+            flex: 1;
+        }
+        
+        .reaction-label {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #f3f4f6;
+            margin-bottom: 0.2rem;
+        }
+        
+        .reaction-count {
+            font-size: 0.7rem;
+            color: #a78bfa;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+        
+        .reaction-bar {
+            height: 3px;
+            background: #2d2d40;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .reaction-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            border-radius: 3px;
+        }
+        
+        .reactions-footer {
+            background: #0c0c14;
+            border-radius: 1rem;
+            padding: 0.875rem;
+            text-align: center;
+            border: 1px solid #1a1a28;
+            margin-top: 0.5rem;
+        }
+        
+        .reactions-footer p {
+            color: #9ca3af;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .reactions-footer i {
+            color: #f59e0b;
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            width: 300px;
+            background: #0c0c14;
+            border-left: 1px solid #1a1a28;
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: block;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .sugg-avatar {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 1rem;
+            background: #1e1e2e;
+            object-fit: cover;
+        }
+        .follow-btn {
+            background: transparent;
+            border: 1px solid #374151;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .follow-btn:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+            color: white;
+        }
+
+        .toast-message {
+            position: fixed;
+            bottom: 5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            color: #f3f4f6;
+            padding: 0.75rem 1.5rem;
+            border-radius: 3rem;
+            font-weight: 500;
+            font-size: 0.85rem;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.8);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+            backdrop-filter: blur(8px);
+            border: 1px solid #8b5cf6;
+            white-space: nowrap;
+        }
+        .toast-message.show { opacity: 1; }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .right-sidebar { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .left-sidebar { display: none; }
+            .mobile-bottom-nav { display: flex; }
+            .main-profile { padding-bottom: 70px; }
+            .profile-header { padding: 1rem; }
+            .stats-bar { padding: 0.75rem 1rem; }
+            .bio-section { padding: 0.75rem 1rem; }
+            .profile-tabs { padding: 0.5rem 1rem; }
+            .posts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 0.75rem;
+                padding: 1rem;
+            }
+            .reactions-container { padding: 0.75rem 1rem; }
+            .reaction-card { min-width: 150px; padding: 0.875rem 1rem; }
+            .reaction-emoji { font-size: 1.8rem; }
+            .toast-message { bottom: 5rem; white-space: nowrap; font-size: 0.75rem; }
+        }
+
+        @media (max-width: 480px) {
+            .avatar-large { width: 65px; height: 65px; }
+            .display-names h2 { font-size: 1.2rem; }
+            .posts-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+            .reaction-card { min-width: 135px; padding: 0.75rem; }
+            .reaction-emoji { font-size: 1.5rem; }
+            .reaction-label { font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <!-- Left Sidebar Desktop -->
+    <div class="left-sidebar">
+        <div class="logo-area">
+            <div class="logo"><i class="fas fa-face-smile"></i> <span>Memotions</span></div>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item"><i class="fas fa-compass"></i><span>For You</span></div>
+            <div class="nav-item"><i class="fas fa-gift"></i><span>GIF Feed</span></div>
+            <div class="nav-item"><i class="fas fa-chart-line"></i><span>Trending</span></div>
+            <div class="nav-item active"><i class="fas fa-user-circle"></i><span>Profile</span></div>
+            <div class="nav-item"><i class="fas fa-heart"></i><span>Activity</span></div>
+        </div>
+        <div class="bottom-links">About · Help · Terms<br>© 2026 Memotions</div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <div class="mobile-bottom-nav">
+        <div class="mobile-nav-item"><i class="fas fa-compass"></i><span>Explore</span></div>
+        <div class="mobile-nav-item"><i class="fas fa-gift"></i><span>GIFs</span></div>
+        <div class="mobile-nav-item active"><i class="fas fa-user-circle"></i><span>Profile</span></div>
+        <div class="mobile-nav-item"><i class="fas fa-heart"></i><span>Activity</span></div>
+    </div>
+
+    <!-- Main Profile Content -->
+    <div class="main-profile">
+        <div class="profile-header">
+            <div class="profile-info-row">
+                <div class="avatar-section">
+                    <div class="avatar-large" id="profileAvatar">
+                        <img src="https://robohash.org/memelord2026?set=set4&size=100x100" alt="avatar">
+                    </div>
+                    <div class="display-names">
+                        <h2>meme_curator <span class="verified-badge"><i class="fas fa-check-circle"></i></span></h2>
+                        <div class="username-handle">@memotions_official</div>
+                    </div>
+                </div>
+                <button class="edit-profile-btn" id="editProfileBtn"><i class="fas fa-pen"></i> Edit</button>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item" id="postsStat"><div class="stat-number" id="postCount">24</div><div class="stat-label">Memes</div></div>
+            <div class="stat-item" id="followersStat"><div class="stat-number">842K</div><div class="stat-label">Followers</div></div>
+            <div class="stat-item" id="followingStat"><div class="stat-number">1.2K</div><div class="stat-label">Following</div></div>
+        </div>
+
+        <div class="bio-section">
+            <div class="bio-text" id="bioText">🎭 Meme connoisseur | daily doses of laughter & vibes. Founder of #Memotions movement. DM for collab ✨</div>
+            <div class="profile-meta">
+                <span><i class="fas fa-calendar-alt"></i> Joined March 2024</span>
+                <span><i class="fas fa-link"></i> memotions.gg</span>
+            </div>
+        </div>
+
+        <div class="profile-tabs">
+            <button class="tab-btn active" data-tab="posts"><i class="fas fa-table-cells-large"></i> Memes</button>
+            <button class="tab-btn" data-tab="saved"><i class="fas fa-bookmark"></i> Saved</button>
+            <button class="tab-btn" data-tab="reactions"><i class="fas fa-face-smile"></i> Top Reactions</button>
+        </div>
+
+        <!-- Dynamic content container -->
+        <div id="dynamicContainer"></div>
+    </div>
+
+    <!-- Right Sidebar Desktop -->
+    <div class="right-sidebar">
+        <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+            <span style="font-weight:600; font-size:0.8rem;">🔥 Suggested</span>
+            <span style="color:#8b5cf6; cursor:pointer;" id="refreshSuggest">⟳</span>
+        </div>
+        <div class="suggestion-item">
+            <img class="sugg-avatar" src="https://robohash.org/gifqueen?set=set2">
+            <div style="flex:1;"><div style="font-weight:600;">gif_goddess</div><div style="font-size:0.7rem; color:#6b7280;">premium GIFs</div></div>
+            <button class="follow-btn">Follow</button>
+        </div>
+        <div class="suggestion-item">
+            <img class="sugg-avatar" src="https://robohash.org/dankbrain?set=set3">
+            <div style="flex:1;"><div style="font-weight:600;">danklabs</div><div style="font-size:0.7rem; color:#6b7280;">viral memes</div></div>
+            <button class="follow-btn">Follow</button>
+        </div>
+    </div>
+</div>
+<div id="toast" class="toast-message"></div>
+
+<script>
+    (function() {
+        const dynamicContainer = document.getElementById('dynamicContainer');
+        const postCountSpan = document.getElementById('postCount');
+        const editProfileBtn = document.getElementById('editProfileBtn');
+        const bioTextSpan = document.getElementById('bioText');
+        const toast = document.getElementById('toast');
+
+        // Mock data
+        let userPosts = [
+            { id: 'p1', image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '245K', comments: '5.6K', caption: 'When the code works first try' },
+            { id: 'p2', image: 'https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600', likes: '189K', comments: '4.2K', caption: 'Sir put me down! I am the manager' },
+            { id: 'p3', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '467K', comments: '12.2K', caption: 'He mad at me because pressure cooker' },
+            { id: 'p4', image: 'https://i.imgflip.com/2/265j.jpg', likes: '523K', comments: '14.5K', caption: 'Monday morning hitting different' },
+            { id: 'p5', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7R0htDNiFjbNDisK1YOnqsy35mVid-q7Ryg&s', likes: '312K', comments: '8.8K', caption: 'One more game... 2 hours later' },
+            { id: 'p6', image: 'https://images.ctfassets.net/h6goo9gw1hh6/2BqWsp1aWAIxoe1qJ296KE/c5f2d77f8e0cdfac69e1ed59c91089d3/Yoda_meme.jpeg?w=503&h=499&fl=progressive&q=70&fm=jpg', likes: '178K', comments: '3.4K', caption: 'Oh no... anyway' }
+        ];
+
+        let savedMemes = [
+            { id: 's1', image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '98K', comments: '1.2K', caption: 'classic saved gem' },
+            { id: 's2', image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '210K', comments: '3.7K', caption: 'angry cat energy' }
+        ];
+
+        let topReactionsData = [
+            { emoji: '😂', label: 'Funny', count: 12400 },
+            { emoji: '🔥', label: 'Lit', count: 8200 },
+            { emoji: '💀', label: 'Dead', count: 5900 },
+            { emoji: '❤️', label: 'Love', count: 4700 },
+            { emoji: '😭', label: 'Cry', count: 3100 },
+            { emoji: '👏', label: 'Applause', count: 2800 }
+        ];
+
+        function showToast(text, emoji = '✨') {
+            toast.innerHTML = `${emoji} ${text}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function renderPostsGrid(items, emptyMsg = "No memes yet") {
+            if (!items.length) {
+                dynamicContainer.innerHTML = `<div class="posts-grid"><div class="empty-state"><i class="fas fa-ghost" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i> ${emptyMsg}<br><span style="font-size:0.7rem;">✨ Start sharing!</span></div></div>`;
+                return;
+            }
+            dynamicContainer.innerHTML = `
+                <div class="posts-grid">
+                    ${items.map(post => `
+                        <div class="post-card" data-id="${post.id}">
+                            <div class="post-media"><img src="${post.image}" alt="meme" onerror="this.src='https://via.placeholder.com/300?text=Meme'"></div>
+                            <div class="post-info">
+                                <div class="post-stats"><span><i class="fas fa-heart"></i> ${post.likes}</span><span><i class="fas fa-comment"></i> ${post.comments}</span></div>
+                                <div class="post-caption">${post.caption.substring(0, 40)}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            document.querySelectorAll('.post-card').forEach(card => card.addEventListener('click', () => showToast(`📱 Opening meme`, '🎭')));
+        }
+
+        // HORIZONTAL REACTIONS - FIXED LAYOUT
+        function renderTopReactions() {
+            const maxCount = Math.max(...topReactionsData.map(r => r.count));
+            
+            dynamicContainer.innerHTML = `
+                <div class="reactions-container">
+                    <div class="reactions-header">
+                        <h3><i class="fas fa-chart-simple" style="color:#a78bfa;"></i> Your Top Reactions</h3>
+                        <p>Most used reactions across memes</p>
+                    </div>
+                    
+                    <div class="reactions-scroll-wrapper">
+                        <div class="reactions-horizontal-list">
+                            ${topReactionsData.map(r => {
+                                const percent = Math.round((r.count / maxCount) * 100);
+                                return `
+                                    <div class="reaction-card">
+                                        <div class="reaction-emoji">${r.emoji}</div>
+                                        <div class="reaction-details">
+                                            <div class="reaction-label">${r.label}</div>
+                                            <div class="reaction-count">${r.count.toLocaleString()} times</div>
+                                            <div class="reaction-bar">
+                                                <div class="reaction-bar-fill" style="width: ${percent}%;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="reactions-footer">
+                        <p><i class="fas fa-fire"></i> Keep reacting — your vibe shapes the community! <i class="fas fa-smile-wink"></i></p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Tab switching
+        let currentTab = 'posts';
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        
+        function switchTab(tabId) {
+            currentTab = tabId;
+            tabBtns.forEach(btn => {
+                if (btn.dataset.tab === tabId) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+            if (tabId === 'posts') {
+                renderPostsGrid(userPosts, "No memes posted yet");
+                postCountSpan.innerText = userPosts.length;
+            } else if (tabId === 'saved') {
+                renderPostsGrid(savedMemes, "No saved memes yet");
+            } else if (tabId === 'reactions') {
+                renderTopReactions();
+            }
+        }
+
+        tabBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+
+        // Edit profile
+        editProfileBtn.addEventListener('click', () => {
+            const newBio = prompt('Edit your bio:', bioTextSpan.innerText);
+            if (newBio && newBio.trim()) {
+                bioTextSpan.innerText = newBio.trim();
+                showToast('Profile bio updated!', '✏️');
+            }
+        });
+
+        document.getElementById('profileAvatar')?.addEventListener('click', () => showToast('Change profile picture', '📸'));
+        document.getElementById('followersStat')?.addEventListener('click', () => showToast('842K amazing memers follow you', '❤️'));
+        document.getElementById('followingStat')?.addEventListener('click', () => showToast('You follow 1,245 creators', '👥'));
+        document.getElementById('postsStat')?.addEventListener('click', () => showToast(`${userPosts.length} memes posted`, '📌'));
+
+        // Follow buttons
+        document.querySelectorAll('.follow-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const parent = btn.closest('.suggestion-item');
+                const name = parent?.querySelector('div:first-child')?.innerText || 'creator';
+                if (btn.innerText === 'Follow') {
+                    btn.innerText = 'Following';
+                    btn.style.background = '#8b5cf6';
+                    btn.style.borderColor = '#8b5cf6';
+                    btn.style.color = 'white';
+                    showToast(`Following @${name}`, '✅');
+                } else {
+                    btn.innerText = 'Follow';
+                    btn.style.background = 'transparent';
+                    btn.style.borderColor = '#374151';
+                    btn.style.color = '#d1d5db';
+                    showToast(`Unfollowed @${name}`, '👋');
+                }
+            });
+        });
+
+        document.getElementById('refreshSuggest')?.addEventListener('click', () => showToast('Fresh suggestions loaded', '🔄'));
+
+        // Mobile bottom nav
+        document.querySelectorAll('.mobile-nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const text = this.querySelector('span')?.innerText || 'page';
+                showToast(`${text} section coming soon`, '🚀');
+                document.querySelectorAll('.mobile-nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Desktop nav
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const text = this.innerText.trim();
+                showToast(`Navigating to ${text}`, '🚀');
+                document.querySelector('.nav-item.active')?.classList.remove('active');
+                this.classList.add('active');
+            });
+        });
+
+        // Initialize
+        renderPostsGrid(userPosts, "No memes yet");
+        postCountSpan.innerText = userPosts.length;
+        setTimeout(() => showToast('✨ Swipe reactions horizontally →', '👤'), 400);
+    })();
+</script>
+</body>
+</html>
+
+<!-- 2nd -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Main Container */
+        .app-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation Bar - Simplified */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            background: rgba(18, 18, 28, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(34, 34, 50, 0.6);
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.4rem;
+            border-radius: 0.8rem;
+            font-size: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-link {
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.8rem;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: #1a1a2a;
+            color: #a78bfa;
+        }
+
+        /* Profile Header - Clean */
+        .profile-header {
+            background: #12121c;
+            border-radius: 1.5rem;
+            border: 1px solid #1f1f2e;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-main {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 1.5rem;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            overflow: hidden;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-details {
+            flex: 1;
+        }
+
+        .name-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.25rem;
+        }
+
+        .name-row h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .verified {
+            color: #8b5cf6;
+            font-size: 1rem;
+        }
+
+        .username {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .bio {
+            color: #d1d5db;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+
+        .meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.7rem;
+            color: #9ca3af;
+        }
+
+        .meta i {
+            margin-right: 0.2rem;
+            width: 0.9rem;
+        }
+
+        .edit-btn {
+            background: #1a1a2a;
+            border: 1px solid #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .edit-btn:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+        }
+
+        /* Stats Row - Only 3 cards */
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-item {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem;
+            background: #12121c;
+            border-radius: 1rem;
+            border: 1px solid #1f1f2e;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stat-item:hover {
+            border-color: #8b5cf6;
+        }
+
+        .stat-number {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #a78bfa;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #9ca3af;
+            margin-top: 0.2rem;
+        }
+
+        /* Tabs - Simple */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #1f1f2e;
+        }
+
+        .tab {
+            padding: 0.6rem 1rem;
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: #a78bfa;
+            border-bottom-color: #8b5cf6;
+        }
+
+        /* Posts Grid - Simple 2-3 columns */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .post {
+            background: #12121c;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid #1f1f2e;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .post:hover {
+            transform: translateY(-2px);
+            border-color: #8b5cf6;
+        }
+
+        .post-img {
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+
+        .post-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-footer {
+            padding: 0.6rem;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 0.8rem;
+            font-size: 0.65rem;
+            color: #9ca3af;
+        }
+
+        .post-stats i {
+            margin-right: 0.2rem;
+        }
+
+        /* Reactions Section - Grid layout (NO horizontal scroll) */
+        .reactions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .reaction {
+            background: #12121c;
+            border: 1px solid #1f1f2e;
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .reaction:hover {
+            border-color: #8b5cf6;
+            background: #161622;
+        }
+
+        .reaction-emoji {
+            font-size: 1.8rem;
+        }
+
+        .reaction-info {
+            flex: 1;
+        }
+
+        .reaction-name {
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .reaction-count {
+            font-size: 0.65rem;
+            color: #a78bfa;
+        }
+
+        .reaction-bar {
+            height: 2px;
+            background: #2a2a3c;
+            border-radius: 2px;
+            margin-top: 0.3rem;
+        }
+
+        .reaction-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            border-radius: 2px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+            background: #12121c;
+            border-radius: 1rem;
+            border: 1px dashed #2d2d40;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 1rem;
+            }
+
+            .top-nav {
+                padding: 0.6rem 1rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            .profile-main {
+                gap: 1rem;
+            }
+
+            .avatar {
+                width: 65px;
+                height: 65px;
+            }
+
+            .name-row h2 {
+                font-size: 1.2rem;
+            }
+
+            .posts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 0.75rem;
+            }
+
+            .reactions-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+
+            .stats-row {
+                gap: 0.5rem;
+            }
+
+            .stat-item {
+                padding: 0.5rem;
+            }
+
+            .stat-number {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .posts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reactions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bio {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation -->
+        <div class="top-nav">
+            <div class="logo">
+                <i class="fas fa-face-smile"></i>
+                <span>Memotions</span>
+            </div>
+            <div class="nav-links">
+                <div class="nav-link">For You</div>
+                <div class="nav-link">Trending</div>
+                <div class="nav-link active">Profile</div>
+            </div>
+            <div style="font-size: 0.9rem; color: #6b7280;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-main">
+                <div class="avatar" id="avatarBtn">
+                    <img src="https://robohash.org/memelord2026?set=set4&size=100x100" alt="avatar">
+                </div>
+                <div class="profile-details">
+                    <div class="name-row">
+                        <h2>meme_curator</h2>
+                        <i class="fas fa-check-circle verified"></i>
+                    </div>
+                    <div class="username">@memotions_official</div>
+                    <div class="bio" id="bioText">
+                        🎭 Meme connoisseur | daily doses of laughter & vibes
+                    </div>
+                    <div class="meta">
+                        <span><i class="fas fa-calendar-alt"></i> Joined Mar 2024</span>
+                        <span><i class="fas fa-link"></i> memotions.gg</span>
+                    </div>
+                </div>
+                <button class="edit-btn" id="editProfileBtn"><i class="fas fa-pen"></i> Edit</button>
+            </div>
+        </div>
+
+        <!-- Stats - Only 3 cards -->
+        <div class="stats-row">
+            <div class="stat-item" id="postsStat">
+                <div class="stat-number" id="postCount">24</div>
+                <div class="stat-label">Memes</div>
+            </div>
+            <div class="stat-item" id="followersStat">
+                <div class="stat-number">842K</div>
+                <div class="stat-label">Followers</div>
+            </div>
+            <div class="stat-item" id="followingStat">
+                <div class="stat-number">1.2K</div>
+                <div class="stat-label">Following</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" data-tab="posts">Memes</button>
+            <button class="tab" data-tab="saved">Saved</button>
+            <button class="tab" data-tab="reactions">Reactions</button>
+        </div>
+
+        <!-- Dynamic Content -->
+        <div id="contentArea"></div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const contentArea = document.getElementById('contentArea');
+        const toast = document.getElementById('toast');
+        const postCountSpan = document.getElementById('postCount');
+        const bioSpan = document.getElementById('bioText');
+
+        // Data
+        const userPosts = [
+            { id: 1, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '245K', comments: '5.6K', caption: 'When the code works first try' },
+            { id: 2, image: 'https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600', likes: '189K', comments: '4.2K', caption: 'Sir put me down!' },
+            { id: 3, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '467K', comments: '12.2K', caption: 'He mad at me' },
+            { id: 4, image: 'https://i.imgflip.com/2/265j.jpg', likes: '523K', comments: '14.5K', caption: 'Monday morning' },
+            { id: 5, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7R0htDNiFjbNDisK1YOnqsy35mVid-q7Ryg&s', likes: '312K', comments: '8.8K', caption: 'One more game' },
+            { id: 6, image: 'https://images.ctfassets.net/h6goo9gw1hh6/2BqWsp1aWAIxoe1qJ296KE/c5f2d77f8e0cdfac69e1ed59c91089d3/Yoda_meme.jpeg?w=503&h=499&fl=progressive&q=70&fm=jpg', likes: '178K', comments: '3.4K', caption: 'Oh no... anyway' }
+        ];
+
+        const savedPosts = [
+            { id: 101, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '98K', comments: '1.2K', caption: 'Classic gem' },
+            { id: 102, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '210K', comments: '3.7K', caption: 'Angry cat' }
+        ];
+
+        const reactions = [
+            { emoji: '😂', name: 'Funny', count: 12400, percent: 100 },
+            { emoji: '🔥', name: 'Lit', count: 8200, percent: 66 },
+            { emoji: '💀', name: 'Dead', count: 5900, percent: 48 },
+            { emoji: '❤️', name: 'Love', count: 4700, percent: 38 }
+        ];
+
+        function showToast(msg, emoji = '✨') {
+            toast.innerHTML = `${emoji} ${msg}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function renderPosts(posts, emptyMsg = "No posts") {
+            if (!posts.length) {
+                contentArea.innerHTML = `<div class="empty-state"><i class="fas fa-ghost" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>${emptyMsg}</div>`;
+                return;
+            }
+
+            contentArea.innerHTML = `
+                <div class="posts-grid">
+                    ${posts.map(post => `
+                        <div class="post">
+                            <div class="post-img">
+                                <img src="${post.image}" alt="meme" onerror="this.src='https://via.placeholder.com/200?text=Meme'">
+                            </div>
+                            <div class="post-footer">
+                                <div class="post-stats">
+                                    <span><i class="fas fa-heart"></i> ${post.likes}</span>
+                                    <span><i class="fas fa-comment"></i> ${post.comments}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            document.querySelectorAll('.post').forEach(p => {
+                p.addEventListener('click', () => showToast('Opening meme', '🎭'));
+            });
+        }
+
+        function renderReactions() {
+            contentArea.innerHTML = `
+                <div class="reactions-grid">
+                    ${reactions.map(r => `
+                        <div class="reaction">
+                            <div class="reaction-emoji">${r.emoji}</div>
+                            <div class="reaction-info">
+                                <div class="reaction-name">${r.name}</div>
+                                <div class="reaction-count">${r.count.toLocaleString()} times</div>
+                                <div class="reaction-bar">
+                                    <div class="reaction-fill" style="width: ${r.percent}%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div style="margin-top: 1rem; text-align: center; font-size: 0.7rem; color: #6b7280; padding: 0.75rem;">
+                    <i class="fas fa-smile-wink"></i> Keep reacting — your vibe shapes the community!
+                </div>
+            `;
+        }
+
+        // Tab switching
+        let currentTab = 'posts';
+        const tabs = document.querySelectorAll('.tab');
+
+        function switchTab(tabId) {
+            currentTab = tabId;
+            tabs.forEach(tab => {
+                if (tab.dataset.tab === tabId) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            if (tabId === 'posts') {
+                renderPosts(userPosts);
+            } else if (tabId === 'saved') {
+                renderPosts(savedPosts, "No saved memes");
+            } else if (tabId === 'reactions') {
+                renderReactions();
+            }
+        }
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+        });
+
+        // Edit profile
+        document.getElementById('editProfileBtn').addEventListener('click', () => {
+            const newBio = prompt('Edit your bio:', bioSpan.innerText);
+            if (newBio && newBio.trim()) {
+                bioSpan.innerText = newBio.trim();
+                showToast('Profile updated!', '✅');
+            }
+        });
+
+        document.getElementById('avatarBtn').addEventListener('click', () => {
+            showToast('Change profile picture', '📸');
+        });
+
+        // Stats click
+        document.getElementById('postsStat').addEventListener('click', () => switchTab('posts'));
+        document.getElementById('followersStat').addEventListener('click', () => showToast('842K followers', '❤️'));
+        document.getElementById('followingStat').addEventListener('click', () => showToast('Following 1.2K creators', '👥'));
+
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                const text = this.innerText;
+                showToast(`${text} section coming soon`, '🚀');
+                document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Initialize
+        renderPosts(userPosts);
+        postCountSpan.innerText = userPosts.length;
+        setTimeout(() => showToast('Welcome to your profile!', '🎉'), 400);
+    </script>
+</body>
+</html>
+
+<!-- 3rd -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Memotions · Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* NO SCROLL BARS ANYWHERE */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        * {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Main Layout - Floating Glassmorphism */
+        .app {
+            height: 100vh;
+            width: 100%;
+            background: radial-gradient(circle at 20% 30%, #0f0f1a, #08080c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: #8b5cf6;
+            top: -100px;
+            right: -100px;
+        }
+        
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: #ec4899;
+            bottom: -80px;
+            left: -80px;
+            animation-delay: -5s;
+        }
+        
+        .orb-3 {
+            width: 250px;
+            height: 250px;
+            background: #06b6d4;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        /* Main Card - Unique floating design */
+        .profile-card {
+            width: 90%;
+            max-width: 1100px;
+            height: 85vh;
+            background: rgba(18, 18, 28, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 3rem;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Header with unique gradient */
+        .card-header {
+            padding: 2rem 2rem 1rem 2rem;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.05));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo-mini {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-mini span {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.3rem;
+            background: linear-gradient(135deg, #fff, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: #9ca3af;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        /* Avatar + Bio - Horizontal unique layout */
+        .user-showcase {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .avatar-ring {
+            position: relative;
+        }
+
+        .avatar-ring::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899, #8b5cf6);
+            border-radius: 2rem;
+            z-index: 0;
+            animation: spin 3s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 1.8rem;
+            overflow: hidden;
+            background: #1a1a2a;
+            position: relative;
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        .avatar-large img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .name-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .name-badge h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #c4b5fd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .verified-icon {
+            color: #8b5cf6;
+            font-size: 1.2rem;
+        }
+
+        .user-handle {
+            color: #9ca3af;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .user-bio {
+            color: #d1d5db;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            max-width: 400px;
+        }
+
+        /* Stats - Unique circular/progress style */
+        .stats-showcase {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-circle {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stat-circle:hover {
+            transform: translateY(-3px);
+        }
+
+        .circle-bg {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: conic-gradient(#8b5cf6 0deg, #2d2d40 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        
+        .circle-bg::before {
+            content: '';
+            width: 55px;
+            height: 55px;
+            background: #12121c;
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .stat-number-circle {
+            position: relative;
+            z-index: 2;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #a78bfa;
+        }
+        
+        .stat-label-circle {
+            font-size: 0.65rem;
+            color: #9ca3af;
+            letter-spacing: 1px;
+        }
+
+        /* Content Area - NO SCROLL, uses flex wrap */
+        .content-area {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Hide scroll but keep functionality */
+        .content-area {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .content-area::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Tabs - Unique pill design */
+        .tabs-unique {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+            border-radius: 3rem;
+            width: fit-content;
+        }
+
+        .tab-unique {
+            background: transparent;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-unique.active {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Posts Grid - Responsive no overflow */
+        .posts-grid-unique {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .post-card-unique {
+            background: rgba(18, 18, 28, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 1.2rem;
+            overflow: hidden;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .post-card-unique:hover {
+            transform: translateY(-5px);
+            border-color: #8b5cf6;
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2);
+        }
+
+        .post-img-unique {
+            aspect-ratio: 1;
+            overflow: hidden;
+        }
+
+        .post-img-unique img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-footer-unique {
+            padding: 0.6rem;
+            display: flex;
+            justify-content: space-between;
+            color: #9ca3af;
+            font-size: 0.7rem;
+        }
+
+        /* Reactions as CHIPS - Unique floating design */
+        .reactions-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .reaction-chip {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.1));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 3rem;
+            padding: 0.6rem 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            backdrop-filter: blur(5px);
+        }
+
+        .reaction-chip:hover {
+            transform: scale(1.05);
+            border-color: #8b5cf6;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(236, 72, 153, 0.2));
+        }
+
+        .chip-emoji {
+            font-size: 1.2rem;
+        }
+
+        .chip-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #e5e7eb;
+        }
+
+        .chip-count {
+            font-size: 0.7rem;
+            color: #a78bfa;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.2rem 0.5rem;
+            border-radius: 2rem;
+        }
+
+        .reaction-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #6b7280;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 1rem;
+        }
+
+        .empty-state-unique {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 1.5rem;
+        }
+
+        /* Toast */
+        .toast-unique {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(26, 26, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.7rem 1.5rem;
+            border-radius: 3rem;
+            font-size: 0.85rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+
+        .toast-unique.show {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-card {
+                width: 95%;
+                height: 90vh;
+                border-radius: 2rem;
+            }
+            
+            .card-header {
+                padding: 1rem;
+            }
+            
+            .user-showcase {
+                gap: 1rem;
+            }
+            
+            .avatar-large {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .name-badge h1 {
+                font-size: 1.3rem;
+            }
+            
+            .stats-showcase {
+                gap: 1rem;
+            }
+            
+            .circle-bg {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .circle-bg::before {
+                width: 42px;
+                height: 42px;
+            }
+            
+            .stat-number-circle {
+                font-size: 0.9rem;
+            }
+            
+            .content-area {
+                padding: 1rem;
+            }
+            
+            .posts-grid-unique {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 0.75rem;
+            }
+            
+            .reaction-chip {
+                padding: 0.4rem 1rem;
+            }
+            
+            .chip-emoji {
+                font-size: 1rem;
+            }
+            
+            .chip-name {
+                font-size: 0.7rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .posts-grid-unique {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stats-showcase {
+                justify-content: space-between;
+                width: 100%;
+            }
+            
+            .tab-unique {
+                padding: 0.4rem 1rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    
+    <div class="profile-card">
+        <div class="card-header">
+            <div class="logo-mini">
+                <span><i class="fas fa-face-smile" style="margin-right: 0.3rem;"></i> Memotions</span>
+                <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i> Back to Feed</button>
+            </div>
+            
+            <div class="user-showcase">
+                <div class="avatar-ring">
+                    <div class="avatar-large" id="avatarBtn">
+                        <img src="https://robohash.org/memotionsunique?set=set4&size=100x100" alt="avatar">
+                    </div>
+                </div>
+                <div class="user-details">
+                    <div class="name-badge">
+                        <h1>meme_curator</h1>
+                        <i class="fas fa-check-circle verified-icon"></i>
+                    </div>
+                    <div class="user-handle">@memotions_official</div>
+                    <div class="user-bio" id="bioText">
+                        🎭 Meme connoisseur | daily doses of laughter
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-showcase">
+                <div class="stat-circle" id="postsStat">
+                    <div class="circle-bg" style="background: conic-gradient(#8b5cf6 0deg 360deg, #2d2d40 360deg);">
+                        <div class="stat-number-circle" id="postCount">24</div>
+                    </div>
+                    <div class="stat-label-circle">MEMES</div>
+                </div>
+                <div class="stat-circle" id="followersStat">
+                    <div class="circle-bg" style="background: conic-gradient(#ec4899 0deg 280deg, #2d2d40 280deg);">
+                        <div class="stat-number-circle">842K</div>
+                    </div>
+                    <div class="stat-label-circle">FOLLOWERS</div>
+                </div>
+                <div class="stat-circle" id="followingStat">
+                    <div class="circle-bg" style="background: conic-gradient(#06b6d4 0deg 200deg, #2d2d40 200deg);">
+                        <div class="stat-number-circle">1.2K</div>
+                    </div>
+                    <div class="stat-label-circle">FOLLOWING</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content-area" id="contentArea">
+            <div class="tabs-unique">
+                <button class="tab-unique active" data-tab="posts">📸 Memes</button>
+                <button class="tab-unique" data-tab="saved">🔖 Saved</button>
+                <button class="tab-unique" data-tab="reactions">😊 Top Reactions</button>
+            </div>
+            <div id="dynamicContent"></div>
+        </div>
+    </div>
+</div>
+
+<div class="toast-unique" id="toast"></div>
+
+<script>
+    const dynamicContent = document.getElementById('dynamicContent');
+    const toast = document.getElementById('toast');
+    const postCountSpan = document.getElementById('postCount');
+    const bioSpan = document.getElementById('bioText');
+    
+    // Data
+    const userPosts = [
+        { id: 1, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '245K', comments: '5.6K' },
+        { id: 2, image: 'https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600', likes: '189K', comments: '4.2K' },
+        { id: 3, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '467K', comments: '12.2K' },
+        { id: 4, image: 'https://i.imgflip.com/2/265j.jpg', likes: '523K', comments: '14.5K' },
+        { id: 5, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7R0htDNiFjbNDisK1YOnqsy35mVid-q7Ryg&s', likes: '312K', comments: '8.8K' },
+        { id: 6, image: 'https://images.ctfassets.net/h6goo9gw1hh6/2BqWsp1aWAIxoe1qJ296KE/c5f2d77f8e0cdfac69e1ed59c91089d3/Yoda_meme.jpeg?w=503&h=499&fl=progressive&q=70&fm=jpg', likes: '178K', comments: '3.4K' }
+    ];
+    
+    const savedPosts = [
+        { id: 101, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '98K', comments: '1.2K' },
+        { id: 102, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '210K', comments: '3.7K' }
+    ];
+    
+    const topReactions = [
+        { emoji: '😂', name: 'Funny', count: 12400 },
+        { emoji: '🔥', name: 'Lit', count: 8200 },
+        { emoji: '💀', name: 'Dead', count: 5900 },
+        { emoji: '❤️', name: 'Love', count: 4700 },
+        { emoji: '😭', name: 'Cry', count: 3100 }
+    ];
+    
+    function showToast(msg, emoji = '✨') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+    
+    function renderPosts(posts, emptyMsg = "No posts yet") {
+        if (!posts.length) {
+            dynamicContent.innerHTML = `<div class="empty-state-unique"><i class="fas fa-ghost" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>${emptyMsg}</div>`;
+            return;
+        }
+        
+        dynamicContent.innerHTML = `
+            <div class="posts-grid-unique">
+                ${posts.map(post => `
+                    <div class="post-card-unique" data-id="${post.id}">
+                        <div class="post-img-unique">
+                            <img src="${post.image}" alt="meme" onerror="this.src='https://via.placeholder.com/200?text=Meme'">
+                        </div>
+                        <div class="post-footer-unique">
+                            <span><i class="fas fa-heart"></i> ${post.likes}</span>
+                            <span><i class="fas fa-comment"></i> ${post.comments}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        
+        document.querySelectorAll('.post-card-unique').forEach(card => {
+            card.addEventListener('click', () => showToast('Opening meme', '🎭'));
+        });
+    }
+    
+    function renderReactionsChips() {
+        const maxCount = Math.max(...topReactions.map(r => r.count));
+        
+        dynamicContent.innerHTML = `
+            <div style="padding: 0.5rem 0;">
+                <div style="margin-bottom: 1rem;">
+                    <h3 style="font-size: 1rem; margin-bottom: 0.25rem;"><i class="fas fa-chart-line"></i> Your Reaction Stats</h3>
+                    <p style="font-size: 0.7rem; color: #9ca3af;">Most used reactions across all memes</p>
+                </div>
+                <div class="reactions-chips">
+                    ${topReactions.map(r => `
+                        <div class="reaction-chip" data-reaction="${r.name}">
+                            <span class="chip-emoji">${r.emoji}</span>
+                            <span class="chip-name">${r.name}</span>
+                            <span class="chip-count">${r.count.toLocaleString()}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="reaction-footer">
+                    <i class="fas fa-smile-wink"></i> Keep reacting — your vibe shapes the community!
+                </div>
+            </div>
+        `;
+        
+        document.querySelectorAll('.reaction-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const name = chip.querySelector('.chip-name')?.innerText;
+                const emoji = chip.querySelector('.chip-emoji')?.innerText;
+                showToast(`Reacted with ${name}`, emoji);
+            });
+        });
+    }
+    
+    // Tab switching
+    let currentTab = 'posts';
+    const tabs = document.querySelectorAll('.tab-unique');
+    
+    function switchTab(tabId) {
+        currentTab = tabId;
+        tabs.forEach(tab => {
+            if (tab.dataset.tab === tabId) tab.classList.add('active');
+            else tab.classList.remove('active');
+        });
+        
+        if (tabId === 'posts') {
+            renderPosts(userPosts);
+        } else if (tabId === 'saved') {
+            renderPosts(savedPosts, "No saved memes yet");
+        } else if (tabId === 'reactions') {
+            renderReactionsChips();
+        }
+    }
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+    
+    // Edit profile
+    document.getElementById('avatarBtn').addEventListener('click', () => {
+        showToast('Change profile picture', '📸');
+    });
+    
+    document.getElementById('backBtn').addEventListener('click', () => {
+        showToast('Returning to feed', '🏠');
+        setTimeout(() => {
+            window.location.href = 'memotions.html';
+        }, 600);
+    });
+    
+    // Stats clicks
+    document.getElementById('postsStat').addEventListener('click', () => switchTab('posts'));
+    document.getElementById('followersStat').addEventListener('click', () => showToast('842K amazing memers follow you', '❤️'));
+    document.getElementById('followingStat').addEventListener('click', () => showToast('You follow 1.2K creators', '👥'));
+    
+    // Initialize
+    renderPosts(userPosts);
+    postCountSpan.innerText = userPosts.length;
+    setTimeout(() => showToast('✨ Unique floating profile — no scrollbars!', '🎉'), 500);
+</script>
+</body>
+</html>
+
+<!-- 4th -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Main Layout - Instagram + TikTok hybrid */
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation - TikTok style */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Profile Header - Instagram style */
+        .profile-header {
+            padding: 2rem;
+            border-bottom: 1px solid #1a1a28;
+        }
+
+        .profile-top {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Avatar - Instagram circular style */
+        .avatar-section {
+            position: relative;
+        }
+
+        .avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid #1a1a28;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .story-ring {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: #0a0a10;
+            border-radius: 50%;
+            padding: 4px;
+        }
+
+        .story-ring i {
+            background: #8b5cf6;
+            border-radius: 50%;
+            padding: 4px;
+            font-size: 0.7rem;
+            color: white;
+        }
+
+        /* Profile Info - Instagram style */
+        .profile-info {
+            flex: 1;
+        }
+
+        .username-row {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .username-row h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        .edit-profile-btn {
+            background: #1a1a28;
+            border: 1px solid #374151;
+            padding: 0.5rem 1.2rem;
+            border-radius: 0.6rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #f3f4f6;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .edit-profile-btn:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+        }
+
+        /* Stats - Instagram style row */
+        .stats-row {
+            display: flex;
+            gap: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .stat:hover {
+            opacity: 0.8;
+        }
+
+        .stat-number {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        .bio-section {
+            margin-top: 1rem;
+        }
+
+        .full-name {
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .bio {
+            color: #d1d5db;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+
+        .link {
+            color: #8b5cf6;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+
+        /* Highlight Stories - Instagram style */
+        .highlights {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #1a1a28;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .highlights::-webkit-scrollbar {
+            display: none;
+        }
+
+        .highlight-item {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .highlight-circle {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2a2a3e, #1a1a2a);
+            border: 2px solid #8b5cf6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.3rem;
+        }
+
+        .highlight-circle i {
+            font-size: 1.5rem;
+            color: #a78bfa;
+        }
+
+        .highlight-label {
+            font-size: 0.7rem;
+            color: #9ca3af;
+        }
+
+        /* Tabs - TikTok/Instagram hybrid */
+        .profile-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #1a1a28;
+            background: #0a0a10;
+        }
+
+        .tab {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .tab i {
+            font-size: 1rem;
+        }
+
+        .tab.active {
+            color: #a78bfa;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.75rem;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #a78bfa;
+        }
+
+        /* Content Grid - Instagram 3-column grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: #0a0a10;
+        }
+
+        .grid-item {
+            aspect-ratio: 1;
+            background: #12121c;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .grid-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .grid-item:hover .grid-overlay {
+            opacity: 1;
+        }
+
+        .overlay-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Reactions as Chips - TikTok style */
+        .reactions-container {
+            padding: 1.5rem;
+        }
+
+        .reactions-header {
+            margin-bottom: 1rem;
+        }
+
+        .reactions-header h3 {
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reactions-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .reaction-chip {
+            background: #1a1a28;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.6rem 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reaction-chip:hover {
+            border-color: #8b5cf6;
+            transform: translateY(-2px);
+            background: #22223a;
+        }
+
+        .chip-emoji {
+            font-size: 1.2rem;
+        }
+
+        .chip-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .chip-count {
+            font-size: 0.7rem;
+            color: #a78bfa;
+            background: rgba(139, 92, 246, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+        }
+
+        .reaction-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #6b7280;
+            padding: 1rem;
+            background: #12121c;
+            border-radius: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            
+            .logo span {
+                display: none;
+            }
+            
+            .profile-header {
+                padding: 1rem;
+            }
+            
+            .profile-top {
+                gap: 1rem;
+            }
+            
+            .avatar {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .username-row h2 {
+                font-size: 1.2rem;
+            }
+            
+            .stats-row {
+                gap: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 0.9rem;
+            }
+            
+            .stat-label {
+                font-size: 0.65rem;
+            }
+            
+            .highlight-circle {
+                width: 55px;
+                height: 55px;
+            }
+            
+            .profile-tabs {
+                gap: 1rem;
+            }
+            
+            .tab {
+                font-size: 0.7rem;
+            }
+            
+            .reaction-chip {
+                padding: 0.4rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <!-- Top Navigation - TikTok style -->
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle"></i>
+            <i class="far fa-heart"></i>
+            <i class="far fa-comment-dots"></i>
+        </div>
+    </div>
+
+    <!-- Profile Header - Instagram style -->
+    <div class="profile-header">
+        <div class="profile-top">
+            <div class="avatar-section">
+                <div class="avatar" id="avatarBtn">
+                    <img src="https://robohash.org/memotionsprofile?set=set4&size=150x150" alt="avatar">
+                </div>
+                <div class="story-ring">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </div>
+            <div class="profile-info">
+                <div class="username-row">
+                    <h2>meme_curator</h2>
+                    <button class="edit-profile-btn" id="editProfileBtn">Edit profile</button>
+                    <i class="fas fa-chevron-down" style="color: #9ca3af; cursor: pointer;"></i>
+                </div>
+                <div class="stats-row">
+                    <div class="stat" id="postsStat">
+                        <span class="stat-number" id="postCount">24</span>
+                        <span class="stat-label"> posts</span>
+                    </div>
+                    <div class="stat" id="followersStat">
+                        <span class="stat-number">842K</span>
+                        <span class="stat-label"> followers</span>
+                    </div>
+                    <div class="stat" id="followingStat">
+                        <span class="stat-number">1,245</span>
+                        <span class="stat-label"> following</span>
+                    </div>
+                </div>
+                <div class="bio-section">
+                    <div class="full-name">Meme Curator 🎭</div>
+                    <div class="bio" id="bioText">
+                        Meme connoisseur | daily doses of laughter & vibes<br>
+                        Founder of #Memotions movement
+                    </div>
+                    <a href="#" class="link">memotions.gg/curator</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Highlights - Instagram style -->
+    <div class="highlights">
+        <div class="highlight-item">
+            <div class="highlight-circle"><i class="fas fa-crown"></i></div>
+            <div class="highlight-label">Top Memes</div>
+        </div>
+        <div class="highlight-item">
+            <div class="highlight-circle"><i class="fas fa-gift"></i></div>
+            <div class="highlight-label">GIFs</div>
+        </div>
+        <div class="highlight-item">
+            <div class="highlight-circle"><i class="fas fa-fire"></i></div>
+            <div class="highlight-label">Trending</div>
+        </div>
+        <div class="highlight-item">
+            <div class="highlight-circle"><i class="fas fa-heart"></i></div>
+            <div class="highlight-label">Liked</div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="profile-tabs">
+        <button class="tab active" data-tab="posts"><i class="fas fa-table-cells-large"></i> POSTS</button>
+        <button class="tab" data-tab="saved"><i class="fas fa-bookmark"></i> SAVED</button>
+        <button class="tab" data-tab="reactions"><i class="fas fa-face-smile"></i> REACTIONS</button>
+    </div>
+
+    <!-- Dynamic Content -->
+    <div id="contentArea"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const contentArea = document.getElementById('contentArea');
+    const toast = document.getElementById('toast');
+    const postCountSpan = document.getElementById('postCount');
+    const bioSpan = document.getElementById('bioText');
+
+    // Mock data - Instagram style posts
+    const userPosts = [
+        { id: 1, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '245K', comments: '5.6K' },
+        { id: 2, image: 'https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600', likes: '189K', comments: '4.2K' },
+        { id: 3, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '467K', comments: '12.2K' },
+        { id: 4, image: 'https://i.imgflip.com/2/265j.jpg', likes: '523K', comments: '14.5K' },
+        { id: 5, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7R0htDNiFjbNDisK1YOnqsy35mVid-q7Ryg&s', likes: '312K', comments: '8.8K' },
+        { id: 6, image: 'https://images.ctfassets.net/h6goo9gw1hh6/2BqWsp1aWAIxoe1qJ296KE/c5f2d77f8e0cdfac69e1ed59c91089d3/Yoda_meme.jpeg?w=503&h=499&fl=progressive&q=70&fm=jpg', likes: '178K', comments: '3.4K' },
+        { id: 7, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '98K', comments: '2.1K' },
+        { id: 8, image: 'https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600', likes: '156K', comments: '3.8K' },
+        { id: 9, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '234K', comments: '5.2K' }
+    ];
+
+    const savedPosts = [
+        { id: 101, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '98K', comments: '1.2K' },
+        { id: 102, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '210K', comments: '3.7K' },
+        { id: 103, image: 'https://i.imgflip.com/2/265j.jpg', likes: '145K', comments: '2.8K' }
+    ];
+
+    // Top reactions as chips
+    const topReactions = [
+        { emoji: '😂', name: 'Funny', count: 12400 },
+        { emoji: '🔥', name: 'Lit', count: 8200 },
+        { emoji: '💀', name: 'Dead', count: 5900 },
+        { emoji: '❤️', name: 'Love', count: 4700 },
+        { emoji: '😭', name: 'Cry', count: 3100 },
+        { emoji: '👏', name: 'Applause', count: 2800 }
+    ];
+
+    function showToast(msg, emoji = '✨') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    // Render Instagram-style grid
+    function renderPosts(posts, emptyMsg = "No posts yet") {
+        if (!posts.length) {
+            contentArea.innerHTML = `<div class="empty-state"><i class="fas fa-ghost" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>${emptyMsg}</div>`;
+            return;
+        }
+
+        contentArea.innerHTML = `
+            <div class="content-grid">
+                ${posts.map(post => `
+                    <div class="grid-item" data-id="${post.id}">
+                        <img src="${post.image}" alt="meme" onerror="this.src='https://via.placeholder.com/300?text=Meme'">
+                        <div class="grid-overlay">
+                            <div class="overlay-stat"><i class="fas fa-heart"></i> ${post.likes}</div>
+                            <div class="overlay-stat"><i class="fas fa-comment"></i> ${post.comments}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        document.querySelectorAll('.grid-item').forEach(item => {
+            item.addEventListener('click', () => showToast('Opening meme post', '🎭'));
+        });
+    }
+
+    // Render reactions as chips
+    function renderReactions() {
+        contentArea.innerHTML = `
+            <div class="reactions-container">
+                <div class="reactions-header">
+                    <h3><i class="fas fa-chart-simple" style="color: #a78bfa;"></i> Your most used reactions</h3>
+                    <p style="font-size: 0.7rem; color: #9ca3af; margin-top: 0.25rem;">Across all your memes and interactions</p>
+                </div>
+                <div class="reactions-chips">
+                    ${topReactions.map(r => `
+                        <div class="reaction-chip" data-reaction="${r.name}">
+                            <span class="chip-emoji">${r.emoji}</span>
+                            <span class="chip-name">${r.name}</span>
+                            <span class="chip-count">${r.count.toLocaleString()}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="reaction-footer">
+                    <i class="fas fa-smile-wink"></i> Keep reacting — your vibe shapes the Memotions community!
+                </div>
+            </div>
+        `;
+
+        document.querySelectorAll('.reaction-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const name = chip.querySelector('.chip-name')?.innerText;
+                const emoji = chip.querySelector('.chip-emoji')?.innerText;
+                showToast(`Reacted with ${name}`, emoji);
+            });
+        });
+    }
+
+    // Tab switching
+    let currentTab = 'posts';
+    const tabs = document.querySelectorAll('.tab');
+
+    function switchTab(tabId) {
+        currentTab = tabId;
+        tabs.forEach(tab => {
+            if (tab.dataset.tab === tabId) tab.classList.add('active');
+            else tab.classList.remove('active');
+        });
+
+        if (tabId === 'posts') {
+            renderPosts(userPosts);
+        } else if (tabId === 'saved') {
+            renderPosts(savedPosts, "No saved memes yet");
+        } else if (tabId === 'reactions') {
+            renderReactions();
+        }
+    }
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+
+    // Edit profile
+    document.getElementById('editProfileBtn').addEventListener('click', () => {
+        const newBio = prompt('Edit your bio:', bioSpan.innerText);
+        if (newBio && newBio.trim()) {
+            bioSpan.innerText = newBio.trim();
+            showToast('Profile updated!', '✅');
+        }
+    });
+
+    document.getElementById('avatarBtn').addEventListener('click', () => {
+        showToast('Change profile picture', '📸');
+    });
+
+    // Stats clicks
+    document.getElementById('postsStat').addEventListener('click', () => switchTab('posts'));
+    document.getElementById('followersStat').addEventListener('click', () => showToast('842K amazing memers follow you', '❤️'));
+    document.getElementById('followingStat').addEventListener('click', () => showToast('You follow 1,245 creators', '👥'));
+
+    // Highlight clicks
+    document.querySelectorAll('.highlight-item').forEach((item, index) => {
+        item.addEventListener('click', () => {
+            const labels = ['Top Memes', 'GIFs', 'Trending', 'Liked'];
+            showToast(`${labels[index]} coming soon`, '✨');
+        });
+    });
+
+    // Nav icons
+    document.querySelectorAll('.nav-icons i').forEach((icon, idx) => {
+        icon.addEventListener('click', () => {
+            const actions = ['Create new post', 'Notifications', 'Messages'];
+            showToast(actions[idx] || 'Feature coming soon', '🚀');
+        });
+    });
+
+    // Initialize
+    renderPosts(userPosts);
+    postCountSpan.innerText = userPosts.length;
+    setTimeout(() => showToast('Instagram + TikTok vibes for Memotions!', '🎉'), 500);
+</script>
+</body>
+</html>
+
+<!-- 5th -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Main Layout */
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            padding: 2rem;
+            border-bottom: 1px solid #1a1a28;
+        }
+
+        .profile-top {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Avatar */
+        .avatar-section {
+            position: relative;
+        }
+
+        .avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid #1a1a28;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Profile Info */
+        .profile-info {
+            flex: 1;
+        }
+
+        .username-row {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .username-row h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+        }
+
+        .edit-profile-btn {
+            background: #1a1a28;
+            border: 1px solid #374151;
+            padding: 0.5rem 1.2rem;
+            border-radius: 0.6rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #f3f4f6;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .edit-profile-btn:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .stat:hover {
+            opacity: 0.8;
+        }
+
+        .stat-number {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        .bio-section {
+            margin-top: 1rem;
+        }
+
+        .full-name {
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .bio {
+            color: #d1d5db;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+
+        .link {
+            color: #8b5cf6;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+
+        /* Quick Stats Chips - REPLACEMENT for highlights (smaller, better) */
+        .quick-stats {
+            display: flex;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid #1a1a28;
+            flex-wrap: wrap;
+        }
+
+        .quick-chip {
+            background: #12121c;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-chip:hover {
+            border-color: #8b5cf6;
+            background: #1a1a2a;
+            transform: translateY(-1px);
+        }
+
+        .quick-chip i {
+            font-size: 0.8rem;
+            color: #a78bfa;
+        }
+
+        .quick-chip span {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #e5e7eb;
+        }
+
+        /* Tabs */
+        .profile-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #1a1a28;
+            background: #0a0a10;
+        }
+
+        .tab {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .tab i {
+            font-size: 1rem;
+        }
+
+        .tab.active {
+            color: #a78bfa;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.75rem;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #a78bfa;
+        }
+
+        /* Content Grid - 3 column grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: #0a0a10;
+        }
+
+        .grid-item {
+            aspect-ratio: 1;
+            background: #12121c;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .grid-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .grid-item:hover .grid-overlay {
+            opacity: 1;
+        }
+
+        .overlay-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Reactions as Chips */
+        .reactions-container {
+            padding: 1.5rem;
+        }
+
+        .reactions-header {
+            margin-bottom: 1rem;
+        }
+
+        .reactions-header h3 {
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reactions-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .reaction-chip {
+            background: #1a1a28;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.6rem 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reaction-chip:hover {
+            border-color: #8b5cf6;
+            transform: translateY(-2px);
+            background: #22223a;
+        }
+
+        .chip-emoji {
+            font-size: 1.2rem;
+        }
+
+        .chip-name {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .chip-count {
+            font-size: 0.7rem;
+            color: #a78bfa;
+            background: rgba(139, 92, 246, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+        }
+
+        .reaction-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #6b7280;
+            padding: 1rem;
+            background: #12121c;
+            border-radius: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        /* Custom Modal for Edit Profile - matches site design */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: #12121c;
+            border-radius: 1.5rem;
+            border: 1px solid #2d2d40;
+            width: 90%;
+            max-width: 450px;
+            padding: 1.5rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.2s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .modal textarea {
+            width: 100%;
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 1rem;
+            padding: 0.8rem;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        .modal textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.5rem 1.2rem;
+            border-radius: 0.6rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .modal-btn.save {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: #1a1a28;
+            border: 1px solid #374151;
+            color: #e5e7eb;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            
+            .logo span {
+                display: none;
+            }
+            
+            .profile-header {
+                padding: 1rem;
+            }
+            
+            .profile-top {
+                gap: 1rem;
+            }
+            
+            .avatar {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .username-row h2 {
+                font-size: 1.2rem;
+            }
+            
+            .stats-row {
+                gap: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 0.9rem;
+            }
+            
+            .stat-label {
+                font-size: 0.65rem;
+            }
+            
+            .quick-stats {
+                padding: 0.75rem 1rem;
+            }
+            
+            .profile-tabs {
+                gap: 1rem;
+            }
+            
+            .tab {
+                font-size: 0.7rem;
+            }
+            
+            .reaction-chip {
+                padding: 0.4rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-bell" id="notificationBtn"></i>
+        </div>
+    </div>
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-top">
+            <div class="avatar-section">
+                <div class="avatar" id="avatarBtn">
+                    <img src="https://robohash.org/memotionsprofile?set=set4&size=150x150" alt="avatar">
+                </div>
+            </div>
+            <div class="profile-info">
+                <div class="username-row">
+                    <h2>meme_curator</h2>
+                    <button class="edit-profile-btn" id="editProfileBtn">Edit profile</button>
+                    <i class="fas fa-chevron-down" style="color: #9ca3af; cursor: pointer;"></i>
+                </div>
+                <div class="stats-row">
+                    <div class="stat" id="postsStat">
+                        <span class="stat-number" id="postCount">24</span>
+                        <span class="stat-label"> posts</span>
+                    </div>
+                    <div class="stat" id="followersStat">
+                        <span class="stat-number">842K</span>
+                        <span class="stat-label"> followers</span>
+                    </div>
+                    <div class="stat" id="followingStat">
+                        <span class="stat-number">1,245</span>
+                        <span class="stat-label"> following</span>
+                    </div>
+                </div>
+                <div class="bio-section">
+                    <div class="full-name">Meme Curator 🎭</div>
+                    <div class="bio" id="bioText">
+                        Meme connoisseur | daily doses of laughter & vibes<br>
+                        Founder of #Memotions movement
+                    </div>
+                    <a href="#" class="link">memotions.gg/curator</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Chips (replaced highlights - smaller and better) -->
+    <div class="quick-stats">
+        <div class="quick-chip" data-chip="top">
+            <i class="fas fa-crown"></i>
+            <span>Top Memes</span>
+        </div>
+        <div class="quick-chip" data-chip="gifs">
+            <i class="fas fa-gift"></i>
+            <span>Best GIFs</span>
+        </div>
+        <div class="quick-chip" data-chip="trending">
+            <i class="fas fa-fire"></i>
+            <span>Trending</span>
+        </div>
+        <div class="quick-chip" data-chip="liked">
+            <i class="fas fa-heart"></i>
+            <span>Most Liked</span>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="profile-tabs">
+        <button class="tab active" data-tab="posts"><i class="fas fa-table-cells-large"></i> POSTS</button>
+        <button class="tab" data-tab="saved"><i class="fas fa-bookmark"></i> SAVED</button>
+        <button class="tab" data-tab="reactions"><i class="fas fa-face-smile"></i> REACTIONS</button>
+    </div>
+
+    <!-- Dynamic Content -->
+    <div id="contentArea"></div>
+</div>
+
+<!-- Custom Edit Profile Modal -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal">
+        <h3><i class="fas fa-pen"></i> Edit Profile</h3>
+        <textarea id="modalBio" rows="4" placeholder="Write your bio..."></textarea>
+        <div class="modal-buttons">
+            <button class="modal-btn cancel" id="cancelModalBtn">Cancel</button>
+            <button class="modal-btn save" id="saveModalBtn">Save</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const contentArea = document.getElementById('contentArea');
+    const toast = document.getElementById('toast');
+    const postCountSpan = document.getElementById('postCount');
+    const bioSpan = document.getElementById('bioText');
+    const editModal = document.getElementById('editModal');
+    const modalBio = document.getElementById('modalBio');
+
+    // Mock data
+    const userPosts = [
+        { id: 1, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '245K', comments: '5.6K' },
+        { id: 2, image: 'https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600', likes: '189K', comments: '4.2K' },
+        { id: 3, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '467K', comments: '12.2K' },
+        { id: 4, image: 'https://i.imgflip.com/2/265j.jpg', likes: '523K', comments: '14.5K' },
+        { id: 5, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7R0htDNiFjbNDisK1YOnqsy35mVid-q7Ryg&s', likes: '312K', comments: '8.8K' },
+        { id: 6, image: 'https://images.ctfassets.net/h6goo9gw1hh6/2BqWsp1aWAIxoe1qJ296KE/c5f2d77f8e0cdfac69e1ed59c91089d3/Yoda_meme.jpeg?w=503&h=499&fl=progressive&q=70&fm=jpg', likes: '178K', comments: '3.4K' },
+        { id: 7, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '98K', comments: '2.1K' },
+        { id: 8, image: 'https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600', likes: '156K', comments: '3.8K' },
+        { id: 9, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '234K', comments: '5.2K' }
+    ];
+
+    const savedPosts = [
+        { id: 101, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '98K', comments: '1.2K' },
+        { id: 102, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '210K', comments: '3.7K' },
+        { id: 103, image: 'https://i.imgflip.com/2/265j.jpg', likes: '145K', comments: '2.8K' }
+    ];
+
+    const topReactions = [
+        { emoji: '😂', name: 'Funny', count: 12400 },
+        { emoji: '🔥', name: 'Lit', count: 8200 },
+        { emoji: '💀', name: 'Dead', count: 5900 },
+        { emoji: '❤️', name: 'Love', count: 4700 },
+        { emoji: '😭', name: 'Cry', count: 3100 },
+        { emoji: '👏', name: 'Applause', count: 2800 }
+    ];
+
+    function showToast(msg, emoji = '✨') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function renderPosts(posts, emptyMsg = "No posts yet") {
+        if (!posts.length) {
+            contentArea.innerHTML = `<div class="empty-state"><i class="fas fa-ghost" style="font-size: 3rem; margin-bottom: 1rem; display: block;"></i>${emptyMsg}</div>`;
+            return;
+        }
+
+        contentArea.innerHTML = `
+            <div class="content-grid">
+                ${posts.map(post => `
+                    <div class="grid-item" data-id="${post.id}">
+                        <img src="${post.image}" alt="meme" onerror="this.src='https://via.placeholder.com/300?text=Meme'">
+                        <div class="grid-overlay">
+                            <div class="overlay-stat"><i class="fas fa-heart"></i> ${post.likes}</div>
+                            <div class="overlay-stat"><i class="fas fa-comment"></i> ${post.comments}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        document.querySelectorAll('.grid-item').forEach(item => {
+            item.addEventListener('click', () => showToast('Opening meme post', '🎭'));
+        });
+    }
+
+    function renderReactions() {
+        contentArea.innerHTML = `
+            <div class="reactions-container">
+                <div class="reactions-header">
+                    <h3><i class="fas fa-chart-simple" style="color: #a78bfa;"></i> Your most used reactions</h3>
+                    <p style="font-size: 0.7rem; color: #9ca3af; margin-top: 0.25rem;">Across all your memes and interactions</p>
+                </div>
+                <div class="reactions-chips">
+                    ${topReactions.map(r => `
+                        <div class="reaction-chip" data-reaction="${r.name}">
+                            <span class="chip-emoji">${r.emoji}</span>
+                            <span class="chip-name">${r.name}</span>
+                            <span class="chip-count">${r.count.toLocaleString()}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="reaction-footer">
+                    <i class="fas fa-smile-wink"></i> Keep reacting — your vibe shapes the Memotions community!
+                </div>
+            </div>
+        `;
+
+        document.querySelectorAll('.reaction-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                const name = chip.querySelector('.chip-name')?.innerText;
+                const emoji = chip.querySelector('.chip-emoji')?.innerText;
+                showToast(`Reacted with ${name}`, emoji);
+            });
+        });
+    }
+
+    // Tab switching
+    let currentTab = 'posts';
+    const tabs = document.querySelectorAll('.tab');
+
+    function switchTab(tabId) {
+        currentTab = tabId;
+        tabs.forEach(tab => {
+            if (tab.dataset.tab === tabId) tab.classList.add('active');
+            else tab.classList.remove('active');
+        });
+
+        if (tabId === 'posts') {
+            renderPosts(userPosts);
+        } else if (tabId === 'saved') {
+            renderPosts(savedPosts, "No saved memes yet");
+        } else if (tabId === 'reactions') {
+            renderReactions();
+        }
+    }
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+    });
+
+    // Custom Edit Profile Modal (no browser dialog)
+    document.getElementById('editProfileBtn').addEventListener('click', () => {
+        modalBio.value = bioSpan.innerText;
+        editModal.classList.add('active');
+    });
+
+    document.getElementById('cancelModalBtn').addEventListener('click', () => {
+        editModal.classList.remove('active');
+    });
+
+    document.getElementById('saveModalBtn').addEventListener('click', () => {
+        const newBio = modalBio.value.trim();
+        if (newBio) {
+            bioSpan.innerHTML = newBio.replace(/\n/g, '<br>');
+            showToast('Profile updated!', '✅');
+        }
+        editModal.classList.remove('active');
+    });
+
+    // Close modal on overlay click
+    editModal.addEventListener('click', (e) => {
+        if (e.target === editModal) {
+            editModal.classList.remove('active');
+        }
+    });
+
+    document.getElementById('avatarBtn').addEventListener('click', () => {
+        showToast('Change profile picture', '📸');
+    });
+
+    // Stats clicks
+    document.getElementById('postsStat').addEventListener('click', () => switchTab('posts'));
+    document.getElementById('followersStat').addEventListener('click', () => showToast('842K amazing memers follow you', '❤️'));
+    document.getElementById('followingStat').addEventListener('click', () => showToast('You follow 1,245 creators', '👥'));
+
+    // Quick chips clicks
+    document.querySelectorAll('.quick-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const text = chip.querySelector('span')?.innerText;
+            showToast(`Showing ${text}`, '✨');
+        });
+    });
+
+    // Notification bell icon
+    document.getElementById('notificationBtn').addEventListener('click', () => {
+        showToast('🔔 No new notifications', '🔔');
+    });
+
+    // Create post button
+    document.getElementById('createBtn').addEventListener('click', () => {
+        showToast('Create new meme post', '📸');
+    });
+
+    // Initialize
+    renderPosts(userPosts);
+    postCountSpan.innerText = userPosts.length;
+    setTimeout(() => showToast('Welcome to your profile!', '🎉'), 500);
+</script>
+</body>
+</html>
+
+<!-- 6th -->
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Memotions · Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #08080c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Main Layout - with right sidebar */
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #0a0a10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Two column layout */
+        .main-layout {
+            display: flex;
+            gap: 2rem;
+            padding: 0 2rem 2rem 2rem;
+        }
+
+        /* Left/Profile Content */
+        .profile-content {
+            flex: 2;
+            min-width: 0;
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            flex: 1;
+            max-width: 320px;
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: #0c0c14;
+            border-bottom: 1px solid #1a1a28;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 1rem;
+        }
+
+        .logo {
+            font-family: 'Irish Grover', cursive;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 1.3rem;
+            color: #9ca3af;
+        }
+
+        .nav-icons i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .nav-icons i:hover {
+            color: #a78bfa;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            padding: 1rem 0 1.5rem 0;
+            border-bottom: 1px solid #1a1a28;
+        }
+
+        .profile-top {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            overflow: hidden;
+            cursor: pointer;
+            border: 3px solid #1a1a28;
+            flex-shrink: 0;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .username-row {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .username-row h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .edit-profile-btn {
+            background: #1a1a28;
+            border: 1px solid #374151;
+            padding: 0.45rem 1.2rem;
+            border-radius: 0.6rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: #f3f4f6;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .edit-profile-btn:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .stat:hover {
+            opacity: 0.8;
+        }
+
+        .stat-number {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        .bio-section {
+            margin-top: 0.5rem;
+        }
+
+        .full-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .bio {
+            color: #d1d5db;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            margin-bottom: 0.3rem;
+        }
+
+        .link {
+            color: #8b5cf6;
+            font-size: 0.75rem;
+            text-decoration: none;
+        }
+
+        /* Quick Stats Chips */
+        .quick-stats {
+            display: flex;
+            gap: 0.6rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #1a1a28;
+            flex-wrap: wrap;
+        }
+
+        .quick-chip {
+            background: #12121c;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.35rem 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-chip:hover {
+            border-color: #8b5cf6;
+            background: #1a1a2a;
+        }
+
+        .quick-chip i {
+            font-size: 0.7rem;
+            color: #a78bfa;
+        }
+
+        .quick-chip span {
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: #e5e7eb;
+        }
+
+        /* Tabs */
+        .profile-tabs {
+            display: flex;
+            gap: 2rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #1a1a28;
+        }
+
+        .tab {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.5rem 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .tab i {
+            font-size: 0.9rem;
+        }
+
+        .tab.active {
+            color: #a78bfa;
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.75rem;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #a78bfa;
+        }
+
+        /* Content Grid - TIGHTER like Instagram */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            background: #0a0a10;
+            margin-top: 0.5rem;
+        }
+
+        .grid-item {
+            aspect-ratio: 1;
+            background: #12121c;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .grid-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .grid-item:hover .grid-overlay {
+            opacity: 1;
+        }
+
+        .overlay-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* Reactions Container */
+        .reactions-container {
+            padding: 1rem 0;
+        }
+
+        .reactions-header {
+            margin-bottom: 0.75rem;
+        }
+
+        .reactions-header h3 {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .reactions-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
+
+        .reaction-chip {
+            background: #1a1a28;
+            border: 1px solid #2d2d40;
+            border-radius: 2rem;
+            padding: 0.45rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reaction-chip:hover {
+            border-color: #8b5cf6;
+            background: #22223a;
+        }
+
+        .chip-emoji {
+            font-size: 1rem;
+        }
+
+        .chip-name {
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .chip-count {
+            font-size: 0.6rem;
+            color: #a78bfa;
+            background: rgba(139, 92, 246, 0.2);
+            padding: 0.15rem 0.4rem;
+            border-radius: 1rem;
+        }
+
+        .reaction-footer {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.65rem;
+            color: #6b7280;
+            padding: 0.75rem;
+            background: #12121c;
+            border-radius: 0.8rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+            grid-column: 1 / -1;
+        }
+
+        /* Right Sidebar Styles */
+        .sidebar-card {
+            background: #12121c;
+            border-radius: 1rem;
+            border: 1px solid #1f1f2e;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #e5e7eb;
+        }
+
+        .sidebar-title i {
+            color: #a78bfa;
+            font-size: 0.8rem;
+        }
+
+        /* Suggestions */
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            padding: 0.4rem;
+            border-radius: 0.8rem;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            background: #1a1a28;
+        }
+
+        .sugg-avatar {
+            width: 2.2rem;
+            height: 2.2rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            object-fit: cover;
+        }
+
+        .sugg-info {
+            flex: 1;
+        }
+
+        .sugg-name {
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .sugg-sub {
+            font-size: 0.6rem;
+            color: #6b7280;
+        }
+
+        .follow-btn-sm {
+            background: transparent;
+            border: 1px solid #374151;
+            padding: 0.2rem 0.7rem;
+            border-radius: 1rem;
+            font-size: 0.6rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .follow-btn-sm:hover {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+            color: white;
+        }
+
+        /* Trending Items */
+        .trending-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            padding: 0.4rem;
+            border-radius: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .trending-item:hover {
+            background: #1a1a28;
+        }
+
+        .trending-img {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            background: #1a1a2a;
+            object-fit: cover;
+        }
+
+        .trending-info {
+            flex: 1;
+        }
+
+        .trending-title {
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-bottom: 0.15rem;
+        }
+
+        .trending-stats {
+            font-size: 0.55rem;
+            color: #6b7280;
+        }
+
+        .trending-stats i {
+            margin-right: 0.2rem;
+        }
+
+        .trending-badge {
+            background: rgba(139, 92, 246, 0.15);
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.55rem;
+            color: #a78bfa;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: #12121c;
+            border-radius: 1.5rem;
+            border: 1px solid #2d2d40;
+            width: 90%;
+            max-width: 400px;
+            padding: 1.5rem;
+        }
+
+        .modal h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .modal textarea {
+            width: 100%;
+            background: #0a0a12;
+            border: 1px solid #2d2d40;
+            border-radius: 1rem;
+            padding: 0.8rem;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        .modal textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.45rem 1.2rem;
+            border-radius: 0.6rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .modal-btn.save {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: #1a1a28;
+            border: 1px solid #374151;
+            color: #e5e7eb;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            border: 1px solid #8b5cf6;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            z-index: 1001;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .right-sidebar {
+                display: none;
+            }
+            
+            .main-layout {
+                padding: 0 1rem 1rem 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-nav {
+                padding: 0.75rem 1rem;
+            }
+            
+            .logo span {
+                display: none;
+            }
+            
+            .profile-header {
+                padding: 0.5rem 0 1rem 0;
+            }
+            
+            .profile-top {
+                gap: 1rem;
+            }
+            
+            .avatar {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .username-row h2 {
+                font-size: 1.1rem;
+            }
+            
+            .stats-row {
+                gap: 1rem;
+            }
+            
+            .profile-tabs {
+                gap: 1rem;
+            }
+            
+            .main-layout {
+                padding: 0 0.75rem 0.75rem 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="logo">
+            <i class="fas fa-face-smile"></i>
+            <span>Memotions</span>
+        </div>
+        <div class="nav-icons">
+            <i class="fas fa-plus-circle" id="createBtn"></i>
+            <i class="fas fa-bell" id="notificationBtn"></i>
+        </div>
+    </div>
+
+    <div class="main-layout">
+        <!-- Left: Profile Content -->
+        <div class="profile-content">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-top">
+                    <div class="avatar" id="avatarBtn">
+                        <img src="https://robohash.org/memotionsprofile?set=set4&size=150x150" alt="avatar">
+                    </div>
+                    <div class="profile-info">
+                        <div class="username-row">
+                            <h2>meme_curator</h2>
+                            <button class="edit-profile-btn" id="editProfileBtn">Edit profile</button>
+                            <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 0.8rem; cursor: pointer;"></i>
+                        </div>
+                        <div class="stats-row">
+                            <div class="stat" id="postsStat">
+                                <span class="stat-number" id="postCount">24</span>
+                                <span class="stat-label">posts</span>
+                            </div>
+                            <div class="stat" id="followersStat">
+                                <span class="stat-number">842K</span>
+                                <span class="stat-label">followers</span>
+                            </div>
+                            <div class="stat" id="followingStat">
+                                <span class="stat-number">1,245</span>
+                                <span class="stat-label">following</span>
+                            </div>
+                        </div>
+                        <div class="bio-section">
+                            <div class="full-name">Meme Curator 🎭</div>
+                            <div class="bio" id="bioText">
+                                Meme connoisseur | daily doses of laughter & vibes<br>
+                                Founder of #Memotions movement
+                            </div>
+                            <a href="#" class="link">memotions.gg/curator</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats Chips -->
+            <div class="quick-stats">
+                <div class="quick-chip"><i class="fas fa-crown"></i><span>Top Memes</span></div>
+                <div class="quick-chip"><i class="fas fa-gift"></i><span>Best GIFs</span></div>
+                <div class="quick-chip"><i class="fas fa-fire"></i><span>Trending</span></div>
+                <div class="quick-chip"><i class="fas fa-heart"></i><span>Most Liked</span></div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="profile-tabs">
+                <button class="tab active" data-tab="posts"><i class="fas fa-table-cells-large"></i> POSTS</button>
+                <button class="tab" data-tab="saved"><i class="fas fa-bookmark"></i> SAVED</button>
+                <button class="tab" data-tab="reactions"><i class="fas fa-face-smile"></i> REACTIONS</button>
+            </div>
+
+            <!-- Dynamic Content -->
+            <div id="contentArea"></div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-sidebar">
+            <!-- Suggestions -->
+            <div class="sidebar-card">
+                <div class="sidebar-title"><i class="fas fa-user-plus"></i> Suggested for you</div>
+                <div class="suggestion-item">
+                    <img class="sugg-avatar" src="https://robohash.org/gifqueen?set=set2&size=50x50">
+                    <div class="sugg-info">
+                        <div class="sugg-name">gif_goddess</div>
+                        <div class="sugg-sub">premium GIFs</div>
+                    </div>
+                    <button class="follow-btn-sm">Follow</button>
+                </div>
+                <div class="suggestion-item">
+                    <img class="sugg-avatar" src="https://robohash.org/dankbrain?set=set3&size=50x50">
+                    <div class="sugg-info">
+                        <div class="sugg-name">danklabs</div>
+                        <div class="sugg-sub">viral memes</div>
+                    </div>
+                    <button class="follow-btn-sm">Follow</button>
+                </div>
+                <div class="suggestion-item">
+                    <img class="sugg-avatar" src="https://robohash.org/reactiongod?set=set1&size=50x50">
+                    <div class="sugg-info">
+                        <div class="sugg-name">reactionking</div>
+                        <div class="sugg-sub">reaction specialist</div>
+                    </div>
+                    <button class="follow-btn-sm">Follow</button>
+                </div>
+            </div>
+
+            <!-- Trending Memes -->
+            <div class="sidebar-card">
+                <div class="sidebar-title"><i class="fas fa-fire"></i> Trending Memes</div>
+                <div class="trending-item">
+                    <img class="trending-img" src="https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg">
+                    <div class="trending-info">
+                        <div class="trending-title">When code works first try</div>
+                        <div class="trending-stats"><i class="fas fa-heart"></i> 245K <i class="fas fa-comment" style="margin-left: 0.5rem;"></i> 5.6K</div>
+                    </div>
+                    <div class="trending-badge">🔥 HOT</div>
+                </div>
+                <div class="trending-item">
+                    <img class="trending-img" src="https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600">
+                    <div class="trending-info">
+                        <div class="trending-title">I am the manager!</div>
+                        <div class="trending-stats"><i class="fas fa-heart"></i> 189K <i class="fas fa-comment" style="margin-left: 0.5rem;"></i> 4.2K</div>
+                    </div>
+                    <div class="trending-badge">🔥 HOT</div>
+                </div>
+                <div class="trending-item">
+                    <img class="trending-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s">
+                    <div class="trending-info">
+                        <div class="trending-title">Angry cat energy</div>
+                        <div class="trending-stats"><i class="fas fa-heart"></i> 467K <i class="fas fa-comment" style="margin-left: 0.5rem;"></i> 12.2K</div>
+                    </div>
+                    <div class="trending-badge">⭐ VIRAL</div>
+                </div>
+            </div>
+
+            <!-- Trending GIFs -->
+            <div class="sidebar-card">
+                <div class="sidebar-title"><i class="fas fa-gift"></i> Trending GIFs</div>
+                <div class="trending-item">
+                                    <div style="width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, #8b5cf6, #ec4899); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;"><i class="fas fa-play" style="font-size: 0.8rem;"></i></div>
+                    <div class="trending-info">
+                        <div class="trending-title">Dancing cat 🐱</div>
+                        <div class="trending-stats"><i class="fas fa-eye"></i> 1.2M views</div>
+                    </div>
+                    <div class="trending-badge">GIF</div>
+                </div>
+                <div class="trending-item">
+                    <div style="width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, #ec4899, #f43f5e); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;"><i class="fas fa-play" style="font-size: 0.8rem;"></i></div>
+                    <div class="trending-info">
+                        <div class="trending-title">Suspect reaction</div>
+                        <div class="trending-stats"><i class="fas fa-eye"></i> 892K views</div>
+                    </div>
+                    <div class="trending-badge">GIF</div>
+                </div>
+                <div class="trending-item">
+                    <div style="width: 2.5rem; height: 2.5rem; background: linear-gradient(135deg, #06b6d4, #3b82f6); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;"><i class="fas fa-play" style="font-size: 0.8rem;"></i></div>
+                    <div class="trending-info">
+                        <div class="trending-title">Celebration dance</div>
+                        <div class="trending-stats"><i class="fas fa-eye"></i> 654K views</div>
+                    </div>
+                    <div class="trending-badge">GIF</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal">
+        <h3><i class="fas fa-pen"></i> Edit Profile</h3>
+        <textarea id="modalBio" rows="4" placeholder="Write your bio..."></textarea>
+        <div class="modal-buttons">
+            <button class="modal-btn cancel" id="cancelModalBtn">Cancel</button>
+            <button class="modal-btn save" id="saveModalBtn">Save</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    const contentArea = document.getElementById('contentArea');
+    const toast = document.getElementById('toast');
+    const postCountSpan = document.getElementById('postCount');
+    const bioSpan = document.getElementById('bioText');
+    const editModal = document.getElementById('editModal');
+    const modalBio = document.getElementById('modalBio');
+
+    const userPosts = [
+        { id: 1, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '245K', comments: '5.6K' },
+        { id: 2, image: 'https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600', likes: '189K', comments: '4.2K' },
+        { id: 3, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '467K', comments: '12.2K' },
+        { id: 4, image: 'https://i.imgflip.com/2/265j.jpg', likes: '523K', comments: '14.5K' },
+        { id: 5, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7R0htDNiFjbNDisK1YOnqsy35mVid-q7Ryg&s', likes: '312K', comments: '8.8K' },
+        { id: 6, image: 'https://images.ctfassets.net/h6goo9gw1hh6/2BqWsp1aWAIxoe1qJ296KE/c5f2d77f8e0cdfac69e1ed59c91089d3/Yoda_meme.jpeg?w=503&h=499&fl=progressive&q=70&fm=jpg', likes: '178K', comments: '3.4K' },
+        { id: 7, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '98K', comments: '2.1K' },
+        { id: 8, image: 'https://cleanmemes.com/wp-content/uploads/2025/08/img_6145.jpg?w=600', likes: '156K', comments: '3.8K' },
+        { id: 9, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '234K', comments: '5.2K' }
+    ];
+
+    const savedPosts = [
+        { id: 101, image: 'https://i.pinimg.com/236x/6e/cd/a3/6ecda36c05b5d79b6b8a3f3f105fd66f.jpg', likes: '98K', comments: '1.2K' },
+        { id: 102, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxZFtnBHW2SyhtvQgUyGRNnBVabTE86e3cMQ&s', likes: '210K', comments: '3.7K' }
+    ];
+
+    const topReactions = [
+        { emoji: '😂', name: 'Funny', count: 12400 },
+        { emoji: '🔥', name: 'Lit', count: 8200 },
+        { emoji: '💀', name: 'Dead', count: 5900 },
+        { emoji: '❤️', name: 'Love', count: 4700 },
+        { emoji: '😭', name: 'Cry', count: 3100 }
+    ];
+
+    function showToast(msg, emoji = '✨') {
+        toast.innerHTML = `${emoji} ${msg}`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function renderPosts(posts, emptyMsg = "No posts yet") {
+        if (!posts.length) {
+            contentArea.innerHTML = `<div class="empty-state"><i class="fas fa-ghost" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>${emptyMsg}</div>`;
+            return;
+        }
+        contentArea.innerHTML = `<div class="content-grid">${posts.map(post => `
+            <div class="grid-item">
+                <img src="${post.image}" onerror="this.src='https://via.placeholder.com/300?text=Meme'">
+                <div class="grid-overlay">
+                    <div class="overlay-stat"><i class="fas fa-heart"></i> ${post.likes}</div>
+                    <div class="overlay-stat"><i class="fas fa-comment"></i> ${post.comments}</div>
+                </div>
+            </div>
+        `).join('')}</div>`;
+        document.querySelectorAll('.grid-item').forEach(item => item.addEventListener('click', () => showToast('Opening meme', '🎭')));
+    }
+
+    function renderReactions() {
+        contentArea.innerHTML = `<div class="reactions-container"><div class="reactions-header"><h3><i class="fas fa-chart-simple" style="color:#a78bfa;"></i> Your most used reactions</h3></div><div class="reactions-chips">${topReactions.map(r => `<div class="reaction-chip"><span class="chip-emoji">${r.emoji}</span><span class="chip-name">${r.name}</span><span class="chip-count">${r.count.toLocaleString()}</span></div>`).join('')}</div><div class="reaction-footer"><i class="fas fa-smile-wink"></i> Keep reacting — your vibe shapes the Memotions community!</div></div>`;
+        document.querySelectorAll('.reaction-chip').forEach(chip => chip.addEventListener('click', () => showToast(`Reacted with ${chip.querySelector('.chip-name')?.innerText}`, chip.querySelector('.chip-emoji')?.innerText)));
+    }
+
+    let currentTab = 'posts';
+    const tabs = document.querySelectorAll('.tab');
+    function switchTab(tabId) {
+        currentTab = tabId;
+        tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.tab === tabId));
+        if (tabId === 'posts') renderPosts(userPosts);
+        else if (tabId === 'saved') renderPosts(savedPosts, "No saved memes");
+        else renderReactions();
+    }
+    tabs.forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
+
+    document.getElementById('editProfileBtn').onclick = () => { modalBio.value = bioSpan.innerText; editModal.classList.add('active'); };
+    document.getElementById('cancelModalBtn').onclick = () => editModal.classList.remove('active');
+    document.getElementById('saveModalBtn').onclick = () => { bioSpan.innerHTML = modalBio.value.trim().replace(/\n/g, '<br>') || bioSpan.innerHTML; editModal.classList.remove('active'); showToast('Profile updated!', '✅'); };
+    editModal.onclick = (e) => { if (e.target === editModal) editModal.classList.remove('active'); };
+    document.getElementById('avatarBtn').onclick = () => showToast('Change profile picture', '📸');
+    document.getElementById('postsStat').onclick = () => switchTab('posts');
+    document.getElementById('followersStat').onclick = () => showToast('842K followers', '❤️');
+    document.getElementById('followingStat').onclick = () => showToast('Following 1,245 creators', '👥');
+    document.getElementById('notificationBtn').onclick = () => showToast('No new notifications', '🔔');
+    document.getElementById('createBtn').onclick = () => showToast('Create new meme post', '📸');
+    document.querySelectorAll('.quick-chip').forEach(c => c.onclick = () => showToast(`Showing ${c.querySelector('span')?.innerText}`, '✨'));
+    document.querySelectorAll('.follow-btn-sm').forEach(btn => btn.onclick = (e) => { e.stopPropagation(); btn.innerText = btn.innerText === 'Follow' ? 'Following' : 'Follow'; btn.style.background = btn.innerText === 'Following' ? '#8b5cf6' : 'transparent'; showToast(btn.innerText === 'Following' ? 'Followed!' : 'Unfollowed'); });
+    document.querySelectorAll('.trending-item').forEach(item => item.onclick = () => showToast('Opening trending meme', '🔥'));
+
+    renderPosts(userPosts);
+    postCountSpan.innerText = userPosts.length;
+    setTimeout(() => showToast('Welcome to your profile!', '🎉'), 500);
+</script>
+</body>
+</html>
