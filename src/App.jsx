@@ -6,6 +6,7 @@ import Page_categories from './pages/Page_categories';
 import Page_comments from './pages/Page_comments';
 import Page_create_backup from './pages/Page_create_backup';
 import Page_create from './pages/Page_create';
+import Page_explore from './pages/Page_explore';
 import Page_HallofFame from './pages/Page_HallofFame';
 import Page_leaderboard from './pages/Page_leaderboard';
 import Page_lineage from './pages/Page_lineage';
@@ -35,6 +36,7 @@ export default function App() {
       <Route path="/comments" element={<Page_comments />} />
       <Route path="/create_backup" element={<Page_create_backup />} />
       <Route path="/create" element={<Page_create />} />
+      <Route path="/explore" element={<Page_explore />} />
       <Route path="/HallofFame" element={<Page_HallofFame />} />
       <Route path="/leaderboard" element={<Page_leaderboard />} />
       <Route path="/lineage" element={<Page_lineage />} />

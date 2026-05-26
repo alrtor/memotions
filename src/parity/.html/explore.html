@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Memotions · Explore</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #08080c;
+      color: #fff;
+    }
+    .app {
+      max-width: 1480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      background: #0a0a10;
+    }
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 22px;
+      border-bottom: 1px solid #1a1a28;
+      background: rgba(12, 12, 20, .96);
+      backdrop-filter: blur(10px);
+    }
+    .logo {
+      font-family: 'Irish Grover', cursive;
+      font-size: 1.42rem;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .logo i {
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+      padding: .48rem;
+      border-radius: .9rem;
+      font-size: 1.12rem;
+    }
+    .search-wrap {
+      width: min(580px, 54vw);
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      background: #12121c;
+      border: 1px solid #2b2b40;
+      border-radius: 999px;
+      padding: .58rem .95rem;
+    }
+    .search-wrap i { color: #6b7280; }
+    .search-wrap input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #fff;
+      font-size: .9rem;
+    }
+    .search-wrap input::placeholder { color: #596174; }
+    .meta {
+      color: #93a0b7;
+      font-size: .76rem;
+      padding: 10px 22px 0 22px;
+    }
+
+    /* Instagram explore-like masonry */
+    .explore-grid {
+      column-count: 5;
+      column-gap: 8px;
+      padding: 12px 8px 14px 8px;
+    }
+    .grid-item {
+      break-inside: avoid;
+      margin: 0 0 8px 0;
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #12121c;
+      border: 1px solid #1d2237;
+      cursor: pointer;
+    }
+    .grid-item img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    .grid-item::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.5), rgba(0,0,0,0));
+      opacity: 0;
+      transition: opacity .18s ease;
+      pointer-events: none;
+    }
+    .tile-stats {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      color: #f8fafc;
+      font-weight: 700;
+      font-size: .73rem;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity .18s ease;
+      pointer-events: none;
+    }
+    .grid-item:hover::after,
+    .grid-item:hover .tile-stats { opacity: 1; }
+
+    @media (max-width: 1320px) { .explore-grid { column-count: 4; } }
+    @media (max-width: 980px) {
+      .search-wrap { width: min(500px, 62vw); }
+      .explore-grid { column-count: 3; }
+    }
+    @media (max-width: 700px) {
+      .top-nav { padding: 11px 12px; }
+      .logo span { display: none; }
+      .search-wrap { width: min(420px, 72vw); }
+      .meta { padding: 8px 12px 0 12px; }
+      .explore-grid { column-count: 2; column-gap: 6px; padding: 10px 6px 12px 6px; }
+      .grid-item { margin-bottom: 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="top-nav">
+      <div class="logo"><i class="fas fa-face-smile"></i><span>Memotions</span></div>
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input id="exploreSearch" type="text" placeholder="Search memes, creators, tags" />
+      </div>
+      <div style="width:32px"></div>
+    </div>
+    <div class="meta" id="exploreMeta"></div>
+    <div id="exploreGrid" class="explore-grid"></div>
+  </div>
+
+  <script>
+    (function () {
+      const grid = document.getElementById('exploreGrid');
+      const search = document.getElementById('exploreSearch');
+      const meta = document.getElementById('exploreMeta');
+
+      const creators = [
+        'meme_curator', 'gif_goddess', 'danklabs', 'reactionking', 'relatableposts',
+        'anime_laughs', 'chaos_king', 'sarcasm_only', 'cat_memes_daily', 'memelord42'
+      ];
+      const tags = ['funny', 'viral', 'dank', 'relatable', 'gif', 'mood', 'chaos', 'cat', 'work', 'idc'];
+      const titles = [
+        'POV: Monday morning', 'When deploy works', 'Me pretending okay', 'Unexpected vibe',
+        'Peak reaction moment', 'Absolutely relatable', 'This is too real', 'Chaos unlocked',
+        'No thoughts head empty', 'Work from home energy'
+      ];
+
+      function rInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+      function fmt(n) {
+        if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+        if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+        return String(n);
+      }
+
+      function normalizeMeme(item, i) {
+        const id = item.id || `explore-${i + 1}`;
+        const creator = item.author || creators[i % creators.length];
+        const title = item.title || item.name || titles[(i * 3) % titles.length];
+        const likes = item.ups || item.likes || rInt(1200, 985000);
+        const comments = item.num_comments || item.comments || rInt(50, 126000);
+        const t1 = tags[(i + 2) % tags.length];
+        const t2 = tags[(i + 5) % tags.length];
+        return {
+          id: `explore-${id}-${i}`,
+          title,
+          creator,
+          caption: `${title} · ${t1} ${t2}`,
+          image: item.url,
+          likes,
+          comments,
+          likesText: fmt(likes),
+          commentsText: fmt(comments),
+          tags: [t1, t2],
+        };
+      }
+
+      async function loadRealMemes() {
+        const isImageUrl = (u) =>
+          typeof u === 'string' &&
+          /^https?:\/\//.test(u) &&
+          /\.(jpg|jpeg|png|webp|gif)(\?.*)?$/i.test(u);
+
+        const uniq = new Map();
+
+        // Primary: meme-api parallel batches (faster than sequential attempts).
+        try {
+          const results = await Promise.allSettled([
+            fetch('https://meme-api.com/gimme/50'),
+            fetch('https://meme-api.com/gimme/50'),
+            fetch('https://meme-api.com/gimme/50'),
+          ]);
+          for (const r of results) {
+            if (r.status !== 'fulfilled') continue;
+            const res = r.value;
+            if (!res.ok) continue;
+            const data = await res.json();
+            const posts = Array.isArray(data.memes) ? data.memes : [];
+            posts.forEach((m) => {
+              if (!isImageUrl(m?.url)) return;
+              if (!uniq.has(m.url)) uniq.set(m.url, m);
+            });
+          }
+        } catch (_) {}
+
+        // Secondary fallback: direct Reddit feeds (still real memes, no templates).
+        if (uniq.size < 100) {
+          const feeds = [
+            'https://www.reddit.com/r/memes/hot.json?limit=100',
+            'https://www.reddit.com/r/dankmemes/hot.json?limit=100',
+            'https://www.reddit.com/r/wholesomememes/hot.json?limit=100',
+            'https://www.reddit.com/r/funnymemes/hot.json?limit=100',
+          ];
+          const results = await Promise.allSettled(feeds.map((u) => fetch(u)));
+          for (const r of results) {
+            if (uniq.size >= 120) break;
+            if (r.status !== 'fulfilled') continue;
+            try {
+              const res = r.value;
+              if (!res.ok) continue;
+              const data = await res.json();
+              const children = data?.data?.children || [];
+              children.forEach((c) => {
+                const d = c?.data;
+                const img = d?.url_overridden_by_dest || d?.url;
+                if (!isImageUrl(img)) return;
+                if (!uniq.has(img)) {
+                  uniq.set(img, {
+                    id: d?.id,
+                    url: img,
+                    title: d?.title,
+                    author: d?.author,
+                    ups: d?.ups,
+                    num_comments: d?.num_comments,
+                  });
+                }
+              });
+            } catch (_) {}
+          }
+        }
+
+        const out = Array.from(uniq.values()).slice(0, 120).map(normalizeMeme);
+        return out;
+      }
+
+      let all = [];
+      const BATCH_SIZE = 24;
+      let filteredList = [];
+      let renderedCount = 0;
+      let loadingMore = false;
+
+      function escapeHtml(s) {
+        return String(s || '').replace(/"/g, '&quot;');
+      }
+
+      function bindTileClicks(scope) {
+        scope.querySelectorAll('.grid-item').forEach((el) => {
+          if (el.dataset.bound === '1') return;
+          el.dataset.bound = '1';
+          el.addEventListener('click', () => {
+            const id = el.getAttribute('data-id');
+            const m = all.find((x) => x.id === id);
+            if (!m) return;
+            const payload = {
+              id: m.id,
+              image: m.image,
+              caption: m.caption,
+              creator: m.creator,
+              likes: m.likesText,
+              comments: m.commentsText,
+              reactions: [
+                { emoji: '😂', count: fmt(Math.max(12, Math.round(m.likes * 0.42))) },
+                { emoji: '💀', count: fmt(Math.max(10, Math.round(m.likes * 0.28))) },
+                { emoji: '🔥', count: fmt(Math.max(8, Math.round(m.likes * 0.2))) },
+              ],
+            };
+            if (typeof window.__openUnifiedPostModal === 'function') {
+              window.__openUnifiedPostModal(payload);
+              return;
+            }
+            let tries = 0;
+            const t = setInterval(() => {
+              tries += 1;
+              if (typeof window.__openUnifiedPostModal === 'function') {
+                clearInterval(t);
+                window.__openUnifiedPostModal(payload);
+              } else if (tries >= 12) {
+                clearInterval(t);
+              }
+            }, 100);
+          });
+        });
+      }
+
+      function appendBatch() {
+        if (loadingMore) return;
+        if (renderedCount >= filteredList.length) return;
+        loadingMore = true;
+        const next = filteredList.slice(renderedCount, renderedCount + BATCH_SIZE);
+        const wrap = document.createElement('div');
+        wrap.innerHTML = next.map((m) => `
+          <article class="grid-item" data-id="${m.id}">
+            <img src="${m.image}" alt="${escapeHtml(m.title)}" loading="lazy" />
+            <div class="tile-stats">
+              <span><i class="fas fa-heart"></i> ${m.likesText}</span>
+              <span><i class="fas fa-comment"></i> ${m.commentsText}</span>
+            </div>
+          </article>
+        `).join('');
+        // Bind before moving nodes out of the temporary wrapper.
+        bindTileClicks(wrap);
+        const nodes = Array.from(wrap.children);
+        nodes.forEach((n) => grid.appendChild(n));
+        renderedCount += next.length;
+        loadingMore = false;
+      }
+
+      function resetAndRender(list) {
+        filteredList = list;
+        renderedCount = 0;
+        grid.innerHTML = '';
+        meta.textContent = '';
+        if (!filteredList.length) {
+          grid.innerHTML = '<div style=\"padding:2rem;color:#9aa3b8;\">Unable to load real memes right now.</div>';
+          return;
+        }
+        appendBatch();
+      }
+
+      function nearBottom() {
+        const remain = document.documentElement.scrollHeight - (window.innerHeight + window.scrollY);
+        return remain < 900;
+      }
+
+      let timer = null;
+      search.addEventListener('input', () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          const q = (search.value || '').trim().toLowerCase();
+          if (!q) return resetAndRender(all);
+          const filtered = all.filter((m) => {
+            return m.title.toLowerCase().includes(q)
+              || m.creator.toLowerCase().includes(q)
+              || m.caption.toLowerCase().includes(q)
+              || m.tags.some((t) => t.includes(q));
+          });
+          resetAndRender(filtered);
+        }, 120);
+      });
+
+      window.addEventListener('scroll', () => {
+        if (nearBottom()) appendBatch();
+      }, { passive: true });
+
+      (async function init() {
+        all = await loadRealMemes();
+        resetAndRender(all);
+      })();
+    })();
+  </script>
+</body>
+</html>

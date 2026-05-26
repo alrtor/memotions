@@ -8,6 +8,7 @@ const HTML_ROUTE_MAP = {
   '/comments.html': '/comments',
   '/create_backup.html': '/create_backup',
   '/create.html': '/create',
+  '/explore.html': '/explore',
   '/HallofFame.html': '/HallofFame',
   '/leaderboard.html': '/leaderboard',
   '/lineage.html': '/lineage',
@@ -33,6 +34,7 @@ const HTML_ROUTE_MAP = {
   'comments.html': '/comments',
   'create_backup.html': '/create_backup',
   'create.html': '/create',
+  'explore.html': '/explore',
   'HallofFame.html': '/HallofFame',
   'leaderboard.html': '/leaderboard',
   'lineage.html': '/lineage',
@@ -75,6 +77,104 @@ function parseJsonArray(raw, fallback = []) {
   } catch {
     return fallback;
   }
+}
+
+const HIDDEN_POSTS_KEY = 'memotions_hidden_posts_v1';
+const FOLLOW_STATE_KEY = 'memotions_follow_states_v1';
+
+function getHiddenPosts() {
+  try {
+    return JSON.parse(localStorage.getItem(HIDDEN_POSTS_KEY) || '[]');
+  } catch {
+    return [];
+  }
+}
+
+function setHiddenPosts(arr) {
+  localStorage.setItem(HIDDEN_POSTS_KEY, JSON.stringify((arr || []).slice(0, 500)));
+}
+
+function persistHiddenPost(id = '', image = '') {
+  const key = `${String(id || '')}|${String(image || '')}`;
+  const list = getHiddenPosts();
+  if (!list.includes(key)) list.unshift(key);
+  setHiddenPosts(list);
+}
+
+function applyHiddenPostsToContainer(container) {
+  if (!container) return;
+  const hidden = new Set(getHiddenPosts());
+  if (!hidden.size) return;
+  container.querySelectorAll('.meme-card,.post-card,.trending-card,.trending-item,.grid-item').forEach((card) => {
+    const cid = card.getAttribute('data-id') || card.getAttribute('data-post-id') || card.dataset.reactPostId || '';
+    const cimg = card.querySelector('img')?.getAttribute('src') || '';
+    if (hidden.has(`${cid}|${cimg}`) || hidden.has(`|${cimg}`)) card.style.display = 'none';
+  });
+}
+
+function showMemToast(txt, type = 'info') {
+  const bg =
+    type === 'success'
+      ? 'linear-gradient(135deg,#0f2a1f,#103022)'
+      : type === 'warning'
+        ? 'linear-gradient(135deg,#2a1d10,#33210f)'
+        : 'linear-gradient(135deg,#121a31,#1b2544)';
+  const border = type === 'success' ? '#1f7a46' : type === 'warning' ? '#9a6a1f' : '#3d4f80';
+  const icon = type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+  const n = document.createElement('div');
+  n.style.cssText = `position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:12040;background:${bg};border:1px solid ${border};color:#e2e8f0;padding:.58rem .85rem;border-radius:.75rem;font-size:.79rem;display:flex;align-items:center;gap:.5rem;box-shadow:0 16px 34px rgba(0,0,0,.4);`;
+  n.innerHTML = `<span style="font-size:.92rem;">${icon}</span><span>${txt}</span>`;
+  document.body.appendChild(n);
+  setTimeout(() => n.remove(), 1800);
+}
+
+function openMemReportDialog(onSubmit) {
+  let dlg = document.getElementById('mem-unified-report-dialog');
+  if (!dlg) {
+    dlg = document.createElement('div');
+    dlg.id = 'mem-unified-report-dialog';
+    dlg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:center;justify-content:center;z-index:12090;padding:16px;';
+    dlg.innerHTML = `
+      <div style="width:min(460px,95vw);background:linear-gradient(180deg,#101326 0%,#0b0f1d 100%);border:1px solid #2a3150;border-radius:16px;box-shadow:0 28px 64px rgba(0,0,0,.56);overflow:hidden;">
+        <div style="padding:.9rem 1rem;border-bottom:1px solid #222844;display:flex;align-items:center;gap:.55rem;color:#eef2ff;font-weight:700;">
+          <span style="width:28px;height:28px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#2b1a4a;border:1px solid #52307c;color:#c4b5fd;">⚑</span>
+          <span>Report Post</span>
+        </div>
+        <div style="padding:.9rem 1rem .75rem 1rem;color:#a8b3d7;font-size:.82rem;">Choose a category that best describes this content.</div>
+        <div style="padding:0 1rem 1rem 1rem;display:grid;gap:.45rem;">
+          ${['Spam', 'Harassment', 'Hate speech', 'Violence', 'Sexual content', 'Misinformation'].map((c) => `<button type="button" data-r="${c}" style="text-align:left;border:1px solid #2b3357;background:#141b33;color:#e2e8f0;border-radius:12px;padding:.58rem .72rem;cursor:pointer;font-weight:600;transition:all .15s ease;">${c}</button>`).join('')}
+        </div>
+        <div style="padding:.8rem 1rem;border-top:1px solid #222844;display:flex;justify-content:flex-end;">
+          <button type="button" id="mem-unified-report-cancel" style="border:1px solid #394269;background:#141a30;color:#d1d5db;border-radius:11px;padding:.45rem .85rem;cursor:pointer;font-weight:600;">Cancel</button>
+        </div>
+      </div>`;
+    document.body.appendChild(dlg);
+    dlg.addEventListener('click', (e) => {
+      if (e.target === dlg || e.target.id === 'mem-unified-report-cancel') {
+        dlg.style.display = 'none';
+        return;
+      }
+      const btn = e.target.closest('button[data-r]');
+      if (!btn) return;
+      dlg.style.display = 'none';
+      const cb = dlg.__onSubmit;
+      cb?.(btn.getAttribute('data-r') || 'Other');
+    });
+    dlg.addEventListener('mouseover', (e) => {
+      const btn = e.target.closest('button[data-r]');
+      if (!btn) return;
+      btn.style.borderColor = '#8b5cf6';
+      btn.style.background = '#1b2342';
+    });
+    dlg.addEventListener('mouseout', (e) => {
+      const btn = e.target.closest('button[data-r]');
+      if (!btn) return;
+      btn.style.borderColor = '#2b3357';
+      btn.style.background = '#141b33';
+    });
+  }
+  dlg.__onSubmit = onSubmit;
+  dlg.style.display = 'flex';
 }
 
 function executeScripts(container) {
@@ -337,10 +437,11 @@ function applyMemotionsRightSidebarForSelectedRoutes(container) {
     '/others_profile',
     '/notifications',
     '/create',
+    '/HallofFame',
   ]);
   if (!targetRoutes.has(path)) return;
   const isProfileRoute = path === '/own_profile' || path === '/others_profile';
-  const alignWithTopBarRoutes = new Set(['/own_profile', '/others_profile', '/trending']);
+  const alignWithTopBarRoutes = new Set(['/own_profile', '/others_profile', '/trending', '/HallofFame']);
 
   const app = container.querySelector('.app') || container;
   const rightSidebar =
@@ -577,7 +678,8 @@ function injectGlobalShareCtas(container) {
     path === '/other' ||
     path === '/profile' ||
     path === '/others_profile' ||
-    path === '/own_profile';
+    path === '/own_profile' ||
+    path === '/HallofFame';
   if (!isAllowedSurface) return;
   const persistSharePayload = (payload) => {
     try {
@@ -1051,20 +1153,114 @@ function injectMemotionsFeedScrollFix(container) {
   const feed = container.querySelector('.feed-container');
   if (!feed || feed.dataset.wheelFixed === '1') return;
   feed.dataset.wheelFixed = '1';
-  let lastWheelTs = 0;
+  let wheelLocked = false;
+  let releaseTimer = null;
 
-  // Keep custom wheel handling but make it smoother and less jumpy.
+  const getFeedCards = () =>
+    Array.from(feed.querySelectorAll('.meme-card, .post-card')).filter((card) => card.offsetHeight > 0);
+
+  const keepWheelGestureLocked = () => {
+    wheelLocked = true;
+    if (releaseTimer) clearTimeout(releaseTimer);
+    // Release only after wheel activity has fully stopped.
+    releaseTimer = setTimeout(() => {
+      wheelLocked = false;
+      releaseTimer = null;
+    }, 240);
+  };
+
+  // Normalize wheel/trackpad into one-card navigation per gesture.
   const onWheel = (e) => {
     const modalOpen = document.getElementById('react-profile-post-modal')?.style.display === 'flex';
     if (modalOpen) return;
-    const now = Date.now();
-    if (now - lastWheelTs < 70) return;
-    lastWheelTs = now;
+    if (!e.deltaY || Math.abs(e.deltaY) < 4) return;
+    if (wheelLocked) {
+      e.preventDefault();
+      keepWheelGestureLocked();
+      return;
+    }
+    const cards = getFeedCards();
+    if (!cards.length) return;
     e.preventDefault();
-    const step = Math.max(110, Math.min(360, Math.abs(e.deltaY) * 1.25));
-    feed.scrollBy({ top: e.deltaY > 0 ? step : -step, behavior: 'smooth' });
+
+    const direction = e.deltaY > 0 ? 1 : -1;
+    const feedTop = feed.getBoundingClientRect().top;
+    let currentIndex = 0;
+    let bestDistance = Number.POSITIVE_INFINITY;
+    cards.forEach((card, idx) => {
+      const distance = Math.abs(card.getBoundingClientRect().top - feedTop);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        currentIndex = idx;
+      }
+    });
+    const nextIndex = Math.max(0, Math.min(cards.length - 1, currentIndex + direction));
+    cards[nextIndex]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    keepWheelGestureLocked();
   };
-  window.addEventListener('wheel', onWheel, { passive: false });
+  feed.addEventListener('wheel', onWheel, { passive: false });
+}
+
+function injectMemotionsDesktopRightRailActions(container) {
+  if (!container || window.location.pathname !== '/memotions') return;
+  if (window.innerWidth < 1025) return;
+  container.querySelectorAll('.meme-card').forEach((card) => {
+    const cardContainer = card.querySelector('.card-container');
+    const footer = card.querySelector('.meme-footer');
+    const actionBar = footer?.querySelector('.action-bar');
+    const actionGroup = actionBar?.querySelector('.action-group');
+    const reactionsPanel = card.querySelector('.reactions-panel');
+    if (!cardContainer || !actionBar || !actionGroup || !reactionsPanel) return;
+
+    let rail = cardContainer.querySelector(':scope > .mem-right-rail');
+    if (!rail) {
+      rail = document.createElement('div');
+      rail.className = 'mem-right-rail';
+      rail.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:.55rem;flex:0 0 auto;';
+      cardContainer.appendChild(rail);
+    }
+    if (actionBar.parentElement !== rail) rail.appendChild(actionBar);
+    if (reactionsPanel.parentElement !== rail) rail.appendChild(reactionsPanel);
+
+    actionBar.style.cssText =
+      'display:flex;align-items:center;justify-content:center;padding:.52rem .35rem;border:1px solid #222232;border-radius:1.15rem;background:#12121c;margin:0;box-shadow:0 8px 18px rgba(0,0,0,.26);';
+    actionGroup.style.cssText =
+      'display:flex;flex-direction:column;align-items:center;gap:.46rem;margin:0;';
+    actionGroup.querySelectorAll('.action-btn').forEach((btn) => {
+      btn.style.display = 'inline-flex';
+      btn.style.alignItems = 'center';
+      btn.style.justifyContent = 'center';
+      btn.style.flexDirection = 'column';
+      btn.style.gap = '.2rem';
+      btn.style.padding = '.24rem .12rem';
+      btn.style.minWidth = '3.4rem';
+      btn.style.borderRadius = '.65rem';
+      btn.style.fontSize = '.75rem';
+      btn.style.color = '#9ca3af';
+      const icon = btn.querySelector('i');
+      if (icon) {
+        icon.style.fontSize = '1.2rem';
+        if (!btn.classList.contains('liked') && !btn.classList.contains('saved')) {
+          icon.style.color = '#9ca3af';
+        }
+      }
+    });
+    if (reactionsPanel) {
+      reactionsPanel.style.marginBottom = '0';
+      reactionsPanel.style.paddingTop = '.52rem';
+      reactionsPanel.style.paddingBottom = '.52rem';
+      reactionsPanel.style.gap = '.58rem';
+      reactionsPanel.querySelectorAll('.reaction-item').forEach((item) => {
+        item.style.padding = '.26rem .2rem';
+        item.style.gap = '.22rem';
+      });
+      reactionsPanel.querySelectorAll('.reaction-count').forEach((countEl) => {
+        countEl.style.fontSize = '.75rem';
+      });
+      const rw = Math.round(reactionsPanel.getBoundingClientRect().width || 0);
+      if (rw > 0) actionBar.style.width = `${rw}px`;
+    }
+  });
 }
 
 function injectTopActionPanels(container) {
@@ -1323,11 +1519,22 @@ function injectTopActionPanels(container) {
       if (uploadFile) uploadFile.value = '';
       if (uploadArea) uploadArea.style.display = 'block';
     });
-    uploadBrowse?.addEventListener('click', (e) => {
-      e.stopPropagation();
+    let uploadPickerOpening = false;
+    const openUploadPickerOnce = () => {
+      if (uploadPickerOpening) return;
+      uploadPickerOpening = true;
       uploadFile?.click();
+      window.setTimeout(() => { uploadPickerOpening = false; }, 350);
+    };
+    uploadBrowse?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openUploadPickerOnce();
     });
-    uploadArea?.addEventListener('click', () => uploadFile?.click());
+    uploadArea?.addEventListener('click', (e) => {
+      if (e.target?.closest?.('#browseBtn')) return;
+      openUploadPickerOnce();
+    });
     uploadArea?.addEventListener('dragover', (e) => {
       e.preventDefault();
       uploadArea.classList.add('drag-over');
@@ -1428,6 +1635,7 @@ function injectProfilePostModal(container) {
     path === '/profile' ||
     path === '/others_profile' ||
     path === '/own_profile' ||
+    path === '/explore' ||
     path === '/trending' ||
     path === '/memotions' ||
     path === '/other' ||
@@ -1458,7 +1666,9 @@ function injectProfilePostModal(container) {
                 </div>
               </div>
               <div style="width:100%;background:#000;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;">
+                <button id="react-post-prev" type="button" aria-label="Previous post" style="position:fixed;width:auto;height:auto;border:0;background:transparent;color:#8b5cf6;cursor:pointer;z-index:10035;display:none;text-shadow:0 8px 20px rgba(124,58,237,.55);font-size:2rem;font-weight:800;line-height:1;padding:0 .15rem;">&#10094;</button>
                 <img id="react-post-modal-image" alt="post" style="width:100%;height:100%;object-fit:contain;max-height:none;" />
+                <button id="react-post-next" type="button" aria-label="Next post" style="position:fixed;width:auto;height:auto;border:0;background:transparent;color:#8b5cf6;cursor:pointer;z-index:10035;display:none;text-shadow:0 8px 20px rgba(124,58,237,.55);font-size:2rem;font-weight:800;line-height:1;padding:0 .15rem;">&#10095;</button>
               </div>
               <div style="display:flex;gap:.6rem;padding:.8rem 1rem;align-items:center;flex-wrap:wrap;">
                 <button id="react-post-like" class="post-action" type="button" style="background:none;border:none;color:#e5e7eb;font-size:1.35rem;cursor:pointer;"><i class="far fa-heart"></i></button>
@@ -1528,20 +1738,10 @@ function injectProfilePostModal(container) {
   };
 
   modal.querySelector('#react-post-modal-close')?.addEventListener('click', closeModal);
-  const HIDDEN_POSTS_KEY = 'memotions_hidden_posts_v1';
-  const getHiddenPosts = () => {
-    try { return JSON.parse(localStorage.getItem(HIDDEN_POSTS_KEY) || '[]'); } catch { return []; }
-  };
-  const setHiddenPosts = (arr) => {
-    localStorage.setItem(HIDDEN_POSTS_KEY, JSON.stringify((arr || []).slice(0, 500)));
-  };
   const hideCurrentModalPostEverywhere = () => {
     const id = modal.getAttribute('data-current-post-id') || '';
     const image = modal.querySelector('#react-post-modal-image')?.getAttribute('src') || '';
-    const list = getHiddenPosts();
-    const key = `${id}|${image}`;
-    if (!list.includes(key)) list.unshift(key);
-    setHiddenPosts(list);
+    persistHiddenPost(id, image);
     container.querySelectorAll('.meme-card,.post-card,.trending-card,.trending-item,.grid-item').forEach((card) => {
       const cid = card.getAttribute('data-id') || card.getAttribute('data-post-id') || card.dataset.reactPostId || '';
       const cimg = card.querySelector('img')?.getAttribute('src') || '';
@@ -1551,52 +1751,7 @@ function injectProfilePostModal(container) {
     });
   };
 
-  const openModalReportDialog = (onSubmit) => {
-    let dlg = document.getElementById('mem-modal-report-dialog');
-    if (!dlg) {
-      dlg = document.createElement('div');
-      dlg.id = 'mem-modal-report-dialog';
-      dlg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.62);display:none;align-items:center;justify-content:center;z-index:12090;padding:16px;';
-      dlg.innerHTML = `
-        <div style="width:min(460px,95vw);background:linear-gradient(180deg,#101326 0%,#0b0f1d 100%);border:1px solid #2a3150;border-radius:16px;box-shadow:0 28px 64px rgba(0,0,0,.56);overflow:hidden;">
-          <div style="padding:.9rem 1rem;border-bottom:1px solid #222844;display:flex;align-items:center;gap:.55rem;color:#eef2ff;font-weight:700;">
-            <span style="width:28px;height:28px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#2b1a4a;border:1px solid #52307c;color:#c4b5fd;">⚑</span>
-            <span>Report Post</span>
-          </div>
-          <div style="padding:.9rem 1rem .75rem 1rem;color:#a8b3d7;font-size:.82rem;">Choose a category that best describes this content.</div>
-          <div style="padding:0 1rem 1rem 1rem;display:grid;gap:.45rem;">
-            ${['Spam', 'Harassment', 'Hate speech', 'Violence', 'Sexual content', 'Misinformation'].map((c) => `<button type="button" data-r="${c}" style="text-align:left;border:1px solid #2b3357;background:#141b33;color:#e2e8f0;border-radius:12px;padding:.58rem .72rem;cursor:pointer;font-weight:600;transition:all .15s ease;">${c}</button>`).join('')}
-          </div>
-          <div style="padding:.8rem 1rem;border-top:1px solid #222844;display:flex;justify-content:flex-end;">
-            <button type="button" id="mem-modal-report-cancel" style="border:1px solid #394269;background:#141a30;color:#d1d5db;border-radius:11px;padding:.45rem .85rem;cursor:pointer;font-weight:600;">Cancel</button>
-          </div>
-        </div>`;
-      document.body.appendChild(dlg);
-      dlg.addEventListener('click', (e) => {
-        if (e.target === dlg || e.target.id === 'mem-modal-report-cancel') {
-          dlg.style.display = 'none';
-          return;
-        }
-        const btn = e.target.closest('button[data-r]');
-        if (!btn) return;
-        dlg.style.display = 'none';
-        onSubmit?.(btn.getAttribute('data-r') || 'Other');
-      });
-      dlg.addEventListener('mouseover', (e) => {
-        const btn = e.target.closest('button[data-r]');
-        if (!btn) return;
-        btn.style.borderColor = '#8b5cf6';
-        btn.style.background = '#1b2342';
-      });
-      dlg.addEventListener('mouseout', (e) => {
-        const btn = e.target.closest('button[data-r]');
-        if (!btn) return;
-        btn.style.borderColor = '#2b3357';
-        btn.style.background = '#141b33';
-      });
-    }
-    dlg.style.display = 'flex';
-  };
+  const openModalReportDialog = (onSubmit) => openMemReportDialog(onSubmit);
   if (modal.dataset.escBound !== '1') {
     modal.dataset.escBound = '1';
     document.addEventListener('keydown', (evt) => {
@@ -1608,6 +1763,8 @@ function injectProfilePostModal(container) {
   });
 
   const imageEl = modal.querySelector('#react-post-modal-image');
+  const prevBtn = modal.querySelector('#react-post-prev');
+  const nextBtn = modal.querySelector('#react-post-next');
   const likeCountEl = modal.querySelector('#react-post-like-count');
   const captionEl = modal.querySelector('#react-post-caption');
   const author1 = modal.querySelector('#react-post-author-1');
@@ -1621,6 +1778,76 @@ function injectProfilePostModal(container) {
   const commentBtn = modal.querySelector('#react-post-comment');
   const shareBtn = modal.querySelector('#react-post-share');
   const reactionsWrap = modal.querySelector('#react-post-reactions');
+  let modalDeck = [];
+  let modalDeckIndex = -1;
+  const isProfileDeckRoute = () => window.location.pathname === '/own_profile' || window.location.pathname === '/others_profile';
+  const collectModalDeck = () => {
+    const selectors = isProfileDeckRoute()
+      ? '#contentArea .grid-item, .profile-content .grid-item, .posts-grid .grid-item'
+      : '.meme-card, .post-card, .trending-card, .trending-item, .grid-item, .feed-card';
+    return Array.from(container.querySelectorAll(selectors)).filter((card) => {
+      if (card.closest('#react-profile-post-modal')) return false;
+      if (card.style.display === 'none') return false;
+      const img = card.querySelector('img');
+      return !!(img?.getAttribute('src') || img?.src);
+    });
+  };
+  const payloadFromDeckCard = (card) => {
+    const img = card.querySelector('img');
+    if (!img) return null;
+    const caption =
+      card.querySelector('.card-title, .meme-caption, .caption, .post-title, .trending-title')?.textContent?.trim() ||
+      'Meme Post';
+    const likes =
+      card.querySelector('.action-btn.like-btn span, .card-stats span:nth-child(1), .card-metrics span:nth-child(1), .overlay-stat')?.textContent?.trim() ||
+      '0';
+    const comments =
+      card.querySelector('.action-btn.comment-btn span, .card-stats span:nth-child(2), .card-metrics span:nth-child(2)')?.textContent?.trim() ||
+      card.querySelectorAll('.overlay-stat')?.[1]?.textContent?.trim() ||
+      '0';
+    const creator =
+      card.querySelector('.username, .creator-name, .card-creator span')?.textContent?.replace('@', '').trim() ||
+      container.querySelector('.profile-info h2')?.textContent?.trim() ||
+      'memotions_user';
+    return {
+      id: card.getAttribute('data-id') || card.getAttribute('data-post-id') || card.dataset.reactPostId || `deck-${Date.now()}`,
+      image: img.getAttribute('src') || img.src || '',
+      caption,
+      creator,
+      likes,
+      comments,
+      reactions: Array.from(card.querySelectorAll('.reaction-item')).slice(0, 3).map((r) => ({
+        emoji: r.querySelector('.reaction-emoji')?.textContent?.trim() || '',
+        count: r.querySelector('.reaction-count')?.textContent?.trim() || '0',
+      })),
+    };
+  };
+  const refreshArrowVisibility = () => {
+    if (!prevBtn || !nextBtn) return;
+    const show = modalDeck.length > 1;
+    prevBtn.style.display = show ? 'inline-flex' : 'none';
+    nextBtn.style.display = show ? 'inline-flex' : 'none';
+    if (!show) return;
+    prevBtn.disabled = modalDeckIndex <= 0;
+    nextBtn.disabled = modalDeckIndex >= modalDeck.length - 1;
+    prevBtn.style.opacity = prevBtn.disabled ? '.45' : '1';
+    nextBtn.style.opacity = nextBtn.disabled ? '.45' : '1';
+    prevBtn.style.cursor = prevBtn.disabled ? 'default' : 'pointer';
+    nextBtn.style.cursor = nextBtn.disabled ? 'default' : 'pointer';
+  };
+  const positionModalArrows = () => {
+    if (!prevBtn || !nextBtn) return;
+    if (prevBtn.style.display === 'none' && nextBtn.style.display === 'none') return;
+    const card = modal.querySelector(':scope > div');
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const top = rect.top + rect.height / 2 - 23;
+    const gap = 18;
+    prevBtn.style.top = `${Math.max(24, top)}px`;
+    nextBtn.style.top = `${Math.max(24, top)}px`;
+    prevBtn.style.left = `${Math.max(10, rect.left - 46 - gap)}px`;
+    nextBtn.style.left = `${Math.min(window.innerWidth - 56, rect.right + gap)}px`;
+  };
   const INTERACTIONS_KEY = 'memotions_post_interactions';
   const INTERACTIONS_MIGRATION_KEY = 'memotions_post_interactions_migrated_v2';
   const INTERACTIONS_MIGRATION_KEY_V3 = 'memotions_post_interactions_migrated_v3';
@@ -1887,7 +2114,7 @@ function injectProfilePostModal(container) {
     sorted.forEach((comment) => commentsList.appendChild(createThreadRow(comment, 0)));
   };
 
-  const openUnifiedModal = (payload = {}) => {
+  const openUnifiedModal = (payload = {}, options = {}) => {
     const likesText = String(payload.likes ?? '0');
     if (imageEl) {
       imageEl.src = payload.image || '';
@@ -1935,6 +2162,22 @@ function injectProfilePostModal(container) {
     }
 
     modal.querySelector('#rp-comment-context-chip')?.remove();
+    if (!options.fromDeck) {
+      modalDeck = collectModalDeck();
+      modalDeckIndex = modalDeck.findIndex((card) => {
+        const src = card.querySelector('img')?.getAttribute('src') || card.querySelector('img')?.src || '';
+        return src && payload.image && src === payload.image;
+      });
+      if (modalDeckIndex < 0) {
+        const pcap = String(payload.caption || '').trim().toLowerCase();
+        modalDeckIndex = modalDeck.findIndex((card) => {
+          const t = card.querySelector('.card-title, .meme-caption, .caption, .post-title, .trending-title')?.textContent?.trim().toLowerCase() || '';
+          return !!pcap && t === pcap;
+        });
+      }
+      if (modalDeckIndex < 0) modalDeckIndex = 0;
+    }
+    refreshArrowVisibility();
     if (likeCountEl) likeCountEl.textContent = extractCountToken(likesText || '0');
     if (reactionsWrap && Array.isArray(payload.reactions) && payload.reactions.length) {
       const nodes = reactionsWrap.querySelectorAll('.rp-reaction');
@@ -1993,8 +2236,41 @@ function injectProfilePostModal(container) {
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     toggleMobileChromeForModal(true);
+    // Position arrows only after modal is painted; otherwise first-open
+    // coordinates can resolve against hidden layout and jump to top-left.
+    requestAnimationFrame(() => {
+      positionModalArrows();
+    });
   };
   window.__openUnifiedPostModal = openUnifiedModal;
+  const navigateDeck = (delta) => {
+    if (modalDeck.length < 2) return;
+    const next = modalDeckIndex + delta;
+    if (next < 0 || next >= modalDeck.length) return;
+    const payload = payloadFromDeckCard(modalDeck[next]);
+    if (!payload) return;
+    modalDeckIndex = next;
+    openUnifiedModal(payload, { fromDeck: true });
+  };
+  prevBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigateDeck(-1);
+  });
+  nextBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigateDeck(1);
+  });
+  if (!modal.dataset.arrowPositionBound) {
+    modal.dataset.arrowPositionBound = '1';
+    window.addEventListener('resize', () => {
+      if (modal.style.display === 'flex') positionModalArrows();
+    });
+    window.addEventListener('scroll', () => {
+      if (modal.style.display === 'flex') positionModalArrows();
+    }, { passive: true });
+  }
   const saveBtn = modal.querySelector('#react-post-save');
   const headerRow =
     modal.querySelector('#react-post-author-1')?.closest('div')?.parentElement?.parentElement ||
@@ -2006,7 +2282,7 @@ function injectProfilePostModal(container) {
     kb.id = 'react-post-kebab';
     kb.className = 'post-action';
     kb.type = 'button';
-    kb.style.cssText = 'position:absolute;right:.85rem;top:.85rem;background:none;border:none;color:#cbd5e1;font-size:1.2rem;cursor:pointer;z-index:4;';
+    kb.style.cssText = 'position:absolute;right:.85rem;top:.85rem;background:rgba(76,29,149,.18);border:1px solid #8b5cf6;color:#c4b5fd;font-size:1.2rem;cursor:pointer;z-index:4;border-radius:.6rem;width:2rem;height:2rem;display:inline-flex;align-items:center;justify-content:center;line-height:1;';
     kb.textContent = '⋯';
     const menu = document.createElement('div');
     menu.id = 'react-post-kebab-menu';
@@ -2400,6 +2676,13 @@ function injectFeedAndHofModalOpen(container) {
 
 function injectFollowButtons(container) {
   if (!container) return;
+  let followStore = {};
+  try {
+    followStore = JSON.parse(localStorage.getItem(FOLLOW_STATE_KEY) || '{}');
+  } catch {
+    followStore = {};
+  }
+  const saveFollowStore = () => localStorage.setItem(FOLLOW_STATE_KEY, JSON.stringify(followStore));
   container.querySelectorAll('.follow-btn, .follow-btn-sm, button').forEach((btn) => {
     const txt = btn.textContent?.trim().toLowerCase();
     if (!txt || (!txt.includes('follow') && !txt.includes('following'))) return;
@@ -2408,7 +2691,15 @@ function injectFollowButtons(container) {
     btn.dataset.followBaseBg = btn.style.background || '';
     btn.dataset.followBaseColor = btn.style.color || '';
     btn.dataset.followBaseBorder = btn.style.borderColor || '';
-    const isFollowing = txt.includes('following');
+    const identityRaw =
+      btn.closest('.suggestion-item,.creator-item,.profile-header,.user-card,.trending-item')?.querySelector('.username,.creator-name,.name,h4,h3')?.textContent?.trim() ||
+      btn.closest('.profile-info')?.querySelector('h2,.username')?.textContent?.trim() ||
+      '';
+    const identity = identityRaw.toLowerCase().replace(/\s+/g, '_') || `${window.location.pathname}_follow_${Array.from(btn.parentElement?.children || []).indexOf(btn)}`;
+    btn.dataset.followIdentity = identity;
+    const isFollowing = Object.prototype.hasOwnProperty.call(followStore, identity)
+      ? !!followStore[identity]
+      : txt.includes('following');
     btn.dataset.on = isFollowing ? '1' : '0';
     if (isFollowing) {
       btn.style.background = 'transparent';
@@ -2426,6 +2717,8 @@ function injectFollowButtons(container) {
       const on = btn.dataset.on === '1';
       btn.dataset.on = on ? '0' : '1';
       btn.textContent = on ? 'Follow' : 'Following';
+      followStore[identity] = !on;
+      saveFollowStore();
       if (on) {
         // Back to "Follow" state: keep it purple/primary (not black fallback).
         btn.style.background = '#8b5cf6';
@@ -2544,11 +2837,14 @@ function injectGlobalResponsiveConsistencyStyles() {
     .app { width: 100%; max-width: 100%; }
     body { overflow-x: hidden; }
     body[data-route="create"] .meme-studio {
-      border: 1px solid rgba(96, 105, 155, .28) !important;
-      border-radius: 20px !important;
-      background: linear-gradient(180deg, rgba(14,16,30,.92), rgba(10,12,24,.92)) !important;
-      box-shadow: 0 18px 42px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.03) !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
       overflow: hidden !important;
+      width: min(1160px, calc(100vw - 620px)) !important;
+      max-width: 1160px !important;
+      margin: .5rem auto !important;
     }
     body[data-route="create"] .canvas-area,
     body[data-route="create"] .tools-panel,
@@ -2560,15 +2856,109 @@ function injectGlobalResponsiveConsistencyStyles() {
     }
     body[data-route="create"] .creator-grid {
       display: grid !important;
-      grid-template-columns: minmax(0, 1.2fr) minmax(340px, .8fr) !important;
-      gap: 1rem !important;
+      grid-template-columns: minmax(0, 1fr) minmax(330px, .86fr) !important;
+      gap: .65rem !important;
       align-items: stretch !important;
+      padding: .65rem !important;
+    }
+    body[data-route="create"] .creator-grid > .canvas-area {
+      grid-column: 1 !important;
+      grid-row: 1 !important;
+    }
+    body[data-route="create"] .creator-grid > .tools-panel {
+      grid-column: 2 !important;
+      grid-row: 1 / span 2 !important;
+      align-self: start !important;
+    }
+    body[data-route="create"] .creator-grid > .templates-section {
+      grid-column: 1 !important;
+      grid-row: 2 !important;
+      align-self: start !important;
     }
     body[data-route="create"] .canvas-area,
     body[data-route="create"] .tools-panel {
       min-width: 0 !important;
       width: 100% !important;
       max-width: 100% !important;
+      min-height: 0 !important;
+      padding: .72rem !important;
+    }
+    body[data-route="create"] .canvas-area {
+      max-height: 64vh !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    body[data-route="create"] .tools-panel {
+      max-height: none !important;
+      overflow: visible !important;
+      scrollbar-width: auto !important;
+    }
+    body[data-route="create"] .meme-frame,
+    body[data-route="create"] .canvas-shell,
+    body[data-route="create"] .canvas-wrap {
+      width: min(88%, 430px) !important;
+      min-height: 310px !important;
+      margin: 0 auto !important;
+    }
+    body[data-route="create"] .templates-section {
+      margin: 0 .65rem .65rem .65rem !important;
+      max-height: 128px !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      padding: .5rem .6rem !important;
+    }
+    body[data-route="create"] .studio-header {
+      padding: .55rem .8rem !important;
+      min-height: 50px !important;
+    }
+    body[data-route="create"] .tools-panel h3,
+    body[data-route="create"] .tools-panel h4,
+    body[data-route="create"] .tools-panel .section-title {
+      margin: .3rem 0 .45rem 0 !important;
+      font-size: .86rem !important;
+    }
+    body[data-route="create"] .tools-panel .control-group,
+    body[data-route="create"] .tools-panel .panel-section {
+      margin-bottom: .55rem !important;
+      padding-bottom: .55rem !important;
+    }
+    body[data-route="create"] .tools-panel input,
+    body[data-route="create"] .tools-panel select,
+    body[data-route="create"] .tools-panel .btn,
+    body[data-route="create"] .tools-panel button {
+      min-height: 36px !important;
+    }
+    body[data-route="create"] .tools-panel input[type="range"] {
+      min-height: 0 !important;
+      height: 4px !important;
+      padding: 0 !important;
+      background: transparent !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+    }
+    body[data-route="create"] .tools-panel input[type="range"]::-webkit-slider-runnable-track {
+      height: 4px !important;
+      border-radius: 999px !important;
+      background: rgba(139, 92, 246, .28) !important;
+    }
+    body[data-route="create"] .tools-panel input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none !important;
+      width: 16px !important;
+      height: 16px !important;
+      border-radius: 50% !important;
+      background: #a78bfa !important;
+      border: 2px solid #1b1034 !important;
+      margin-top: -6px !important;
+    }
+    body[data-route="create"] .tools-panel .action-buttons {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: .55rem !important;
+    }
+    body[data-route="create"] .tools-panel .preset-colors,
+    body[data-route="create"] .tools-panel .color-grid {
+      gap: .35rem !important;
     }
     /* Remove duplicate in-editor brand mark, keep global left sidebar brand only */
     body[data-route="create"] .studio-header .logo,
@@ -2634,6 +3024,13 @@ function injectGlobalResponsiveConsistencyStyles() {
       .app { padding-left: 248px !important; }
       .right-sidebar { max-width: 280px !important; }
       .main-layout, .trending-layout { gap: 1.25rem !important; padding: 0 1rem 1.25rem 1rem !important; }
+      body[data-route="create"] .meme-studio {
+        width: min(1080px, calc(100vw - 530px)) !important;
+        margin: .45rem auto !important;
+      }
+      body[data-route="create"] .creator-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(315px, .82fr) !important;
+      }
     }
 
     @media (max-width: 1024px) {
@@ -3233,6 +3630,111 @@ function injectInteractionAuthGate(container) {
   );
 }
 
+function injectSeamlessUiSystem(container) {
+  if (!container) return;
+  let style = document.getElementById('memotions-seamless-ui-system');
+  if (!style) {
+    style = document.createElement('style');
+    style.id = 'memotions-seamless-ui-system';
+    style.textContent = `
+      :root {
+        --mem-bg: #090b16;
+        --mem-surface: #0f1323;
+        --mem-surface-2: #141a2e;
+        --mem-border: #232a45;
+        --mem-text: #e5e7eb;
+        --mem-text-dim: #98a2b3;
+        --mem-accent: #8b5cf6;
+        --mem-radius: 14px;
+        --mem-shadow: 0 10px 24px rgba(0,0,0,.26);
+        --mem-gap: 12px;
+      }
+      body, .app, .main-feed, .main-content, .profile-content, .settings-content, .right-sidebar, .left-sidebar {
+        background: var(--mem-bg) !important;
+        color: var(--mem-text) !important;
+      }
+      .top-bar, .top-nav {
+        background: color-mix(in srgb, var(--mem-bg) 90%, #000 10%) !important;
+        border-bottom: 1px solid var(--mem-border) !important;
+      }
+      .search-wrapper, .search-container, .search-bar {
+        border: 1px solid var(--mem-border) !important;
+        border-radius: 999px !important;
+        background: var(--mem-surface) !important;
+      }
+      .meme-card, .post-card, .trending-card, .sidebar-card, .settings-nav, .settings-content, .card-wrapper {
+        border: 1px solid var(--mem-border) !important;
+        border-radius: var(--mem-radius) !important;
+        background: var(--mem-surface) !important;
+        box-shadow: var(--mem-shadow) !important;
+      }
+      /* Keep feed slide wrappers visually transparent; only inner card should be surfaced. */
+      body[data-route="memotions"] .meme-card {
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      .meme-caption, .post-caption, .caption {
+        color: var(--mem-text) !important;
+        line-height: 1.5 !important;
+      }
+      .username, .creator-name, .sugg-name, .sidebar-profile-name {
+        color: #f3f4f6 !important;
+      }
+      .meme-tag, .tag, .hashtags span, .meme-tags span {
+        border: 1px solid var(--mem-border) !important;
+        background: var(--mem-surface-2) !important;
+        color: #cbd5e1 !important;
+        border-radius: 999px !important;
+      }
+      .action-btn, .follow-btn, .follow-btn-sm, .save-btn, .submit-btn, .toggle-btn, .mem-chip {
+        border-radius: 999px !important;
+        transition: all .18s ease !important;
+      }
+      .action-btn, .save-btn, .toggle-btn {
+        border: 1px solid transparent !important;
+      }
+      .action-btn:hover, .save-btn:hover, .toggle-btn:hover, .follow-btn:hover, .follow-btn-sm:hover {
+        border-color: var(--mem-accent) !important;
+      }
+      .left-sidebar .nav-item, .right-sidebar .suggestion-item, .right-sidebar .trending-item {
+        border-radius: 12px !important;
+      }
+      .left-sidebar .nav-item.active {
+        background: rgba(139, 92, 246, .18) !important;
+        color: #fff !important;
+      }
+      .left-sidebar .nav-item.active i {
+        color: #bba8ff !important;
+      }
+      .right-sidebar .suggestion-item, .right-sidebar .creator-item, .right-sidebar .trending-item {
+        margin-bottom: var(--mem-gap) !important;
+      }
+      #react-profile-post-modal > div,
+      #memotions-share-dialog > div,
+      #memotions-auth-modal .auth-card,
+      #memotions-upload-modal .create-container {
+        border: 1px solid var(--mem-border) !important;
+        border-radius: 16px !important;
+      }
+      .reactions-panel {
+        border: 1px solid var(--mem-border) !important;
+        border-radius: 16px !important;
+        background: var(--mem-surface) !important;
+      }
+      .reaction-item {
+        border-radius: 10px !important;
+      }
+      @media (max-width: 1024px) {
+        .top-bar, .top-nav { top: 48px !important; }
+        .meme-card, .post-card, .trending-card { border-radius: 12px !important; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
 function injectUiPovPack(container) {
   if (!container) return;
   const path = window.location.pathname;
@@ -3243,10 +3745,44 @@ function injectUiPovPack(container) {
     style.textContent = `
       .meme-caption, .post-caption, .caption { font-size: .98rem !important; line-height: 1.5 !important; max-width: 56ch !important; }
       .meme-card, .post-card, .trending-card, .sidebar-card, .settings-content, .settings-nav { border-radius: 16px !important; box-shadow: 0 10px 24px rgba(0,0,0,.22) !important; }
+      body[data-route="own_profile"] .grid-item,
+      body[data-route="others_profile"] .grid-item {
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 14px !important;
+        overflow: hidden !important;
+      }
+      body[data-route="own_profile"] .content-grid,
+      body[data-route="own_profile"] .posts-grid,
+      body[data-route="others_profile"] .content-grid,
+      body[data-route="others_profile"] .posts-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+      }
+      body[data-route="own_profile"] .grid-item img,
+      body[data-route="others_profile"] .grid-item img {
+        border-radius: 14px !important;
+      }
       .left-sidebar .nav-item { min-height: 48px !important; min-width: 220px !important; }
       .left-sidebar .nav-item i { font-weight: 700 !important; }
       .right-sidebar .suggestion-item, .right-sidebar .creator-item, .right-sidebar .trending-item { margin-bottom: 1.1rem !important; }
       .right-sidebar .sidebar-title, .right-sidebar h5 { display:flex !important; align-items:center !important; justify-content:space-between !important; }
+      @media (min-width: 1025px) {
+        body[data-route="memotions"] .feed-container {
+          padding-bottom: 14px !important;
+        }
+        body[data-route="memotions"] .meme-card {
+          height: calc(100vh - 48px - 108px) !important;
+          min-height: calc(100vh - 48px - 108px) !important;
+          max-height: calc(100vh - 48px - 108px) !important;
+          align-items: flex-start !important;
+          padding-top: 14px !important;
+        }
+        body[data-route="memotions"] .meme-card .card-container {
+          transform: translateY(8px) !important;
+        }
+      }
       .rs-collapse-btn { border:0;background:transparent;color:#8b5cf6;cursor:pointer;font-size:.8rem;line-height:1; }
       .profile-tabs .tab { border-bottom: 0 !important; box-shadow: none !important; }
       .profile-tabs .tab::after { display: none !important; }
@@ -3500,21 +4036,7 @@ function injectProductionUiPack(container) {
   const path = window.location.pathname;
   const FEED_INTERACTIONS_KEY = 'memotions_feed_interactions_v1';
   const TOP_25_EMOJIS = ['😂', '🔥', '❤️', '🤣', '😍', '👏', '😭', '💀', '😎', '🙌', '🤯', '🥶', '😡', '🤔', '🥳', '😴', '😅', '🤩', '👌', '💯', '✨', '😆', '😬', '🤝', '🫡'];
-  const notify = (txt, type = 'info') => {
-    const bg =
-      type === 'success'
-        ? 'linear-gradient(135deg,#0f2a1f,#103022)'
-        : type === 'warning'
-          ? 'linear-gradient(135deg,#2a1d10,#33210f)'
-          : 'linear-gradient(135deg,#121a31,#1b2544)';
-    const border = type === 'success' ? '#1f7a46' : type === 'warning' ? '#9a6a1f' : '#3d4f80';
-    const icon = type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
-    const n = document.createElement('div');
-    n.style.cssText = `position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:12040;background:${bg};border:1px solid ${border};color:#e2e8f0;padding:.58rem .85rem;border-radius:.75rem;font-size:.79rem;display:flex;align-items:center;gap:.5rem;box-shadow:0 16px 34px rgba(0,0,0,.4);`;
-    n.innerHTML = `<span style="font-size:.92rem;">${icon}</span><span>${txt}</span>`;
-    document.body.appendChild(n);
-    setTimeout(() => n.remove(), 1800);
-  };
+  const notify = showMemToast;
   const getFeedStateAll = () => {
     try { return JSON.parse(localStorage.getItem(FEED_INTERACTIONS_KEY) || '{}'); } catch { return {}; }
   };
@@ -3577,38 +4099,11 @@ function injectProductionUiPack(container) {
     }, true);
   }
 
-  const openReportDialog = (onSubmit) => {
-    let dlg = document.getElementById('mem-report-dialog');
-    if (!dlg) {
-      dlg = document.createElement('div');
-      dlg.id = 'mem-report-dialog';
-      dlg.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:12070;padding:16px;';
-      dlg.innerHTML = `
-        <div style="width:min(460px,95vw);background:#0f1528;border:1px solid #31406a;border-radius:14px;box-shadow:0 24px 52px rgba(0,0,0,.5);overflow:hidden;">
-          <div style="padding:.85rem 1rem;border-bottom:1px solid #26355f;color:#eef2ff;font-weight:700;">Report Post</div>
-          <div style="padding:.9rem 1rem .75rem 1rem;color:#b9c4e3;font-size:.82rem;">Why are you reporting this content?</div>
-          <div style="padding:0 1rem 1rem 1rem;display:grid;gap:.45rem;">
-            ${['Spam', 'Harassment', 'Hate speech', 'Violence', 'Sexual content', 'Misinformation'].map((c) => `<button type="button" data-r="${c}" style="text-align:left;border:1px solid #2f3c66;background:#151d37;color:#e2e8f0;border-radius:10px;padding:.52rem .65rem;cursor:pointer;">${c}</button>`).join('')}
-          </div>
-          <div style="padding:.8rem 1rem;border-top:1px solid #26355f;display:flex;justify-content:flex-end;">
-            <button type="button" id="mem-report-cancel" style="border:1px solid #3a4668;background:#111a31;color:#d1d5db;border-radius:10px;padding:.4rem .75rem;cursor:pointer;">Cancel</button>
-          </div>
-        </div>`;
-      document.body.appendChild(dlg);
-      dlg.addEventListener('click', (e) => {
-        if (e.target === dlg) dlg.style.display = 'none';
-        if (e.target.id === 'mem-report-cancel') dlg.style.display = 'none';
-        const btn = e.target.closest('button[data-r]');
-        if (!btn) return;
-        dlg.style.display = 'none';
-        onSubmit?.(btn.getAttribute('data-r') || 'Other');
-      });
-    }
-    dlg.style.display = 'flex';
-  };
+  const openReportDialog = openMemReportDialog;
+  applyHiddenPostsToContainer(container);
 
   // Topbar alignment only (keep native category-tabs filter)
-  if (path === '/memotions' || path === '/trending') {
+  if (path === '/memotions' || path === '/trending' || path === '/HallofFame') {
     const host = container.querySelector('.top-bar, .top-nav');
     if (host) {
       const rightActions =
@@ -3651,7 +4146,12 @@ function injectProductionUiPack(container) {
     menu.addEventListener('click', (e) => {
       const b = e.target.closest('button[data-a]');
       if (!b) return;
-      if (b.dataset.a === 'hide' || b.dataset.a === 'not') card.style.display = 'none';
+      if (b.dataset.a === 'hide' || b.dataset.a === 'not') {
+        const id = card.getAttribute('data-id') || card.getAttribute('data-post-id') || card.dataset.reactPostId || '';
+        const image = card.querySelector('img')?.getAttribute('src') || '';
+        persistHiddenPost(id, image);
+        card.style.display = 'none';
+      }
       if (b.dataset.a === 'report' && path === '/trending') {
         openReportDialog((category) => {
           notify(`Report submitted: ${category}. We'll review it shortly.`, 'success');
@@ -4099,6 +4599,44 @@ function stabilizeCreateMobileSurface(container) {
   container.querySelectorAll('.left-sidebar, .right-sidebar').forEach((el) => el.remove());
 }
 
+function compactCreateTemplatesPlacement(container) {
+  if (!container || window.location.pathname !== '/create' || window.innerWidth <= 1024) return;
+  const creatorGrid = container.querySelector('.creator-grid');
+  const canvasArea = container.querySelector('.canvas-area');
+  const templates = container.querySelector('.templates-section');
+  if (!creatorGrid || !canvasArea || !templates || templates.dataset.movedIntoCanvas === '1') return;
+  // Keep templates inside the grid so CSS can pin it below the upload canvas.
+  creatorGrid.appendChild(templates);
+  templates.dataset.movedIntoCanvas = '1';
+}
+
+function removeCreateWatermarkText(container) {
+  if (!container || window.location.pathname !== '/create') return;
+  const candidates = container.querySelectorAll('.studio-header *, .studio-header');
+  candidates.forEach((el) => {
+    const text = (el.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    if (text === 'drag text • watermark protected' || text.includes('watermark protected')) {
+      el.remove();
+    }
+  });
+}
+
+function installCreateFilePickerGuard() {
+  if (window.location.pathname !== '/create') return;
+  if (window.__memCreateFilePickerGuardInstalled) return;
+  const nativeClick = HTMLInputElement.prototype.click;
+  let lastFileOpenAt = 0;
+  HTMLInputElement.prototype.click = function guardedInputClick(...args) {
+    if (this?.type === 'file' && window.location.pathname === '/create') {
+      const now = Date.now();
+      if (now - lastFileOpenAt < 700) return;
+      lastFileOpenAt = now;
+    }
+    return nativeClick.apply(this, args);
+  };
+  window.__memCreateFilePickerGuardInstalled = true;
+}
+
 
 export function RawHtmlPage({ htmlSource }) {
   const navigate = useNavigate();
@@ -4140,8 +4678,10 @@ export function RawHtmlPage({ htmlSource }) {
     injectShareDialog(container);
     injectTopActionPanels(container);
     injectGlobalShareCtas(container);
+    injectSeamlessUiSystem(container);
     removeDuplicatePageLogo(container);
     injectMemotionsFeedScrollFix(container);
+    injectMemotionsDesktopRightRailActions(container);
     fixMemotionsLayoutGap(container);
     injectUploadedMemesIntoProfiles(container);
     injectSavedPostsIntoProfileSavedTab(container);
@@ -4149,8 +4689,11 @@ export function RawHtmlPage({ htmlSource }) {
     injectFollowButtons(container);
     applyGlobalThemeFromSettings(container);
     injectGlobalResponsiveConsistencyStyles();
+    installCreateFilePickerGuard();
     enforceCreateMobileLayoutLock(container);
     stabilizeCreateMobileSurface(container);
+    compactCreateTemplatesPlacement(container);
+    removeCreateWatermarkText(container);
     injectMobileBrandBar();
     injectMobileBottomNav();
     injectDemoAuth(container, navigate);
@@ -4161,20 +4704,25 @@ export function RawHtmlPage({ htmlSource }) {
     injectOthersProfileWorkingGifs(container);
     injectUiPovPack(container);
     try { injectProductionUiPack(container); } catch (e) { console.error('injectProductionUiPack failed', e); }
+    injectMemotionsDesktopRightRailActions(container);
     setTimeout(() => removeDuplicatePageLogo(container), 120);
     setTimeout(() => injectUploadedMemesIntoProfiles(container), 260);
     setTimeout(() => injectSavedPostsIntoProfileSavedTab(container), 300);
     setTimeout(() => injectFeedAndHofModalOpen(container), 320);
+    setTimeout(() => compactCreateTemplatesPlacement(container), 360);
+    setTimeout(() => removeCreateWatermarkText(container), 390);
     setTimeout(() => injectFollowButtons(container), 340);
     setTimeout(() => fixMemotionsLayoutGap(container), 360);
     setTimeout(() => injectTopActionPanels(container), 200);
     setTimeout(() => injectOwnProfileAvatarUpload(container), 350);
     setTimeout(() => injectGlobalShareCtas(container), 250);
+    setTimeout(() => injectSeamlessUiSystem(container), 180);
     setTimeout(() => injectProfilePostModal(container), 300);
     setTimeout(() => injectOthersProfileWorkingGifs(container), 320);
     setTimeout(() => cleanupProfileQuickFilters(container), 280);
     if (!isCreateMobile) setTimeout(() => applyMemotionsRightSidebarForSelectedRoutes(container), 330);
     setTimeout(() => injectUiPovPack(container), 360);
+    setTimeout(() => injectMemotionsDesktopRightRailActions(container), 380);
     setTimeout(() => { try { injectProductionUiPack(container); } catch (e) { console.error('injectProductionUiPack retry failed', e); } }, 440);
     setTimeout(() => enforceCreateMobileLayoutLock(container), 520);
     setTimeout(() => stabilizeCreateMobileSurface(container), 560);
