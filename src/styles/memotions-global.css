@@ -1,0 +1,289 @@
+:root {
+  color-scheme: dark;
+
+  /* Core palette */
+  --mem-bg: #050814;
+  --mem-surface-1: #0d1123;
+  --mem-surface-2: #11162b;
+  --mem-surface-3: #141a33;
+  --mem-surface-4: #1b2342;
+
+  --mem-border-soft: #222844;
+  --mem-border: #2b3357;
+  --mem-border-strong: #394269;
+
+  --mem-text: #e2e8f0;
+  --mem-text-strong: #eef2ff;
+  --mem-text-muted: #94a3b8;
+  --mem-text-dim: #6b7280;
+
+  --mem-purple-300: #c4b5fd;
+  --mem-purple-400: #a78bfa;
+  --mem-purple-500: #8b5cf6;
+  --mem-purple-600: #7c3aed;
+
+  --mem-danger-bg: #3b0d16;
+  --mem-danger-border: #7f1d1d;
+
+  /* Geometry */
+  --mem-radius-xs: 8px;
+  --mem-radius-sm: 11px;
+  --mem-radius-md: 12px;
+  --mem-radius-lg: 16px;
+  --mem-radius-xl: 20px;
+  --mem-pill: 999px;
+
+  /* Effects */
+  --mem-shadow-soft: 0 16px 34px rgba(0, 0, 0, 0.4);
+  --mem-shadow-lg: 0 28px 64px rgba(0, 0, 0, 0.56);
+  --mem-ring: 0 0 0 2px rgba(139, 92, 246, 0.35);
+
+  /* Layering */
+  --mem-z-toast: 12040;
+  --mem-z-modal: 12090;
+  --mem-z-overlay: 10030;
+
+  /* Layout */
+  --mem-left-sidebar-width: 260px;
+  --mem-right-sidebar-width: 320px;
+  --mem-feed-max: 1180px;
+  --mem-page-pad: 16px;
+
+  /* Spacing scale */
+  --mem-space-1: 4px;
+  --mem-space-2: 8px;
+  --mem-space-3: 12px;
+  --mem-space-4: 16px;
+  --mem-space-5: 20px;
+  --mem-space-6: 24px;
+}
+
+/* Base reset for parity-rendered HTML */
+.memotions-root,
+.memotions-root * {
+  box-sizing: border-box;
+}
+
+.memotions-root {
+  background: var(--mem-bg);
+  color: var(--mem-text);
+}
+
+.memotions-focusable:focus-visible,
+.mem-btn:focus-visible,
+.mem-input:focus-visible,
+.mem-tag:focus-visible {
+  outline: none;
+  box-shadow: var(--mem-ring);
+}
+
+/* Surface primitives */
+.mem-surface {
+  background: var(--mem-surface-2);
+  border: 1px solid var(--mem-border);
+  border-radius: var(--mem-radius-lg);
+}
+
+.mem-card {
+  background: linear-gradient(180deg, var(--mem-surface-2) 0%, var(--mem-surface-1) 100%);
+  border: 1px solid var(--mem-border);
+  border-radius: var(--mem-radius-lg);
+  box-shadow: var(--mem-shadow-soft);
+}
+
+.mem-panel {
+  background: var(--mem-surface-1);
+  border: 1px solid var(--mem-border-soft);
+  border-radius: var(--mem-radius-lg);
+}
+
+/* Controls */
+.mem-btn {
+  appearance: none;
+  border: 1px solid var(--mem-border-strong);
+  background: var(--mem-surface-3);
+  color: var(--mem-text);
+  border-radius: var(--mem-radius-sm);
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+
+.mem-btn:hover {
+  border-color: var(--mem-purple-500);
+  background: var(--mem-surface-4);
+}
+
+.mem-btn:active {
+  transform: translateY(1px);
+}
+
+.mem-btn-primary {
+  background: linear-gradient(135deg, var(--mem-purple-500), var(--mem-purple-600));
+  border-color: transparent;
+  color: #fff;
+}
+
+.mem-btn-danger {
+  background: var(--mem-danger-bg);
+  border-color: var(--mem-danger-border);
+  color: #fecaca;
+}
+
+.mem-input {
+  width: 100%;
+  border: 1px solid var(--mem-border);
+  background: var(--mem-surface-3);
+  color: var(--mem-text);
+  border-radius: var(--mem-radius-sm);
+  padding: 0.56rem 0.72rem;
+}
+
+.mem-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.62rem;
+  border-radius: var(--mem-pill);
+  border: 1px solid var(--mem-border);
+  background: rgba(20, 26, 51, 0.8);
+  color: var(--mem-text-muted);
+  font-size: 0.78rem;
+}
+
+/* Modal primitives */
+.mem-overlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--mem-page-pad);
+  background: rgba(0, 0, 0, 0.62);
+  z-index: var(--mem-z-modal);
+}
+
+.mem-overlay.is-open {
+  display: flex;
+}
+
+.mem-modal {
+  width: min(460px, 95vw);
+  background: linear-gradient(180deg, #101326 0%, #0b0f1d 100%);
+  border: 1px solid var(--mem-border);
+  border-radius: var(--mem-radius-lg);
+  box-shadow: var(--mem-shadow-lg);
+  overflow: hidden;
+}
+
+.mem-modal-header,
+.mem-modal-footer {
+  display: flex;
+  align-items: center;
+  padding: 0.9rem 1rem;
+  border-color: var(--mem-border-soft);
+}
+
+.mem-modal-header {
+  border-bottom: 1px solid var(--mem-border-soft);
+  color: var(--mem-text-strong);
+  font-weight: 700;
+}
+
+.mem-modal-footer {
+  border-top: 1px solid var(--mem-border-soft);
+  justify-content: flex-end;
+}
+
+.mem-modal-body {
+  padding: 0.9rem 1rem 1rem;
+}
+
+/* Toast */
+.mem-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: var(--mem-z-toast);
+  padding: 0.58rem 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid #3d4f80;
+  background: linear-gradient(135deg, #121a31, #1b2544);
+  color: var(--mem-text);
+  box-shadow: var(--mem-shadow-soft);
+  font-size: 0.79rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mem-toast--success {
+  background: linear-gradient(135deg, #0f2a1f, #103022);
+  border-color: #1f7a46;
+}
+
+.mem-toast--warning {
+  background: linear-gradient(135deg, #2a1d10, #33210f);
+  border-color: #9a6a1f;
+}
+
+/* Rails */
+.mem-reaction-rail,
+.mem-emoji-rail {
+  width: 78px;
+  border-radius: 22px;
+  border: 1px solid var(--mem-border-soft);
+  background: rgba(12, 16, 35, 0.9);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mem-reaction-rail {
+  gap: 0.72rem;
+  padding: 0.95rem 0.55rem;
+}
+
+.mem-emoji-rail {
+  gap: 0.62rem;
+  padding: 0.9rem 0.48rem;
+}
+
+/* Generic spacing helpers */
+.mem-stack-2 > * + * { margin-top: var(--mem-space-2); }
+.mem-stack-3 > * + * { margin-top: var(--mem-space-3); }
+.mem-stack-4 > * + * { margin-top: var(--mem-space-4); }
+
+/* Route scaffolding helpers */
+.mem-layout-3col {
+  width: min(100%, var(--mem-feed-max));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: var(--mem-left-sidebar-width) minmax(0, 1fr) var(--mem-right-sidebar-width);
+  gap: var(--mem-space-4);
+}
+
+@media (max-width: 1280px) {
+  .mem-layout-3col {
+    grid-template-columns: 240px minmax(0, 1fr);
+  }
+
+  .mem-layout-3col > :last-child {
+    display: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .mem-layout-3col {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mem-layout-3col > :first-child,
+  .mem-reaction-rail,
+  .mem-emoji-rail {
+    display: none;
+  }
+}
