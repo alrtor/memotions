@@ -1,51 +1,64 @@
-<<<<<<< HEAD
-# Memotions (Launchable Build)
+# Memotions
 
-Memotions is a React + Vite meme social product with legacy page parity plus persistent cross-page social interactions.
+Memotions is an open source meme and GIF social network built with React and Vite.
 
-## Product Features
-- Legacy-compatible routed pages converted into React routes.
-- Persistent local social state via `public/bridge.js`:
-  - session auth
-  - post creation
-  - like/share/save/comment
-  - notifications feed
-  - follow/unfollow
-- Missing legacy route support (`/profile`) added.
-- Data backup tooling in Settings (export/import/reset local data).
+The platform is designed around simple, lightweight sharing of memes, GIFs, reactions, and internet culture. Users can discover trending content, share their own creations, interact through likes, comments, shares, and follows, and stay connected through a fast social feed experience.
 
-## Launch Readiness Added
-- SEO/OpenGraph/Twitter metadata in `index.html`.
-- PWA manifest: `public/manifest.webmanifest`.
-- Service worker offline support: `public/sw.js`, `public/offline.html`.
-- SPA routing support via `public/_redirects`.
-- Security headers template via `public/_headers`.
-- Robots + sitemap: `public/robots.txt`, `public/sitemap.xml`.
+## Features
 
-## Run
+* Open source and community-driven
+* Meme and GIF focused social feed
+* Create and share posts
+* Like, comment, save, and share content
+* User profiles and social connections
+* Follow and unfollow creators
+* Notifications system
+* Responsive mobile-first interface
+* Persistent local social state
+* Fast React + Vite architecture
+
+## Technology Stack
+
+* React
+* Vite
+* JavaScript
+* Modern CSS
+* Progressive Web App (PWA) support
+
+## Getting Started
+
+Install dependencies:
+
 ```bash
 npm install
+```
+
+Start the development server:
+
+```bash
 npm run dev
 ```
 
-## Production Build
+Build for production:
+
 ```bash
 npm run build
+```
+
+Preview the production build:
+
+```bash
 npm run preview
 ```
 
-## Deploy Notes
-- Replace `https://memotions.app` in `index.html` and `public/sitemap.xml` with your actual domain.
-- Ensure host supports SPA rewrites (`_redirects` file already included for Netlify-style hosts).
-- If hosting on Vercel, also configure rewrite to `/index.html` for all routes.
+## Vision
 
-## Launch Checklist
-- Verify all core routes: `/memotions`, `/create`, `/comments`, `/share`, `/notifications`, `/profile`, `/settings`.
-- Test backup export/import from Settings.
-- Verify mobile viewport on iOS and Android.
-- Check offline fallback by disabling network after first visit.
-- Run Lighthouse and fix any host-specific warnings.
-=======
-# memotions
-memotions
->>>>>>> 9404dd2363ce2390ecd149e690168267f81499e6
+Memotions aims to provide a simple, open, and community-owned platform for sharing memes, GIFs, humor, reactions, and everyday internet moments. The goal is to create a fast and accessible social network where content comes first and anyone can contribute, build, and improve the platform.
+
+## Contributing
+
+Contributions, bug reports, feature requests, and pull requests are welcome. Whether you're improving the user experience, fixing issues, or adding new features, your help is appreciated.
+
+## License
+
+Open source and available under the project's license.
