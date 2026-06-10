@@ -82,6 +82,10 @@ function parseJsonArray(raw, fallback = []) {
 const HIDDEN_POSTS_KEY = 'memotions_hidden_posts_v1';
 const FOLLOW_STATE_KEY = 'memotions_follow_states_v1';
 
+function isMemotionsEquivalentPath(pathname = '') {
+  return pathname === '/memotions' || pathname === '/memotions_test' || pathname === '/';
+}
+
 function getHiddenPosts() {
   try {
     return JSON.parse(localStorage.getItem(HIDDEN_POSTS_KEY) || '[]');
@@ -359,7 +363,7 @@ function injectSidebarAndPolicyLinks(container) {
 
   // lock same placement relationship everywhere
   const path = window.location.pathname;
-  const isFeedLayout = path === '/memotions' || path === '/other';
+  const isFeedLayout = isMemotionsEquivalentPath(path) || path === '/other';
   const preserveOriginalWidthRoutes = new Set([
     '/own_profile',
     '/trending',
@@ -674,7 +678,7 @@ function injectGlobalShareCtas(container) {
   if (!container) return;
   const path = window.location.pathname;
   const isAllowedSurface =
-    path === '/memotions' ||
+    isMemotionsEquivalentPath(path) ||
     path === '/other' ||
     path === '/profile' ||
     path === '/others_profile' ||
@@ -1013,7 +1017,7 @@ function injectOwnProfileAvatarUpload(container) {
 function removeDuplicatePageLogo(container) {
   if (!container) return;
   const path = window.location.pathname;
-  if (path === '/memotions' || path === '/') return;
+  if (isMemotionsEquivalentPath(path)) return;
 
   container
     .querySelectorAll(
@@ -1149,7 +1153,7 @@ function injectSavedPostsIntoProfileSavedTab(container) {
 }
 
 function injectMemotionsFeedScrollFix(container) {
-  if (!container || window.location.pathname !== '/memotions') return;
+  if (!container || !isMemotionsEquivalentPath(window.location.pathname)) return;
   const feed = container.querySelector('.feed-container');
   if (!feed || feed.dataset.wheelFixed === '1') return;
   feed.dataset.wheelFixed = '1';
@@ -1202,7 +1206,7 @@ function injectMemotionsFeedScrollFix(container) {
 }
 
 function injectMemotionsDesktopRightRailActions(container) {
-  if (!container || window.location.pathname !== '/memotions') return;
+  if (!container || !isMemotionsEquivalentPath(window.location.pathname)) return;
   if (window.innerWidth < 1025) return;
   container.querySelectorAll('.meme-card').forEach((card) => {
     const cardContainer = card.querySelector('.card-container');
@@ -1637,7 +1641,7 @@ function injectProfilePostModal(container) {
     path === '/own_profile' ||
     path === '/explore' ||
     path === '/trending' ||
-    path === '/memotions' ||
+    isMemotionsEquivalentPath(path) ||
     path === '/other' ||
     path === '/HallofFame';
   if (!isModalSurface) return;
@@ -2742,7 +2746,7 @@ function removeTopNavOnPolicyPages(container) {
 }
 
 function fixMemotionsLayoutGap(container) {
-  if (!container || window.location.pathname !== '/memotions') return;
+  if (!container || !isMemotionsEquivalentPath(window.location.pathname)) return;
   const root = document.getElementById('parity-page-root');
   if (root) {
     root.style.margin = '0';
@@ -4066,7 +4070,7 @@ function injectProductionUiPack(container) {
   };
 
   // Global For You reaction override to prevent double increments from legacy handlers.
-  if (path === '/memotions' && container.dataset.feedReactionGlobalBound !== '1') {
+  if (isMemotionsEquivalentPath(path) && container.dataset.feedReactionGlobalBound !== '1') {
     container.dataset.feedReactionGlobalBound = '1';
     container.addEventListener('click', (e) => {
       const item = e.target.closest('.reaction-item');
@@ -4103,7 +4107,7 @@ function injectProductionUiPack(container) {
   applyHiddenPostsToContainer(container);
 
   // Topbar alignment only (keep native category-tabs filter)
-  if (path === '/memotions' || path === '/trending' || path === '/HallofFame') {
+  if (isMemotionsEquivalentPath(path) || path === '/trending' || path === '/HallofFame') {
     const host = container.querySelector('.top-bar, .top-nav');
     if (host) {
       const rightActions =
@@ -4118,11 +4122,11 @@ function injectProductionUiPack(container) {
   }
 
   // Hide/Not interested menu
-  if (path === '/memotions') {
+  if (isMemotionsEquivalentPath(path)) {
     container.querySelectorAll('.mem-kebab, .mem-menu').forEach((n) => n.remove());
   }
   container.querySelectorAll('.meme-card,.trending-card,.post-card').forEach((card) => {
-    if (path === '/memotions') return;
+    if (isMemotionsEquivalentPath(path)) return;
     if (card.dataset.memMenuBound === '1') return;
     card.dataset.memMenuBound = '1';
     card.style.position = 'relative';
@@ -4255,7 +4259,7 @@ function injectProductionUiPack(container) {
     }
 
     // Stabilize reaction-item behavior on non-For-You surfaces.
-    if (path !== '/memotions') {
+    if (!isMemotionsEquivalentPath(path)) {
       card.querySelectorAll('.reaction-item').forEach((item) => {
         if (item.dataset.reactionToggleBound === '1') return;
         item.dataset.reactionToggleBound = '1';
@@ -4347,7 +4351,7 @@ function injectProductionUiPack(container) {
     }, true);
   });
 
-  if (path === '/memotions' && !container.querySelector('.meme-card[data-injected-gif="1"]')) {
+  if (isMemotionsEquivalentPath(path) && !container.querySelector('.meme-card[data-injected-gif="1"]')) {
     const feed = container.querySelector('.feed-container, .main-feed, .content-grid');
     const firstCard = feed?.querySelector('.meme-card, .post-card');
     if (feed && firstCard) {

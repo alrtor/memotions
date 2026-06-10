@@ -12,6 +12,7 @@ import Page_leaderboard from './pages/Page_leaderboard';
 import Page_lineage from './pages/Page_lineage';
 import Page_logo from './pages/Page_logo';
 import Page_memotions from './pages/Page_memotions';
+import Page_memotions_test from './pages/Page_memotions_test';
 import Page_mood from './pages/Page_mood';
 import Page_notifications from './pages/Page_notifications';
 import Page_other from './pages/Page_other';
@@ -42,6 +43,7 @@ export default function App() {
       <Route path="/lineage" element={<Page_lineage />} />
       <Route path="/logo" element={<Page_logo />} />
       <Route path="/memotions" element={<Page_memotions />} />
+      <Route path="/memotions_test" element={<Page_memotions_test />} />
       <Route path="/mood" element={<Page_mood />} />
       <Route path="/notifications" element={<Page_notifications />} />
       <Route path="/other" element={<Page_other />} />
