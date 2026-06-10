@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Memotions (Launchable Build)
 
 Memotions is a React + Vite meme social product with legacy page parity plus persistent cross-page social interactions.
@@ -44,3 +45,7 @@ npm run preview
 - Verify mobile viewport on iOS and Android.
 - Check offline fallback by disabling network after first visit.
 - Run Lighthouse and fix any host-specific warnings.
+=======
+# memotions
+memotions
+>>>>>>> 9404dd2363ce2390ecd149e690168267f81499e6
